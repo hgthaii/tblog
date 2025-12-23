@@ -1,0 +1,26 @@
+.
+|____index.html
+|____server
+| |____go.mod
+| |____go.sum
+| |____README.md
+| |____data
+| | |____posts.db
+| |____main.go
+|____structure.txt
+|____src
+| |____admin.html
+| |____css
+| | |____style.css
+| |____js
+| | |____index.js
+| | |____script.js
+| | |____admin.js
+| |____data
+| | |____markdown
+| | | |____bai-viet-2.md
+| | | |____bai-viet-1.md
+| | |____json
+| | | |____posts.json
+| |____consts
+| | |____consts.js

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trang chủ</title>
+  </head>
+  <body class="text-redd antialiased selection:bg-[#264f78] selection:text-white font-sans">
+    <p class="text-red-600 border border-primary">Nếu dòng này có màu → TAILWIND CONFIG ĐÃ ĂN</p>
+    <script type="module">
+      try {
+        const { PATHS } = await import('./static/consts/paths.js');
+        const { injectHead, injectHome } = await import(PATHS.js.inject);
+        await injectHead();
+        await injectHome();
+        await import(PATHS.js.index);
+      } catch (e) {
+        console.error('Xảy ra chuyện rồi chủ nhân ơii!!!', e);
+      }
+    </script>
+  </body>
+</html>

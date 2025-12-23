@@ -1,0 +1,100 @@
+@font-face {
+  font-family: 'ConsolasLig';
+  src: url('../fonts/Consolasligaturizedv3.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ConsolasLig';
+  src: url('../fonts/Consolasligaturizedv3-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ConsolasLig';
+  src: url('../fonts/Consolasligaturizedv3-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'ConsolasLig';
+  src: url('../fonts/Consolasligaturizedv3-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+}
+
+.prose {
+  color: #d4d4d4;
+  line-height: 1.75;
+  font-size: 0.95rem;
+}
+
+.prose h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 2rem 0 1rem;
+}
+
+.prose h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 1.75rem 0 0.75rem;
+}
+
+.prose h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.prose p {
+  margin: 0.75rem 0;
+}
+
+.prose ul {
+  padding-left: 1.2rem;
+  margin: 0.75rem 0;
+  list-style: disc;
+}
+
+.prose ol {
+  padding-left: 1.2rem;
+  margin: 0.75rem 0;
+  list-style: decimal;
+}
+
+.prose li {
+  margin: 0.3rem 0;
+}
+
+.prose a {
+  color: #9cdcfe;
+  text-decoration: underline;
+}
+
+.prose blockquote {
+  border-left: 3px solid #3c3c3c;
+  padding-left: 1rem;
+  color: #9da3a6;
+  margin: 1rem 0;
+}
+
+.prose pre {
+  background: #1b1b1b;
+  border: 1px solid #2a2a2a;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+}
+
+.prose code {
+  background: #2d2d2d;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.85em;
+}

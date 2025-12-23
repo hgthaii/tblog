@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Quản trị - Viết bài</title>
+
+    <!-- Tailwind -->
+    <script src="static/lib/tailwindcss.min.js"></script>
+
+    <!-- Marked.js -->
+    <script src="static/lib/marked.esm.js"></script>
+
+    <!-- Font -->
+    <style>
+      @font-face {
+        font-family: 'ConsolasLig';
+        src: url('/static/fonts/Consolasligaturizedv3.ttf') format('truetype');
+        font-weight: 400;
+        font-style: normal;
+      }
+    </style>
+
+    <!-- Tailwind config -->
+    <script>
+      tailwind.config = {
+        theme: {
+          fontFamily: {
+            sans: ['ConsolasLig', 'system-ui', 'sans-serif'],
+            mono: ['ConsolasLig', 'monospace'],
+          },
+          extend: {
+            textColor: {
+              primary: '#ffffffd9',
+              second: '#858585',
+              third: '#d4d4d4',
+            },
+            borderColor: {
+              primary: '#3c3c3c',
+              third: '#d4d4d4',
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      #preview h1 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin: 1.2rem 0;
+      }
+      #preview h2 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 1rem 0;
+      }
+      #preview h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0.75rem 0;
+      }
+      #preview p {
+        margin: 0.75rem 0;
+      }
+      #preview ul {
+        list-style: disc;
+        padding-left: 1.25rem;
+        margin: 0.75rem 0;
+      }
+      #preview ol {
+        list-style: decimal;
+        padding-left: 1.25rem;
+        margin: 0.75rem 0;
+      }
+      #preview code {
+        background: #252526;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+      #preview pre {
+        background: #252526;
+        padding: 12px;
+        border-radius: 6px;
+        overflow-x: auto;
+        margin: 1rem 0;
+      }
+      #preview pre code {
+        background: transparent;
+        padding: 0;
+      }
+      #preview blockquote {
+        border-left: 3px solid #3c3c3c;
+        padding-left: 12px;
+        color: #9ca3af;
+        margin: 1rem 0;
+      }
+      #preview a {
+        color: #9cdcfe;
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+
+  <body class="bg-[#1e1e1e] text-primary antialiased selection:bg-[#264f78] selection:text-white">
+    <main class="min-h-screen px-6 py-16">
+      <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-12">
+          <h1 class="text-lg font-bold tracking-tight">Viết bài mới</h1>
+          <a href="/" class="text-sm text-second hover:text-primary transition">← Quay về blog</a>
+        </div>
+
+        <!-- Editor -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Form -->
+          <form id="post-form" class="space-y-4">
+            <input
+              id="title"
+              type="text"
+              placeholder="Tiêu đề"
+              required
+              class="w-full bg-transparent border border-primary/30 px-3 py-2 placeholder:text-second focus:outline-none focus:border-third transition"
+            />
+
+            <input
+              id="slug"
+              type="text"
+              placeholder="đường-dẫn (tùy chọn)"
+              class="w-full bg-transparent border border-primary/30 px-3 py-2 placeholder:text-second focus:outline-none focus:border-third transition"
+            />
+
+            <textarea
+              id="content"
+              placeholder="Viết nội dung (Markdown)..."
+              required
+              class="w-full min-h-[360px] bg-transparent border border-primary/30 px-3 py-2 placeholder:text-second focus:outline-none focus:border-third transition resize-y"
+            ></textarea>
+
+            <div class="flex items-center justify-between pt-4">
+              <div class="flex gap-4 text-sm">
+                <button
+                  type="button"
+                  id="preview-btn"
+                  class="text-second hover:text-primary transition"
+                >
+                  Xem trước
+                </button>
+                <button type="reset" class="text-second hover:text-primary transition">Xóa</button>
+              </div>
+
+              <button
+                type="submit"
+                class="text-sm font-medium border border-primary/40 px-4 py-1.5 hover:border-third transition"
+              >
+                Lưu
+              </button>
+            </div>
+          </form>
+
+          <!-- Preview -->
+          <div>
+            <div
+              id="preview"
+              class="min-h-[360px] border border-primary/20 px-4 py-3 text-sm leading-7 text-third"
+            >
+              Chưa có nội dung.
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="/static/js/admin.js"></script>
+
+    <script>
+      const contentEl = document.getElementById('content');
+      const previewEl = document.getElementById('preview');
+      const previewBtn = document.getElementById('preview-btn');
+
+      function renderPreview() {
+        previewEl.innerHTML = contentEl.value ? marked.parse(contentEl.value) : 'Chưa có nội dung.';
+      }
+
+      previewBtn.addEventListener('click', renderPreview);
+      contentEl.addEventListener('input', renderPreview);
+    </script>
+  </body>
+</html>
