@@ -1,0 +1,45 @@
+{{ define "title" }}tlog{{ end }} {{ define "content" }}
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-inner">
+      <p class="hero-intro">Xin chào, mình là</p>
+      <h1 class="hero-name">Thái</h1>
+
+      <p class="hero-desc">
+        Một “thợ code” ngày ngày vật lộn với mấy con bug khó ưa. Đây là nơi mình ghi chép lại những
+        gì học được trong lúc mưu sinh với nghề.
+      </p>
+
+      <div class="hero-social">
+        <a href="https://github.com/hgthaii" target="_blank">GitHub</a>
+        <a href="https://linkedin.com/in/hgthaii" target="_blank">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOG -->
+  <div class="blog">
+    <div class="blog-inner">
+      <ul class="post-list">
+        {{ range . }}
+        <li class="post-item">
+          <a href="/posts/{{ .Slug }}" class="post-link">
+            <div>
+              <h3 class="post-title">{{ .Title }}</h3>
+              <div class="post-meta">
+                <span>{{ .CreatedAt.Format "02/01/2006" }}</span>
+                <span>·</span>
+                <span>{{ .ReadingTime }} phút đọc</span>
+              </div>
+              <p class="post-excerpt">
+                {{ .Content }}
+              </p>
+            </div>
+            <span class="post-hover-icon">ᯓ★</span>
+          </a>
+        </li>
+        {{ end }}
+      </ul>
+    </div>
+  </div>
+{{ end }}

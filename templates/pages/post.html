@@ -1,0 +1,10 @@
+{{ define "content" }}
+<section class="post-detail">
+  <article class="post-article">
+    <h1>{{ .Title }}</h1>
+    <div class="markdown">
+      {{ .HTML | safeHTML }}
+    </div>
+  </article>
+</section>
+{{ end }}
