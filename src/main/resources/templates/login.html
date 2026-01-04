@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Login · TBlog</title>
+    <style>
+        body {
+            background:#1e1e1e;
+            color:#d4d4d4;
+            font-family: Consolas, monospace;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            height:100vh;
+        }
+        form {
+            background:#252526;
+            padding:32px;
+            border-radius:10px;
+            width:300px;
+        }
+        input, button {
+            width:100%;
+            margin-top:12px;
+            padding:10px;
+            background:#1e1e1e;
+            border:1px solid #3c3c3c;
+            color:#d4d4d4;
+            border-radius:6px;
+        }
+        button {
+            background:#ffffffd9;
+            color:#1e1e1e;
+            font-weight:600;
+            cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+
+<form method="post" action="/login">
+    <h3>Admin login</h3>
+    <input name="username" placeholder="username" />
+    <input type="password" name="password" placeholder="password" />
+    <button type="submit">Login</button>
+</form>
+
+</body>
+</html>

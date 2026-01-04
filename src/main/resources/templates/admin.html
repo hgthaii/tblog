@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin · TBlog</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            font-family: Consolas, monospace;
+        }
+
+        .layout {
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .editor, .preview {
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .editor {
+            border-right: 1px solid #2a2a2a;
+        }
+
+        label {
+            display: block;
+            margin-top: 16px;
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: #858585;
+        }
+
+        input, textarea {
+            width: 100%;
+            background: #252526;
+            border: 1px solid #3c3c3c;
+            color: #d4d4d4;
+            padding: 10px;
+            font-family: Consolas, monospace;
+            font-size: 14px;
+            border-radius: 6px;
+        }
+
+        textarea {
+            min-height: 60vh;
+            resize: vertical;
+        }
+
+        button {
+            margin-top: 16px;
+            padding: 10px 16px;
+            background: #ffffffd9;
+            color: #1e1e1e;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .markdown pre {
+            background: #252526;
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        .markdown code {
+            background: #252526;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<form method="post" action="/admin" class="layout">
+
+    <!-- LEFT -->
+    <div class="editor">
+        <input type="hidden" name="id" th:value="${post.id}" />
+
+        <label>Tiêu đề</label>
+        <input name="title" th:value="${post.title}" required />
+
+        <label>Slug</label>
+        <input name="slug" th:value="${post.slug}" required />
+
+        <label>Markdown</label>
+        <textarea name="content" id="content"
+                  th:text="${post.content}"></textarea>
+
+        <button type="submit"
+                th:text="${mode == 'edit' ? 'Update' : 'Publish'}">
+        </button>
+
+        <button type="button"
+                th:if="${mode == 'edit'}"
+                th:onclick="|confirmDelete(${post.id})|"
+                style="
+                    margin-top:12px;
+                    background:#3c3c3c;
+                    color:#d4d4d4;
+                ">
+            Delete
+        </button>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="preview">
+        <div id="preview" class="markdown"></div>
+    </div>
+
+<!-- Hidden delete form for JS delete -->
+</form>
+<form id="deleteForm" method="post" style="display:none;"></form>
+
+<script>
+    const textarea = document.getElementById('content');
+    const preview = document.getElementById('preview');
+
+    function renderPreview() {
+        fetch('/admin/preview', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'content=' + encodeURIComponent(textarea.value)
+        })
+            .then(res => res.text())
+            .then(html => preview.innerHTML = html);
+    }
+
+    textarea.addEventListener('input', () => {
+        clearTimeout(window.timer);
+        window.timer = setTimeout(renderPreview, 300);
+    });
+
+    // render ngay khi load edit
+    renderPreview();
+</script>
+
+</body>
+<script>
+    function confirmDelete(id) {
+        if (confirm('Xoá bài viết này nha?')) {
+            const form = document.getElementById('deleteForm');
+            form.action = '/admin/delete/' + id;
+            form.submit();
+        }
+    }
+</script>
+</html>
