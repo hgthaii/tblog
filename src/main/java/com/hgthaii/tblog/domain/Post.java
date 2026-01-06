@@ -1,51 +1,58 @@
 package com.hgthaii.tblog.domain;
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "posts")
 @Getter
 @Setter
+@Table(name = "posts")
 public class Post implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String slug;
 
     @Lob
-    @Column(nullable = false)
-    private String content; // markdown raw
+    private String content;
 
-    private String author;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+    private Author author;
 
-    private String category;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-    private String tags; // comma-separated for now
+    @ManyToMany
+    @JoinTable(
+            name = "post_tags",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags = new HashSet<>();
 
-    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
 
     @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = this.createdAt;
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        updatedAt = createdAt;
     }
 
     @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 }
