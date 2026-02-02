@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Portfolio</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/css/main.css?v=bento">
+	<link rel="shortcut icon" href="/favicon.ico" />
+</head>
+
+<body>
+
+	<div class="app-container">
+
+		<div class="bento-grid">
+
+			<!-- Hero: Intro -->
+			<div class="bento-card hero-box">
+				<div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+					<h1 style="font-size: 3rem; margin: 0; line-height: 1;">Thái.</h1>
+					<p style="font-size: 1.5rem; color: var(--text-secondary); margin-top: 10px;">
+						Software Engineer<br>
+						& System Architect.
+					</p>
+				</div>
+				<div style="margin-top: auto;">
+					<a href="/about" style="color: var(--accent-blue); font-weight: 500;">Read Bio →</a>
+				</div>
+			</div>
+
+			<!-- About Short -->
+			<div class="bento-card about-box">
+				<div class="bento-icon">🚀</div>
+				<div class="bento-title">Building Scalable Systems</div>
+				<p class="bento-subtitle">
+					Specialized in High-concurrency Backend, Cloud Infrastructure, and clean code.
+				</p>
+			</div>
+
+			<!-- GitHub -->
+			<a href="https://github.com/hgthaii" target="_blank" class="bento-card social-box">
+				<svg viewBox="0 0 24 24" width="48" height="48" stroke="white" stroke-width="1.5" fill="none">
+					<path
+						d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+					</path>
+				</svg>
+			</a>
+
+			<!-- Location -->
+			<div class="bento-card map-box"></div>
+
+			<!-- Project: TBlog -->
+			<a href="#" class="bento-card project-box"
+				style="background: linear-gradient(to top right, #2a2a2a, #333);">
+				<div
+					style="background: #000; padding: 4px 8px; border-radius: 4px; align-self: flex-start; font-size: 0.8em; font-weight: bold; margin-bottom: auto;">
+					FEATURED</div>
+				<div style="margin-top: 20px;">
+					<div class="bento-title">TBlog Platform</div>
+					<div class="bento-subtitle">Minimalist, high-performance blogging engine built with Spring Boot.
+					</div>
+				</div>
+				<div style="margin-top: 20px;">
+					<img src="https://placehold.co/600x300/111/444?text=TBlog+UI+Preview"
+						style="width: 100%; border-radius: 12px; opacity: 0.8;" alt="Project">
+				</div>
+			</a>
+
+			<!-- Skills Vertical -->
+			<div class="bento-card skill-box">
+				<div class="bento-title">Tech</div>
+				<div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+					<div style="padding: 8px 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">Java /
+						Spring</div>
+					<div style="padding: 8px 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">PostgreSQL
+					</div>
+					<div style="padding: 8px 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">Kubernetes
+					</div>
+					<div style="padding: 8px 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">AWS</div>
+					<div style="padding: 8px 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">Kafka</div>
+				</div>
+			</div>
+
+			<!-- Blog Link -->
+			<a href="/blog" class="bento-card"
+				style="grid-column: span 2; grid-row: span 1; background: linear-gradient(90deg, #bf5af2 0%, #2997ff 100%);">
+				<div style="display: flex; align-items: center; justify-content: space-between; height: 100%;">
+					<h2 style="margin: 0; font-size: 1.8rem;">Read the Blog</h2>
+					<span style="font-size: 2rem;">→</span>
+				</div>
+			</a>
+
+		</div>
+
+	</div>
+
+	<!-- Floating Dock Navigation -->
+	<nav class="dock-nav">
+		<a href="/" class="dock-link" th:classappend="${#httpServletRequest.requestURI == '/' ? 'active' : ''}">Home</a>
+		<a href="/blog" class="dock-link"
+			th:classappend="${#httpServletRequest.requestURI.startsWith('/blog') ? 'active' : ''}">Blog</a>
+		<a href="/skills" class="dock-link"
+			th:classappend="${#httpServletRequest.requestURI.startsWith('/skills') ? 'active' : ''}">Skills</a>
+		<a href="mailto:hgthaii@gmail.com" class="dock-link">Contact</a>
+	</nav>
+
+</body>
+
+</html>

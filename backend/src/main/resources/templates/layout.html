@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+	<meta charset="UTF-8">
+	<title layout:title-pattern="$CONTENT_TITLE — Thái">Thái</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/css/main.css?v=bento">
+	<link rel="shortcut icon" href="/favicon.ico" />
+</head>
+
+<body>
+
+	<div class="app-container">
+		<!-- Content Injection -->
+		<div layout:fragment="content"></div>
+	</div>
+
+	<!-- Floating Dock Navigation -->
+	<nav class="dock-nav">
+		<a href="/" class="dock-link" th:classappend="${#httpServletRequest.requestURI == '/' ? 'active' : ''}">Home</a>
+		<a href="/blog" class="dock-link"
+			th:classappend="${#httpServletRequest.requestURI.startsWith('/blog') ? 'active' : ''}">Blog</a>
+		<a href="/skills" class="dock-link"
+			th:classappend="${#httpServletRequest.requestURI.startsWith('/skills') ? 'active' : ''}">Skills</a>
+		<a href="mailto:hgthaii@gmail.com" class="dock-link">Contact</a>
+	</nav>
+
+</body>
+
+</html>

@@ -1,318 +1,163 @@
 .
-|____tblog.iml
-|____structure.txt~
-|____mvnw.cmd
-|____target
-| |____test-classes
-| | |____com
-| | | |____hgthaii
-| | | | |____tblog
-| | | | | |____TblogApplicationTests.class
-| |____generated-sources
-| | |____annotations
-| |____classes
-| | |____templates
-| | | |____post.html
-| | | |____home.html
-| | | |____admin.html
-| | | |____login.html
-| | |____com
-| | | |____hgthaii
-| | | | |____tblog
-| | | | | |____repository
-| | | | | | |____TagRepository.class
-| | | | | | |____AuthorRepository.class
-| | | | | | |____CategoryRepository.class
-| | | | | | |____PostRepository.class
-| | | | | |____config
-| | | | | | |____SecurityConfig.class
-| | | | | | |____DataLoader.class
-| | | | | | |____UserConfig.class
-| | | | | |____TblogApplication.class
-| | | | | |____controller
-| | | | | | |____PostController.class
-| | | | | | |____HomeController.class
-| | | | | | |____AuthController.class
-| | | | | | |____AdminController.class
-| | | | | |____service
-| | | | | | |____impl
-| | | | | | | |____MarkdownServiceImpl.class
-| | | | | | | |____PostViewServiceImpl.class
-| | | | | | |____MarkdownService.class
-| | | | | | |____PostViewService.class
-| | | | | |____domain
-| | | | | | |____Author.class
-| | | | | | |____Category.class
-| | | | | | |____Post.class
-| | | | | | |____Tag.class
-| | |____application.properties
-| |____maven-status
-| | |____maven-compiler-plugin
-| | | |____testCompile
-| | | | |____default-testCompile
-| | | | | |____inputFiles.lst
-| | | | | |____createdFiles.lst
-| | | |____compile
-| | | | |____default-compile
-| | | | | |____inputFiles.lst
-| | | | | |____createdFiles.lst
-| |____tblog-0.0.1-SNAPSHOT.jar
-| |____maven-archiver
-| | |____pom.properties
-| |____generated-test-sources
-| | |____test-annotations
-| |____surefire-reports
-| | |____com.hgthaii.tblog.TblogApplicationTests.txt
-| | |____TEST-com.hgthaii.tblog.TblogApplicationTests.xml
-| |____tblog-0.0.1-SNAPSHOT.jar.original
-|____pom.xml
-|____HELP.md
-|____.gitignore
-|____.mvn
-| |____wrapper
-| | |____maven-wrapper.properties
-|____.gitattributes
-|____.git
-| |____config
-| |____objects
-| | |____0d
-| | | |____bae20873a5a9d7c8d9aa06a71335d7be8a0e2e
-| | | |____f319cc28a5c846695d4870c03f916641c11ba5
-| | |____92
-| | | |____fc4756a5896271d26097b5470ceaad9c963486
-| | | |____450f93273470af42eeee491874afb2039b700a
-| | |____66
-| | | |____7aaef0c891a18c6177b09b53418bf59c6ab91f
-| | |____3b
-| | | |____41682ac579fafb665abb4dfcdaa6aaaa712184
-| | |____03
-| | | |____ae4f960b0973b0f65d0e33c2df485f3b652268
-| | |____9e
-| | | |____30f4deb82416f2062364ce9e678a3f5fa32d72
-| | |____3c
-| | | |____122fc97807c14f06efdffca7f95a68821407be
-| | |____51
-| | | |____95ba30415fee3310f503f45572b8cb09f71908
-| | |____0b
-| | | |____457fdca4b6604399ad35b5d365c538912d48db
-| | |____9c
-| | | |____ec19160bb779bc2a0acbf15fff9824a9609cde
-| | |____02
-| | | |____df30fc647f1f8ace23579465576c41aef27cf9
-| | |____ad
-| | | |____aed0f991cd45c28aefd63e7920a4214fef441e
-| | | |____e489b00b56871ba2eed2569db695b285e69a5a
-| | |____bd
-| | | |____8896bf2217b46faa0291585e01ac1a3441a958
-| | |____d1
-| | | |____e1f59e355704ebbfe8b8ebbfa61dc60c7723cb
-| | |____e2
-| | | |____f711919af78a39fd9dfca1fb5ae41341689e6f
-| | |____f4
-| | | |____77954ce8b44d93bd5ff837ecc6794a482adc79
-| | |____c0
-| | | |____ff7f0c1b3600a9136e00a0fe6fff27180f7e40
-| | |____fd
-| | | |____353b4b995ef691c87922c1544de7252723261b
-| | | |____4e9b8a457f2366c928455677e730a5d976a94c
-| | |____f5
-| | | |____d8e9eb975d8835433294998d6853e4eabfcc31
-| | |____c8
-| | | |____5572dda25e01444bb09dd5ad6eef4709ee5a84
-| | |____ed
-| | | |____e16e345b65181921c49b8d6390e8eaf8384ea4
-| | |____4b
-| | | |____dcfcb8ddf83909b37899b4a6cd01cf0932ea69
-| | |____pack
-| | | |____pack-d1c47ee77f8f0a571bfcce892ee01253f1f6e780.rev
-| | | |____pack-d1c47ee77f8f0a571bfcce892ee01253f1f6e780.pack
-| | | |____pack-d1c47ee77f8f0a571bfcce892ee01253f1f6e780.idx
-| | |____29
-| | | |____ecdb177e9323a73d4a19480fca0ffc32d1c5a0
-| | |____80
-| | | |____b0ca8f78750b485f08cb86efd8833dd52ffea2
-| | |____7b
-| | | |____b31bd8ac1fef66c7f662a08a31ebeacb6f35aa
-| | |____10
-| | | |____dc94d33eef75c66e47c0541f4475216374918a
-| | |____86
-| | | |____b142be6d4e4abb88a1b734805d4a4b418de9f4
-| | |____43
-| | | |____5ee69f89c8ca3b34aee16eb9e3df1d566981b4
-| | |____9a
-| | | |____c51776711b124175ff05a8ea305b1ce1e1836f
-| | |____36
-| | | |____64ad3b6b034785e98de237752895424983068c
-| | |____info
-| | |____91
-| | | |____1fdd9ff6e2ffefceb0adceee4581b77b2b2ae7
-| | |____3a
-| | | |____17996f3f7a4b3b99b1ab8a8151afa359fbc1df
-| | |____53
-| | | |____7332f061a98225a39d512273cdc32f1936ccb3
-| | |____37
-| | | |____b323335b0a89cf6e96f228828d54f7933d0f3e
-| | |____6d
-| | | |____914402c8040f9cd6f3028ce3f11edf8b809ad4
-| | |____06
-| | | |____e9bab05f7e56199e6601d747f399208a60414d
-| | |____99
-| | | |____cd9877425b43f002f29c7ef93be70f9e97d985
-| | |____0f
-| | | |____21c875d46fd08919f869ff39225de9d81d2a0e
-| | |____d4
-| | | |____71764dc0607351b50f0f2ee3634491adef3f54
-| | |____ba
-| | | |____5e16461f578ce61e8824ad2ea7dbf5f5006fd7
-| | |____b1
-| | | |____50c7ecd3671b361d164b0b90f9f5bf3b160594
-| | |____dc
-| | | |____4fa160af0901f4470962745f11d2247cbe50ab
-| | | |____45839ce856bd6e6937324f8544f9cdce6394a7
-| | |____a9
-| | | |____68b22d45ef5548bd2a20919f85c14be1c3d80c
-| | |____af
-| | | |____6efb3bab3cd4aca0930638632a9b8734c6c893
-| | |____b0
-| | | |____f39494e09f4ac815a773569ed979503d117809
-| | |____c3
-| | | |____81c792457fd6e6fb95b6dd20270ef5529097fb
-| | |____e1
-| | | |____4c4f341b9fd9395d68ddc02bd6000251cfef52
-| | | |____71a9d9fb4c05d433a44b23f2a5ec5c9a41b020
-| | |____cc
-| | | |____bf60e0876b7a05fb311722fd2302a9e20f2f55
-| | |____ff
-| | | |____b95ea9d59246ebea10e12378be1e8533fe2367
-| | |____e0
-| | | |____47a7f0343e34be6fd0a632481600b51da340db
-| | | |____92a9bed41d55e89888c81c368fbe99ba4642f6
-| | |____2c
-| | | |____09d87dd256cc9afaabc0784e96aecb6f03d967
-| | |____79
-| | | |____e72407034a777c6430b98f748da308f5a0db79
-| | |____2d
-| | | |____80f4625f3b2ee5db1e6573a5a328b976246bf6
-| | |____41
-| | | |____ba163c3f2116193ce447dbc28a37742c4d5b65
-| | |____83
-| | | |____1bb2746e5477a2da5fe163ed8857ad6d0adbb1
-| | |____4f
-| | | |____db15932a7ba73aab549e36e321edf473c46983
-| | |____8d
-| | | |____ea6c227c08000d2400d38a2ac886063f22bc36
-| | |____15
-| | | |____40965e64ce3d53b883e08f65a7e5542324fe9f
-| | |____12
-| | | |____f7607cfc739a489a1c2196afab02f0d0ff144d
-| | |____76
-| | | |____0b048f281e30214a60fd7423802b6030b83479
-| | |____1c
-| | | |____687a20956a25206595ae6767234a46d052a0b7
-| | |____78
-| | | |____3f9b5b49cb16a7d236a67eb95209c3032eb2d2
-| | |____8b
-| | | |____9c95a608b609830462e4450aac2a4817193bb1
-| | | |____8010808b7fd870eff26535656df5c5f8dcd695
-| |____HEAD
-| |____info
-| | |____exclude
-| |____logs
-| | |____HEAD
-| | |____refs
-| | | |____heads
-| | | | |____master
-| | | |____remotes
-| | | | |____origin
-| | | | | |____HEAD
-| | | | | |____master
-| | | | | |____dev
-| | | | | |____dev_thai
-| |____description
-| |____hooks
-| | |____commit-msg.sample
-| | |____pre-rebase.sample
-| | |____sendemail-validate.sample
-| | |____pre-commit.sample
-| | |____applypatch-msg.sample
-| | |____fsmonitor-watchman.sample
-| | |____pre-receive.sample
-| | |____prepare-commit-msg.sample
-| | |____post-update.sample
-| | |____pre-merge-commit.sample
-| | |____pre-applypatch.sample
-| | |____pre-push.sample
-| | |____update.sample
-| | |____push-to-checkout.sample
-| |____refs
-| | |____heads
-| | | |____master
-| | |____tags
-| | |____remotes
-| | | |____origin
-| | | | |____HEAD
-| | | | |____master
-| | | | |____dev
-| | | | |____dev_thai
-| |____index
-| |____COMMIT_EDITMSG
-| |____FETCH_HEAD
-|____structure.txt
-|____mvnw
-|____data
-| |____tblog.db
-|____.idea
-| |____encodings.xml
-| |____jarRepositories.xml
-| |____vcs.xml
+|____ARCHITECTURE.md
+|____.DS_Store
+|____AI_CONTEXT.md
+|____frontend
+| |____app
+| | |____robots.ts
+| | |____favicon.ico
+| | |____admin
+| | | |____posts
+| | | | |____new
+| | | | | |____page.tsx
+| | | | |____[id]
+| | | | | |____edit
+| | | | | | |____page.tsx
+| | | | |____page.tsx
+| | | |____skills
+| | | | |____page.tsx
+| | | |____page.tsx
+| | | |____analytics
+| | | | |____page.tsx
+| | |____blog
+| | | |____page.tsx
+| | | |____[slug]
+| | | | |____page.tsx
+| | |____sitemap.ts
+| | |____layout.tsx
+| | |____error.tsx
+| | |____loading.tsx
+| | |____skills
+| | | |____page.tsx
+| | |____page.tsx
+| | |____globals.css
+| | |____login
+| | | |____page.tsx
+| | |____not-found.tsx
+| |____postcss.config.mjs
+| |____next-env.d.ts
+| |____README.md
+| |____components
+| | |____DockNav.tsx
+| | |____admin
+| | | |____MarkdownEditor.tsx
+| | | |____AdminLayout.tsx
+| | | |____PostForm.tsx
+| |____public
+| | |____file.svg
+| | |____images
+| | | |____studio-art.png
+| | |____vercel.svg
+| | |____next.svg
+| | |____globe.svg
+| | |____window.svg
 | |____.gitignore
-| |____workspace.xml
-| |____modules.xml
-| |____misc.xml
-| |____compiler.xml
-|____src
-| |____test
-| | |____java
-| | | |____com
-| | | | |____hgthaii
-| | | | | |____tblog
-| | | | | | |____TblogApplicationTests.java
-| |____main
-| | |____resources
-| | | |____static
-| | | |____templates
-| | | | |____post.html
-| | | | |____home.html
-| | | | |____admin.html
-| | | | |____login.html
-| | | |____application.properties
-| | |____java
-| | | |____com
-| | | | |____hgthaii
-| | | | | |____tblog
-| | | | | | |____repository
-| | | | | | | |____TagRepository.java
-| | | | | | | |____AuthorRepository.java
-| | | | | | | |____PostRepository.java
-| | | | | | | |____CategoryRepository.java
-| | | | | | |____TblogApplication.java
-| | | | | | |____config
-| | | | | | | |____UserConfig.java
-| | | | | | | |____SecurityConfig.java
-| | | | | | | |____DataLoader.java
-| | | | | | |____controller
-| | | | | | | |____AdminController.java
-| | | | | | | |____AuthController.java
-| | | | | | | |____PostController.java
-| | | | | | | |____HomeController.java
-| | | | | | |____service
-| | | | | | | |____impl
-| | | | | | | | |____MarkdownServiceImpl.java
-| | | | | | | | |____PostViewServiceImpl.java
-| | | | | | | |____MarkdownService.java
-| | | | | | | |____PostViewService.java
-| | | | | | |____domain
-| | | | | | | |____Post.java
-| | | | | | | |____Tag.java
-| | | | | | | |____Category.java
-| | | | | | | |____Author.java
+| |____package-lock.json
+| |____package.json
+| |____.env
+| |____tsconfig.json
+| |____eslint.config.mjs
+| |____next.config.ts
+|____CONVENTIONS.md
+|____backend
+| |____tblog.iml
+| |____mvnw.cmd
+| |____pom.xml
+| |____cookies.txt
+| |____HELP.md
+| |____mvnw
+| |____data
+| | |____tblog.db
+| |____src
+| | |____test
+| | | |____java
+| | | | |____com
+| | | | | |____hgthaii
+| | | | | | |____tblog
+| | | | | | | |____TblogApplicationTests.java
+| | | | | | | |____service
+| | | | | | | | |____impl
+| | | | | | | | | |____PostServiceImplTest.java
+| | |____main
+| | | |____resources
+| | | | |____static
+| | | | | |____css
+| | | | | | |____main.css
+| | | | |____templates
+| | | | | |____post.html
+| | | | | |____skills.html
+| | | | | |____blog.html
+| | | | | |____admin.html
+| | | | | |____layout.html
+| | | | | |____login.html
+| | | | | |____admin-skills.html
+| | | | | |____portfolio.html
+| | | | |____application.properties
+| | | |____java
+| | | | |____com
+| | | | | |____hgthaii
+| | | | | | |____tblog
+| | | | | | | |____dto
+| | | | | | | | |____CategoryDTO.java
+| | | | | | | | |____response
+| | | | | | | | | |____AuthResponse.java
+| | | | | | | | |____SkillDTO.java
+| | | | | | | | |____PostDTO.java
+| | | | | | | | |____TagDTO.java
+| | | | | | | | |____PostDetailDTO.java
+| | | | | | | | |____request
+| | | | | | | | | |____UpdateSkillRequest.java
+| | | | | | | | | |____CreateSkillRequest.java
+| | | | | | | | | |____CreatePostRequest.java
+| | | | | | | | | |____LoginRequest.java
+| | | | | | | | | |____UpdatePostRequest.java
+| | | | | | | |____repository
+| | | | | | | | |____TagRepository.java
+| | | | | | | | |____SkillRepository.java
+| | | | | | | | |____AuthorRepository.java
+| | | | | | | | |____PostRepository.java
+| | | | | | | | |____CategoryRepository.java
+| | | | | | | |____TblogApplication.java
+| | | | | | | |____config
+| | | | | | | | |____UserConfig.java
+| | | | | | | | |____SecurityConfig.java
+| | | | | | | | |____DataLoader.java
+| | | | | | | | |____AppConstants.java
+| | | | | | | | |____WebConfig.java
+| | | | | | | | |____CorsConfig.java
+| | | | | | | |____controller
+| | | | | | | | |____AdminController.java
+| | | | | | | | |____SkillController.java
+| | | | | | | | |____AuthController.java
+| | | | | | | | |____PostController.java
+| | | | | | | | |____api
+| | | | | | | | | |____PostApiController.java
+| | | | | | | | | |____CategoryApiController.java
+| | | | | | | | | |____SkillApiController.java
+| | | | | | | | | |____AuthApiController.java
+| | | | | | | | | |____TestController.java
+| | | | | | | | | |____UploadApiController.java
+| | | | | | | | | |____TagApiController.java
+| | | | | | | | |____HomeController.java
+| | | | | | | |____service
+| | | | | | | | |____impl
+| | | | | | | | | |____PostServiceImpl.java
+| | | | | | | | | |____MarkdownServiceImpl.java
+| | | | | | | | | |____PostViewServiceImpl.java
+| | | | | | | | | |____SkillServiceImpl.java
+| | | | | | | | |____SkillService.java
+| | | | | | | | |____MarkdownService.java
+| | | | | | | | |____PostViewService.java
+| | | | | | | | |____PostService.java
+| | | | | | | |____domain
+| | | | | | | | |____Post.java
+| | | | | | | | |____Skill.java
+| | | | | | | | |____Tag.java
+| | | | | | | | |____Category.java
+| | | | | | | | |____Author.java
+| | | | | | | |____exception
+| | | | | | | | |____ResourceNotFoundException.java
+| | | | | | | | |____GlobalExceptionHandler.java
+|____.gitignore
+|____.gitattributes
+|____structure.txt
