@@ -1,0 +1,47 @@
+.
+|____frontend
+| |____app
+| | |____favicon.ico
+| | |____layout.tsx
+| | |____page.tsx
+| | |____globals.css
+| |____postcss.config.mjs
+| |____next-env.d.ts
+| |____README.md
+| |____public
+| | |____file.svg
+| | |____vercel.svg
+| | |____next.svg
+| | |____globe.svg
+| | |____window.svg
+| |____.gitignore
+| |____package-lock.json
+| |____package.json
+| |____tsconfig.json
+| |____eslint.config.mjs
+| |____next.config.ts
+|____backend
+| |____mvnw.cmd
+| |____pom.xml
+| |____HELP.md
+| |____.gitignore
+| |____.gitattributes
+| |____mvnw
+| |____src
+| | |____test
+| | | |____java
+| | | | |____com
+| | | | | |____hgthaii
+| | | | | | |____backend
+| | | | | | | |____BackendApplicationTests.java
+| | |____main
+| | | |____resources
+| | | | |____static
+| | | | |____templates
+| | | | |____application.properties
+| | | |____java
+| | | | |____com
+| | | | | |____hgthaii
+| | | | | | |____backend
+| | | | | | | |____BackendApplication.java
+|____structure.txt
