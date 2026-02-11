@@ -1,12 +1,13 @@
 package com.hgthaii.tblog.service.impl;
 
 import com.hgthaii.tblog.domain.Skill;
-import com.hgthaii.tblog.repository.SkillRepository;
-import com.hgthaii.tblog.service.SkillService;
 import com.hgthaii.tblog.dto.SkillDTO;
 import com.hgthaii.tblog.dto.request.CreateSkillRequest;
 import com.hgthaii.tblog.dto.request.UpdateSkillRequest;
 import com.hgthaii.tblog.exception.ResourceNotFoundException;
+import com.hgthaii.tblog.mapper.SkillMapper;
+import com.hgthaii.tblog.repository.SkillRepository;
+import com.hgthaii.tblog.service.SkillService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,51 +15,63 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of SkillService.
+ * Refactored to use SkillMapper for DTO conversions.
+ */
 @Service
 @Transactional
 public class SkillServiceImpl implements SkillService {
 
 	private final SkillRepository skillRepository;
+	private final SkillMapper skillMapper;
 
-	public SkillServiceImpl(SkillRepository skillRepository) {
+	public SkillServiceImpl(SkillRepository skillRepository, SkillMapper skillMapper) {
 		this.skillRepository = skillRepository;
+		this.skillMapper = skillMapper;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Skill> getAllSkills() {
-		return skillRepository.findAll();
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public List<SkillDTO> getAllSkillsAsDTO() {
+	public List<SkillDTO> getAllSkills() {
 		return skillRepository.findAll().stream()
-				.map(SkillDTO::fromEntity)
+				.map(skillMapper::toDTO)
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Map<Skill.SkillType, List<Skill>> getSkillsGroupedByType() {
-		return getAllSkills().stream()
-				.collect(Collectors.groupingBy(Skill::getType));
+	public List<SkillDTO> getAllSkillsAsDTO() {
+		return getAllSkills();
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public Map<String, List<SkillDTO>> getSkillsGroupedByTypeAsDTO() {
-		return getAllSkills().stream()
-				.map(SkillDTO::fromEntity)
+		return skillRepository.findAll().stream()
+				.map(skillMapper::toDTO)
 				.collect(Collectors.groupingBy(SkillDTO::type));
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public SkillDTO getSkillByIdAsDTO(Long id) {
-		return skillRepository.findById(id)
-				.map(SkillDTO::fromEntity)
+	public Map<Skill.SkillType, List<Skill>> getSkillsGroupedByType() {
+		return skillRepository.findAll().stream()
+				.collect(Collectors.groupingBy(Skill::getType));
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public SkillDTO getSkillById(Long id) {
+		Skill skill = skillRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Skill not found with id: " + id));
+		return skillMapper.toDTO(skill);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public SkillDTO getSkillByIdAsDTO(Long id) {
+		return getSkillById(id);
 	}
 
 	@Override
@@ -68,15 +81,9 @@ public class SkillServiceImpl implements SkillService {
 
 	@Override
 	public SkillDTO createSkill(CreateSkillRequest request) {
-		Skill skill = new Skill();
-		skill.setName(request.name());
-		skill.setDescription(request.description());
-		skill.setIcon(request.icon());
-		skill.setProficiency(request.proficiency());
-		skill.setType(request.type());
-
+		Skill skill = skillMapper.toEntity(request);
 		Skill saved = skillRepository.save(skill);
-		return SkillDTO.fromEntity(saved);
+		return skillMapper.toDTO(saved);
 	}
 
 	@Override
@@ -84,19 +91,9 @@ public class SkillServiceImpl implements SkillService {
 		Skill skill = skillRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Skill not found with id: " + id));
 
-		if (request.name() != null)
-			skill.setName(request.name());
-		if (request.description() != null)
-			skill.setDescription(request.description());
-		if (request.icon() != null)
-			skill.setIcon(request.icon());
-		if (request.proficiency() != null)
-			skill.setProficiency(request.proficiency());
-		if (request.type() != null)
-			skill.setType(request.type());
-
+		skillMapper.updateEntity(skill, request);
 		Skill saved = skillRepository.save(skill);
-		return SkillDTO.fromEntity(saved);
+		return skillMapper.toDTO(saved);
 	}
 
 	@Override

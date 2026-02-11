@@ -9,60 +9,66 @@ import com.hgthaii.tblog.dto.PostDetailDTO;
 import com.hgthaii.tblog.dto.request.CreatePostRequest;
 import com.hgthaii.tblog.dto.request.UpdatePostRequest;
 import com.hgthaii.tblog.exception.ResourceNotFoundException;
-import com.hgthaii.tblog.repository.AuthorRepository;
-import com.hgthaii.tblog.repository.CategoryRepository;
+import com.hgthaii.tblog.mapper.PostMapper;
 import com.hgthaii.tblog.repository.PostRepository;
-import com.hgthaii.tblog.repository.TagRepository;
-import com.hgthaii.tblog.service.MarkdownService;
+import com.hgthaii.tblog.service.AuthorService;
+import com.hgthaii.tblog.service.CategoryService;
 import com.hgthaii.tblog.service.PostService;
-import com.hgthaii.tblog.service.PostViewService;
+import com.hgthaii.tblog.service.TagService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.util.Set;
 
+/**
+ * Implementation of PostService.
+ * Refactored to follow SOLID principles:
+ * - SRP: Delegates author/category/tag management to specialized services
+ * - DIP: Depends on service interfaces, not implementations
+ * - OCP: Extensible through composition of services
+ */
 @Service
 @Transactional
 public class PostServiceImpl implements PostService {
 
 	private final PostRepository postRepository;
-	private final AuthorRepository authorRepository;
-	private final CategoryRepository categoryRepository;
-	private final TagRepository tagRepository;
-	private final MarkdownService markdownService;
-	private final PostViewService postViewService;
+	private final AuthorService authorService;
+	private final CategoryService categoryService;
+	private final TagService tagService;
+	private final PostMapper postMapper;
 
-	public PostServiceImpl(PostRepository postRepository, AuthorRepository authorRepository,
-			CategoryRepository categoryRepository, TagRepository tagRepository,
-			MarkdownService markdownService, PostViewService postViewService) {
+	public PostServiceImpl(
+			PostRepository postRepository,
+			AuthorService authorService,
+			CategoryService categoryService,
+			TagService tagService,
+			PostMapper postMapper) {
 		this.postRepository = postRepository;
-		this.authorRepository = authorRepository;
-		this.categoryRepository = categoryRepository;
-		this.tagRepository = tagRepository;
-		this.markdownService = markdownService;
-		this.postViewService = postViewService;
+		this.authorService = authorService;
+		this.categoryService = categoryService;
+		this.tagService = tagService;
+		this.postMapper = postMapper;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public Page<PostDTO> getAllPosts(Pageable pageable, String category, String tag, String search) {
 		Page<Post> postPage;
+
 		if (category != null && !category.isEmpty()) {
 			postPage = postRepository.findByCategorySlug(category, pageable);
 		} else if (tag != null && !tag.isEmpty()) {
 			postPage = postRepository.findByTagsSlug(tag, pageable);
 		} else if (search != null && !search.isEmpty()) {
-			postPage = postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(search, search,
-					pageable);
+			postPage = postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(
+					search, search, pageable);
 		} else {
 			postPage = postRepository.findAll(pageable);
 		}
 
-		return postPage.map(this::convertToDTO);
+		return postPage.map(postMapper::toDTO);
 	}
 
 	@Override
@@ -74,61 +80,36 @@ public class PostServiceImpl implements PostService {
 		post.setViews(post.getViews() + 1);
 		postRepository.save(post);
 
-		return convertToDetailDTO(post);
+		return postMapper.toDetailDTO(post);
 	}
 
 	@Override
 	public PostDetailDTO createPost(CreatePostRequest request) {
-		Post post = new Post();
-		post.setTitle(request.title());
-		post.setSlug(request.slug().trim().toLowerCase());
-		post.setContent(request.content());
-		post.setCreatedAt(LocalDateTime.now());
-		post.setUpdatedAt(LocalDateTime.now());
+		// Create post entity from request
+		Post post = postMapper.toEntity(request);
 
-		// Handle Author
+		// Handle Author - delegate to AuthorService
 		if (request.authorName() != null && !request.authorName().isEmpty()) {
-			Author author = authorRepository.findByName(request.authorName())
-					.orElseGet(() -> {
-						Author a = new Author();
-						a.setName(request.authorName());
-						return authorRepository.save(a);
-					});
+			Author author = authorService.findOrCreateByName(request.authorName());
 			post.setAuthor(author);
 		}
 
-		// Handle Category
+		// Handle Category - delegate to CategoryService
 		if (request.categorySlug() != null && !request.categorySlug().isEmpty()) {
-			String slug = request.categorySlug().trim().toLowerCase();
-			Category category = categoryRepository.findBySlug(slug)
-					.orElseGet(() -> {
-						Category c = new Category();
-						c.setName(slug);
-						c.setSlug(slug);
-						return categoryRepository.save(c);
-					});
+			Category category = categoryService.findOrCreateBySlug(
+					request.categorySlug(),
+					request.categorySlug());
 			post.setCategory(category);
 		}
 
-		// Handle Tags
+		// Handle Tags - delegate to TagService
 		if (request.tags() != null && !request.tags().isEmpty()) {
-			Arrays.stream(request.tags().split(","))
-					.map(String::trim)
-					.filter(s -> !s.isEmpty())
-					.forEach(tagSlug -> {
-						Tag tag = tagRepository.findBySlug(tagSlug.toLowerCase())
-								.orElseGet(() -> {
-									Tag t = new Tag();
-									t.setName(tagSlug);
-									t.setSlug(tagSlug.toLowerCase());
-									return tagRepository.save(t);
-								});
-						post.getTags().add(tag);
-					});
+			Set<Tag> tags = tagService.findOrCreateTags(request.tags());
+			post.setTags(tags);
 		}
 
 		Post saved = postRepository.save(post);
-		return convertToDetailDTO(saved);
+		return postMapper.toDetailDTO(saved);
 	}
 
 	@Override
@@ -136,59 +117,32 @@ public class PostServiceImpl implements PostService {
 		Post post = postRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + id));
 
-		if (request.title() != null)
-			post.setTitle(request.title());
-		if (request.slug() != null)
-			post.setSlug(request.slug().trim().toLowerCase());
-		if (request.content() != null)
-			post.setContent(request.content());
+		// Update basic fields - delegate to mapper
+		postMapper.updateEntity(post, request);
 
-		post.setUpdatedAt(LocalDateTime.now());
-
-		// Update Author
+		// Update Author - delegate to AuthorService
 		if (request.authorName() != null) {
-			Author author = authorRepository.findByName(request.authorName())
-					.orElseGet(() -> {
-						Author a = new Author();
-						a.setName(request.authorName());
-						return authorRepository.save(a);
-					});
+			Author author = authorService.findOrCreateByName(request.authorName());
 			post.setAuthor(author);
 		}
 
-		// Update Category
+		// Update Category - delegate to CategoryService
 		if (request.categorySlug() != null) {
-			String slug = request.categorySlug().trim().toLowerCase();
-			Category category = categoryRepository.findBySlug(slug)
-					.orElseGet(() -> {
-						Category c = new Category();
-						c.setName(slug);
-						c.setSlug(slug);
-						return categoryRepository.save(c);
-					});
+			Category category = categoryService.findOrCreateBySlug(
+					request.categorySlug(),
+					request.categorySlug());
 			post.setCategory(category);
 		}
 
-		// Update Tags
+		// Update Tags - delegate to TagService
 		if (request.tags() != null) {
 			post.getTags().clear();
-			Arrays.stream(request.tags().split(","))
-					.map(String::trim)
-					.filter(s -> !s.isEmpty())
-					.forEach(tagSlug -> {
-						Tag tag = tagRepository.findBySlug(tagSlug.toLowerCase())
-								.orElseGet(() -> {
-									Tag t = new Tag();
-									t.setName(tagSlug);
-									t.setSlug(tagSlug.toLowerCase());
-									return tagRepository.save(t);
-								});
-						post.getTags().add(tag);
-					});
+			Set<Tag> tags = tagService.findOrCreateTags(request.tags());
+			post.setTags(tags);
 		}
 
 		Post saved = postRepository.save(post);
-		return convertToDetailDTO(saved);
+		return postMapper.toDetailDTO(saved);
 	}
 
 	@Override
@@ -197,29 +151,5 @@ public class PostServiceImpl implements PostService {
 			throw new ResourceNotFoundException("Post not found with id: " + id);
 		}
 		postRepository.deleteById(id);
-	}
-
-	private PostDTO convertToDTO(Post post) {
-		return new PostDTO(
-				post.getId(),
-				post.getTitle(),
-				post.getSlug(),
-				postViewService.excerpt(post.getContent()),
-				post.getCreatedAt(),
-				post.getAuthor() != null ? post.getAuthor().getName() : "Unknown",
-				post.getCategory() != null ? post.getCategory().getName() : "Uncategorized");
-	}
-
-	private PostDetailDTO convertToDetailDTO(Post post) {
-		return new PostDetailDTO(
-				post.getId(),
-				post.getTitle(),
-				post.getSlug(),
-				post.getContent(),
-				markdownService.render(post.getContent()),
-				post.getCreatedAt(),
-				post.getAuthor() != null ? post.getAuthor().getName() : "Unknown",
-				post.getCategory() != null ? post.getCategory().getName() : "Uncategorized",
-				post.getViews());
 	}
 }

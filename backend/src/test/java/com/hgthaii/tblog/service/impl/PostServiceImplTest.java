@@ -3,8 +3,11 @@ package com.hgthaii.tblog.service.impl;
 import com.hgthaii.tblog.domain.Post;
 import com.hgthaii.tblog.dto.PostDetailDTO;
 import com.hgthaii.tblog.exception.ResourceNotFoundException;
+import com.hgthaii.tblog.mapper.PostMapper;
 import com.hgthaii.tblog.repository.PostRepository;
-import com.hgthaii.tblog.service.MarkdownService;
+import com.hgthaii.tblog.service.AuthorService;
+import com.hgthaii.tblog.service.CategoryService;
+import com.hgthaii.tblog.service.TagService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,29 +29,51 @@ class PostServiceImplTest {
 	private PostRepository postRepository;
 
 	@Mock
-	private MarkdownService markdownService;
+	private AuthorService authorService;
+
+	@Mock
+	private CategoryService categoryService;
+
+	@Mock
+	private TagService tagService;
+
+	@Mock
+	private PostMapper postMapper;
 
 	@InjectMocks
 	private PostServiceImpl postService;
 
 	private Post testPost;
+	private PostDetailDTO testPostDetailDTO;
 
 	@BeforeEach
 	void setUp() {
-		testPost = new Post();
+		testPost = Post.builder()
+				.title("Test Title")
+				.slug("test-slug")
+				.content("# Test content")
+				.views(10)
+				.build();
 		testPost.setId(1L);
-		testPost.setTitle("Test Title");
-		testPost.setSlug("test-slug");
-		testPost.setContent("# Test content");
-		testPost.setViews(10);
 		testPost.setCreatedAt(LocalDateTime.now());
+
+		testPostDetailDTO = new PostDetailDTO(
+				1L,
+				"Test Title",
+				"test-slug",
+				"# Test content",
+				"<h1>Test content</h1>",
+				testPost.getCreatedAt(),
+				"Unknown",
+				"Uncategorized",
+				11);
 	}
 
 	@Test
 	void getPostBySlug_ShouldReturnPost_AndIncrementViews() {
 		// Arrange
 		when(postRepository.findBySlug("test-slug")).thenReturn(Optional.of(testPost));
-		when(markdownService.render(anyString())).thenReturn("<h1>Test content</h1>");
+		when(postMapper.toDetailDTO(testPost)).thenReturn(testPostDetailDTO);
 
 		// Act
 		PostDetailDTO result = postService.getPostBySlug("test-slug");
@@ -58,6 +83,7 @@ class PostServiceImplTest {
 		assertEquals("test-slug", result.slug());
 		assertEquals(11, testPost.getViews()); // Should be incremented
 		verify(postRepository, times(1)).save(testPost);
+		verify(postMapper, times(1)).toDetailDTO(testPost);
 	}
 
 	@Test
@@ -68,5 +94,6 @@ class PostServiceImplTest {
 		// Act & Assert
 		assertThrows(ResourceNotFoundException.class, () -> postService.getPostBySlug("non-existent"));
 		verify(postRepository, never()).save(any());
+		verify(postMapper, never()).toDetailDTO(any());
 	}
 }

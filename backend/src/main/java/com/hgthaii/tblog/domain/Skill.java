@@ -1,77 +1,37 @@
 package com.hgthaii.tblog.domain;
 
 import jakarta.persistence.*;
+import lombok.*;
 
+/**
+ * Skill entity representing technical skills and proficiency levels.
+ */
 @Entity
 @Table(name = "skills")
-public class Skill {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@EqualsAndHashCode(callSuper = true)
+public class Skill extends BaseEntity {
 
 	@Column(nullable = false)
 	private String name;
 
 	@Column(length = 1000)
-	private String description; // Optional markdown description
+	private String description;
 
-	private String icon; // SVG or URL
+	private String icon;
 
 	@Column(nullable = false)
-	private Integer proficiency; // 1-100 or 1-5
+	private Integer proficiency;
 
 	@Enumerated(EnumType.STRING)
-	private SkillType type; // LANGUAGE, FRAMEWORK, TOOL, DATABASE
+	@Column(nullable = false)
+	private SkillType type;
 
 	public enum SkillType {
 		LANGUAGE, FRAMEWORK, TOOL, DATABASE, OTHER
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getIcon() {
-		return icon;
-	}
-
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
-
-	public Integer getProficiency() {
-		return proficiency;
-	}
-
-	public void setProficiency(Integer proficiency) {
-		this.proficiency = proficiency;
-	}
-
-	public SkillType getType() {
-		return type;
-	}
-
-	public void setType(SkillType type) {
-		this.type = type;
 	}
 }

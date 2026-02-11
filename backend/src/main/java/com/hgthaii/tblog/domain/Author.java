@@ -1,52 +1,26 @@
 package com.hgthaii.tblog.domain;
 
 import jakarta.persistence.*;
-import java.io.Serializable;
+import lombok.*;
 
+/**
+ * Author entity representing blog post authors.
+ */
 @Entity
 @Table(name = "authors")
-public class Author implements Serializable {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@EqualsAndHashCode(callSuper = true)
+public class Author extends BaseEntity {
 
 	@Column(unique = true, nullable = false)
 	private String name;
 
+	@Column(length = 1000)
 	private String bio;
 
 	private String avatar;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getBio() {
-		return bio;
-	}
-
-	public void setBio(String bio) {
-		this.bio = bio;
-	}
-
-	public String getAvatar() {
-		return avatar;
-	}
-
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
 }
