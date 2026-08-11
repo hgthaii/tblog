@@ -178,6 +178,7 @@ export default function TransitionLink({
 			router.push(href);
 		};
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const isMobileTransition = window.matchMedia('(max-width: 639px)').matches;
 
 		if (!prefersReducedMotion) {
 			const leaveClass = `page-transition-leave-${direction}`;
@@ -211,7 +212,7 @@ export default function TransitionLink({
 			root.classList.add(leaveClass);
 
 			void (async () => {
-				await wait(80);
+				await wait(isMobileTransition ? 110 : 80);
 				navigate();
 				await waitForPathname(destinationPath);
 
@@ -238,14 +239,14 @@ export default function TransitionLink({
 				await waitForNavigationFrame();
 
 				if (avatarOverlay && destinationAvatar) {
-					await wait(320);
+					await wait(isMobileTransition ? 250 : 320);
 					destinationAvatar.style.opacity = '0';
 					destinationAvatar.style.visibility = '';
 					destinationAvatar.classList.add('avatar-transition-target');
 					await waitForNavigationFrame();
 					destinationAvatar.style.opacity = '1';
 					avatarOverlay.overlay.style.opacity = '0';
-					await wait(100);
+					await wait(isMobileTransition ? 70 : 100);
 					destinationAvatar.classList.remove('avatar-transition-target');
 					destinationAvatar.style.opacity = '';
 					avatarOverlay.overlay.remove();

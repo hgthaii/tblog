@@ -28,7 +28,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 					<h1 className="text-[26px] sm:text-[30px] leading-[1.2] font-semibold text-heading tracking-[-0.035em] break-words">
 						{post.title}
 					</h1>
-					<div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] tracking-[0.1em] text-muted">
+					<div className="post-meta mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] tracking-[0.1em] text-muted">
 						{metaItems.map((item, index) => (
 							<span key={`${post.slug}-meta-${item}`}>
 								{index > 0 && <span className="mr-2 opacity-45">·</span>}
