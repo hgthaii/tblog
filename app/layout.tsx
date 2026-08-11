@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { SITE_CONFIG } from "./lib/config";
-import LanguageSwitcher from "./components/LanguageSwitcher";
 
 export const viewport: Viewport = {
 	width: 'device-width',
@@ -39,8 +38,8 @@ export const metadata: Metadata = {
 		images: [SITE_CONFIG.site.socialImage],
 	},
 	icons: {
-		icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],
-		shortcut: ['/icon.svg'],
+		icon: [{ url: SITE_CONFIG.site.favicon, type: 'image/svg+xml' }],
+		shortcut: [SITE_CONFIG.site.favicon],
 		apple: [{ url: SITE_CONFIG.site.socialImage }],
 	},
 };
@@ -53,13 +52,9 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
-			<body
-				className={`antialiased`}
-				style={{ fontFamily: "ui-monospace, Menlo, Consolas, monospace" }}
-			>
+		<html lang="vi">
+			<body className="antialiased">
 				<LocaleProvider>
-					<LanguageSwitcher />
 					{children}
 				</LocaleProvider>
 			</body>

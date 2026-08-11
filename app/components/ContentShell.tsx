@@ -2,24 +2,30 @@
 
 import SideProfile from './SideProfile';
 
-type ShellSection = 'blog' | 'portfolio' | 'cv';
+type ShellSection = 'blog' | 'milestones' | 'cv';
 
 export default function ContentShell({
 	children,
 	active,
+	width = 'default',
 }: {
 	children: React.ReactNode;
 	active: ShellSection;
+	width?: 'default' | 'wide';
 }) {
 	return (
-		<main className="min-h-screen flex justify-center p-4 sm:p-6 md:p-10 font-mono pb-8">
-			<div className="w-full max-w-[1360px] grid gap-10 lg:grid-cols-[320px_minmax(0,1fr)] mt-14 sm:mt-0">
-				<aside className="lg:sticky lg:top-8 self-start">
+		<main className="app-shell min-h-screen px-5 py-4 sm:px-7 sm:py-6 md:px-10 md:py-10 pb-8">
+			<div className="relative w-full max-w-[1420px] mx-auto">
+				<aside className="corner-profile self-start">
 					<SideProfile active={active} />
 				</aside>
 
-				<section className="w-full flex lg:justify-center">
-					<div className="w-full max-w-[800px]">{children}</div>
+				<section
+					className={`content-canvas w-full min-w-0 mt-10 lg:mt-0 ${
+						width === 'wide' ? 'content-canvas-wide max-w-none mx-auto' : 'max-w-none mx-auto'
+					}`}
+				>
+					<div className="w-full">{children}</div>
 				</section>
 			</div>
 		</main>

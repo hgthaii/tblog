@@ -1,99 +1,134 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
-import { Github, Instagram, Linkedin, Mail } from 'lucide-react';
+import { FileText, House, Milestone, NotebookPen } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useLocale } from '../lib/LocaleContext';
 import { SITE_CONFIG } from '../lib/config';
+import TransitionLink from './TransitionLink';
 
-type SidebarSection = 'blog' | 'portfolio' | 'cv';
+type SidebarSection = 'blog' | 'milestones' | 'cv';
 
 export default function SideProfile({ active }: { active: SidebarSection }) {
 	const { t } = useLocale();
-	const bio = t('home.bio');
-	const smileToken = ':)';
-	const smileIndex = bio.lastIndexOf(smileToken);
-	const hasSmile = smileIndex !== -1;
-	const bioText = hasSmile ? bio.slice(0, smileIndex) : bio;
+	const [isOpen, setIsOpen] = useState(false);
+	const profileRef = useRef<HTMLDivElement>(null);
+	const activeLabel = {
+		blog: t('nav.writing'),
+		milestones: t('nav.milestones'),
+		cv: t('menu.cv.label'),
+	}[active];
+
+	useEffect(() => {
+		const handlePointerDown = (event: PointerEvent) => {
+			if (!profileRef.current?.contains(event.target as Node)) {
+				setIsOpen(false);
+			}
+		};
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === 'Escape') setIsOpen(false);
+		};
+		const handleScroll = () => {
+			if (window.scrollY > 40) setIsOpen(false);
+		};
+
+		document.addEventListener('pointerdown', handlePointerDown);
+		document.addEventListener('keydown', handleKeyDown);
+		window.addEventListener('scroll', handleScroll, { passive: true });
+
+		return () => {
+			document.removeEventListener('pointerdown', handlePointerDown);
+			document.removeEventListener('keydown', handleKeyDown);
+			window.removeEventListener('scroll', handleScroll);
+		};
+	}, []);
 
 	const navItemClass = (section: SidebarSection) =>
 		active === section
 			? 'text-heading'
 			: 'text-foreground hover:text-heading transition-colors';
 
-	const socialLinks = [
-		{ label: 'GitHub', icon: <Github size={15} strokeWidth={1.5} />, href: SITE_CONFIG.profile.github, external: true },
-		{ label: 'Instagram', icon: <Instagram size={15} strokeWidth={1.5} />, href: SITE_CONFIG.profile.instagram, external: true },
-		{ label: 'LinkedIn', icon: <Linkedin size={15} strokeWidth={1.5} />, href: SITE_CONFIG.profile.linkedin, external: true },
-		{ label: 'Email', icon: <Mail size={15} strokeWidth={1.5} />, href: `mailto:${SITE_CONFIG.site.email}` },
-	];
-
 	return (
-		<div className="w-full lg:max-w-[320px]">
-			<div className="flex items-center gap-3" style={{ viewTransitionName: 'profile-anchor' }}>
-				<div className="w-11 h-11 rounded-xl overflow-hidden border border-[rgba(255,255,255,0.08)] flex-shrink-0">
+		<div ref={profileRef} className="relative z-40 w-fit max-w-full">
+			<button
+				type="button"
+				aria-expanded={isOpen}
+				aria-controls="profile-menu"
+				aria-label={`${t('home.name')} — ${activeLabel}`}
+				title={`${t('home.name')} — ${activeLabel}`}
+				onClick={() => setIsOpen((current) => !current)}
+				className="profile-chip group flex items-center gap-3 p-1.5 pr-3 focus:outline-none cursor-pointer"
+				data-profile-anchor
+			>
+				<span data-profile-avatar className="avatar-halo w-9 h-9 rounded-xl overflow-hidden border border-[var(--border)] flex-shrink-0">
 					<Image
 						src={SITE_CONFIG.profile.avatar}
 						alt={SITE_CONFIG.profile.name}
-						width={44}
-						height={44}
-						className="object-cover w-full h-full"
+						width={36}
+						height={36}
+						className="profile-avatar-image object-cover w-full h-full"
+						priority
+						sizes="36px"
 					/>
-				</div>
-				<div>
-					<p className="text-[28px] leading-none font-bold text-heading tracking-tight">{t('home.name')}</p>
-					<p className="text-xs text-foreground opacity-70 mt-1">{t('home.location')}</p>
-				</div>
-			</div>
+				</span>
+				<span className="min-w-0 text-left">
+					<span className="block text-[14px] leading-none font-semibold text-heading tracking-[-0.025em]">{t('home.name')}</span>
+					<span className="block mt-1.5 text-[10px] leading-none text-muted truncate">{t('home.location')}</span>
+				</span>
+			</button>
 
-			<p className="mt-6 text-[14px] leading-relaxed text-foreground">
-				{hasSmile ? (
-					<>
-						{bioText}
-						<span className="inline-block bio-smile ml-1">:)</span>
-					</>
-				) : (
-					bio
-				)}
-			</p>
-
-			<nav className="mt-6 text-[12px] flex items-center gap-2">
-				<Link href="/" className="text-foreground hover:text-heading transition-colors">
-					{t('nav.home')}
-				</Link>
-				<span className="opacity-35">/</span>
-				<Link href="/blog" className={navItemClass('blog')}>
-					{t('nav.writing')}
-				</Link>
-				<span className="opacity-35">/</span>
-				<Link href="/portfolio" className={navItemClass('portfolio')}>
-					{t('nav.portfolio')}
-				</Link>
-				<span className="opacity-35">/</span>
-				<a
-					href={SITE_CONFIG.site.cvUrl}
-					target="_blank"
-					rel="noopener noreferrer"
-					className={navItemClass('cv')}
-				>
-					{t('menu.cv.label')}
-				</a>
-			</nav>
-
-			<div className="mt-6 flex gap-2">
-				{socialLinks.map((social) => (
-					<a
-						key={social.label}
-						href={social.href}
-						title={social.label}
-						target={social.external ? '_blank' : undefined}
-						rel={social.external ? 'noopener noreferrer' : undefined}
-						className="p-2.5 rounded-xl border border-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.04)] hover:border-[rgba(255,255,255,0.12)] transition-all duration-200 text-foreground hover:text-heading"
+			<div
+				id="profile-menu"
+				data-state={isOpen ? 'open' : 'closed'}
+				className="profile-popover"
+			>
+				<nav className="profile-orbit" aria-label={t('nav.home')}>
+					<TransitionLink
+						href={SITE_CONFIG.routes.home}
+						direction="backward"
+						animateProfile={false}
+						onNavigate={() => setIsOpen(false)}
+						title={t('nav.home')}
+						className="profile-menu-item flex w-9 h-9 items-center justify-center text-foreground"
 					>
-						{social.icon}
-					</a>
-				))}
+						<House size={16} strokeWidth={1.5} />
+						<span className="sr-only">{t('nav.home')}</span>
+					</TransitionLink>
+					<TransitionLink
+						href={SITE_CONFIG.routes.blog}
+						direction="forward"
+						animateProfile={false}
+						onNavigate={() => setIsOpen(false)}
+						title={t('nav.writing')}
+						className={`profile-menu-item flex w-9 h-9 items-center justify-center ${navItemClass('blog')}`}
+					>
+						<NotebookPen size={16} strokeWidth={1.5} />
+						<span className="sr-only">{t('nav.writing')}</span>
+					</TransitionLink>
+					<TransitionLink
+						href={SITE_CONFIG.routes.milestones}
+						direction="forward"
+						animateProfile={false}
+						onNavigate={() => setIsOpen(false)}
+						title={t('nav.milestones')}
+						className={`profile-menu-item flex w-9 h-9 items-center justify-center ${navItemClass('milestones')}`}
+					>
+						<Milestone size={16} strokeWidth={1.5} />
+						<span className="sr-only">{t('nav.milestones')}</span>
+					</TransitionLink>
+					<TransitionLink
+						href={SITE_CONFIG.routes.cv}
+						direction="forward"
+						animateProfile={false}
+						onNavigate={() => setIsOpen(false)}
+						title={t('menu.cv.label')}
+						className={`profile-menu-item flex w-9 h-9 items-center justify-center ${navItemClass('cv')}`}
+					>
+						<FileText size={16} strokeWidth={1.5} />
+						<span className="sr-only">{t('menu.cv.label')}</span>
+					</TransitionLink>
+				</nav>
 			</div>
 		</div>
 	);

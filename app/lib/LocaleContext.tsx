@@ -1,64 +1,19 @@
 'use client';
 
-import React, { createContext, useContext, useSyncExternalStore } from "react";
-import { Locale, translations } from "./translations";
+import React, { createContext, useContext } from "react";
+import { content, LocaleContent } from "./translations";
 
 type LocaleContextValue = {
-	locale: Locale;
-	setLocale: (locale: Locale) => void;
+	content: LocaleContent;
 	t: (path: string) => string;
 }
-
-const STORAGE_KEY = 'locale';
-const LOCALE_EVENT = 'locale-change';
-
-const isLocale = (value: string | null): value is Locale =>
-	value === 'en' || value === 'vi';
-
-const getLocaleSnapshot = (): Locale => {
-	if (typeof window === 'undefined') return 'vi';
-
-	const savedLocale = window.localStorage.getItem(STORAGE_KEY);
-	return isLocale(savedLocale) ? savedLocale : 'vi';
-};
-
-const subscribeToLocale = (callback: () => void) => {
-	if (typeof window === 'undefined') return () => undefined;
-
-	const storageListener = (event: StorageEvent) => {
-		if (event.key === STORAGE_KEY) callback();
-	};
-
-	const localeListener = () => callback();
-
-	window.addEventListener('storage', storageListener);
-	window.addEventListener(LOCALE_EVENT, localeListener);
-
-	return () => {
-		window.removeEventListener('storage', storageListener);
-		window.removeEventListener(LOCALE_EVENT, localeListener);
-	};
-};
 
 const LocaleContext = createContext<LocaleContextValue | undefined>(undefined);
 
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
-	const locale = useSyncExternalStore<Locale>(
-		subscribeToLocale,
-		getLocaleSnapshot,
-		() => 'vi',
-	);
-
-	const setLocale = (newLocale: Locale) => {
-		if (typeof window === 'undefined') return;
-
-		window.localStorage.setItem(STORAGE_KEY, newLocale);
-		window.dispatchEvent(new Event(LOCALE_EVENT));
-	}
-
 	const t = (path: string) => {
 		const keys = path.split('.');
-		let result: Record<string, unknown> | string | unknown = translations[locale];
+		let result: Record<string, unknown> | string | unknown = content;
 		for (const key of keys) {
 			if (result && typeof result === 'object' && key in result) {
 				result = (result as Record<string, unknown>)[key];
@@ -71,7 +26,7 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
 	}
 
 	return (
-		<LocaleContext.Provider value={{ locale, setLocale, t }}>
+		<LocaleContext.Provider value={{ content, t }}>
 			{children}
 		</LocaleContext.Provider>
 	);

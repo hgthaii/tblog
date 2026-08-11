@@ -5,6 +5,10 @@ import { useMemo, useState } from 'react';
 import { ArrowUpRight, Search } from 'lucide-react';
 import { useLocale } from '../lib/LocaleContext';
 import ContentShell from '../components/ContentShell';
+import { SITE_CONFIG } from '../lib/config';
+import { content } from '../lib/translations';
+
+const POSTS_PER_PAGE = 5;
 
 type Post = {
 	slug: string;
@@ -12,13 +16,15 @@ type Post = {
 	excerpt: string;
 	createdAt: string;
 	authorName: string;
-	category: string;
+	categories: string[];
+	readingMinutes: number;
 };
 
 export default function BlogClient({ posts }: { posts: Post[] }) {
 	const { t } = useLocale();
 
 	const [query, setQuery] = useState('');
+	const [page, setPage] = useState(1);
 
 	const filteredPosts = useMemo(() => {
 		if (!query.trim()) return posts;
@@ -31,31 +37,37 @@ export default function BlogClient({ posts }: { posts: Post[] }) {
 				p.excerpt.toLowerCase().includes(q),
 		);
 	}, [posts, query]);
+	const pageCount = Math.max(1, Math.ceil(filteredPosts.length / POSTS_PER_PAGE));
+	const currentPage = Math.min(page, pageCount);
+	const visiblePosts = filteredPosts.slice((currentPage - 1) * POSTS_PER_PAGE, currentPage * POSTS_PER_PAGE);
+	const hasPagination = filteredPosts.length > POSTS_PER_PAGE;
+
+	const updateQuery = (value: string) => {
+		setQuery(value);
+		setPage(1);
+	};
+
+	const getMetaItems = (post: Post) =>
+		[
+			post.createdAt,
+			post.authorName,
+			`${post.readingMinutes} ${content.blog.detail.readingTimeSuffix}`,
+		].filter(Boolean);
 
 	return (
 		<ContentShell active="blog">
-			<div className="w-full flex flex-col gap-6 sm:gap-8">
-				{/* Header */}
-				<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-[rgba(255,255,255,0.06)] pb-6 sm:pb-7">
-					<div className="flex flex-col gap-1 md:flex-1">
-						<h1 className="text-[2rem] leading-none md:text-4xl font-bold text-heading tracking-tight">{t('blog.listTitle')}</h1>
-						<p className="text-[13px] sm:text-sm text-foreground opacity-80">{t('blog.subtitle')}</p>
-					</div>
-
-					{/* Search */}
-					<div className="w-full md:w-auto md:ml-auto flex items-center gap-2">
-						<Search size={16} className="text-foreground/70 shrink-0" />
+			<div className="w-full max-w-[720px] mx-auto flex flex-col gap-7 sm:gap-9">
+				<div className="w-full md:w-auto md:ml-auto flex items-center gap-2.5">
+						<Search size={15} className="text-muted shrink-0" />
 						<input
 							value={query}
-							onChange={(e) => setQuery(e.target.value)}
+							onChange={(e) => updateQuery(e.target.value)}
 							placeholder={t('blog.search')}
 							title={t('blog.search')}
-							className="w-full md:w-80 px-0 py-2 bg-transparent border-0 text-sm text-heading placeholder:text-foreground/60 focus:outline-none border-b border-[rgba(255,255,255,0.06)]"
+							className="w-full md:w-64 px-0 py-1.5 bg-transparent border-0 text-[13px] text-heading placeholder:text-muted focus:outline-none"
 						/>
-					</div>
 				</div>
 
-				{/* Posts */}
 				{filteredPosts.length === 0 && (
 					<div className="text-center py-10 text-sm text-foreground opacity-60">
 						{t('blog.noEntries')}
@@ -63,30 +75,72 @@ export default function BlogClient({ posts }: { posts: Post[] }) {
 				)}
 
 				{filteredPosts.length > 0 && (
-					<div className="flex flex-col gap-3 sm:gap-4">
-						{filteredPosts.map((post) => (
-							<Link
-								key={post.slug}
-								href={`/blog/${post.slug}`}
-								title={post.title}
-								className="glass-card group px-4 sm:px-5 py-4 sm:py-5 rounded-2xl bg-[rgba(255,255,255,0.02)] hover:bg-[rgba(255,255,255,0.05)] hover:-translate-y-[2px] active:scale-[0.98] transition-all duration-200"
-							>
-									<div className="min-w-0 pr-4">
-										<h2 title={post.title} className="text-[24px] leading-tight sm:text-2xl font-semibold text-heading tracking-tight break-words lowercase">{post.title}</h2>
-										<p className="text-xs text-foreground opacity-60 mt-2">{post.createdAt}</p>
-										<p title={post.excerpt} className="text-[13px] sm:text-sm text-foreground opacity-80 mt-2 leading-relaxed break-words">
+					<>
+						<div>
+							{visiblePosts.map((post, index) => (
+								<article key={post.slug}>
+									<Link
+										href={`${SITE_CONFIG.routes.blog}/${post.slug}`}
+										title={post.title}
+										className="blog-list-link group relative block py-4 sm:py-5 pr-8"
+									>
+										<h2 title={post.title} className="card-title break-words">{post.title}</h2>
+										<p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] tracking-[0.1em] text-muted">
+											{getMetaItems(post).map((item, index) => (
+												<span key={`${post.slug}-meta-${item}`}>
+													{index > 0 && <span className="mr-2 opacity-45">·</span>}
+													{item}
+												</span>
+											))}
+											{post.categories.length > 0 && getMetaItems(post).length > 0 && <span className="opacity-45">·</span>}
+											{post.categories.length > 0 && (
+												<>
+												{post.categories.map((category) => (
+													<span key={category} className="tag px-2 py-[0.28rem] text-[10px] tracking-[0.08em]">
+														{category}
+													</span>
+												))}
+												</>
+											)}
+										</p>
+										<p title={post.excerpt} className="blog-list-excerpt mt-2.5 text-[13px] sm:text-sm text-foreground leading-[1.7] max-w-[680px]">
 											{post.excerpt}
-									</p>
-								</div>
-
-								<ArrowUpRight
-									size={16}
-									className="mt-1 text-foreground opacity-0 group-hover:opacity-60 group-hover:translate-x-1 transition-all flex-shrink-0"
-								/>
-							</Link>
-						))}
+										</p>
+										<ArrowUpRight
+											size={17}
+											className="absolute top-5 right-0 text-foreground opacity-45 sm:opacity-0 group-hover:opacity-60 transition-all"
+										/>
+									</Link>
+									{index < visiblePosts.length - 1 && <hr className="blog-list-rule" />}
+								</article>
+							))}
 						</div>
-					)}
+
+						{hasPagination && (
+							<nav className="blog-pagination" aria-label="pagination">
+								<button
+									type="button"
+									onClick={() => setPage((current) => Math.max(1, current - 1))}
+									disabled={currentPage === 1}
+									className="blog-pagination-button"
+								>
+									{t('blog.pagination.previous')}
+								</button>
+								<span className="text-[11px] text-muted">
+									{t('blog.pagination.page')} {currentPage} / {pageCount}
+								</span>
+								<button
+									type="button"
+									onClick={() => setPage((current) => Math.min(pageCount, current + 1))}
+									disabled={currentPage === pageCount}
+									className="blog-pagination-button"
+								>
+									{t('blog.pagination.next')}
+								</button>
+							</nav>
+						)}
+					</>
+				)}
 			</div>
 		</ContentShell>
 	);

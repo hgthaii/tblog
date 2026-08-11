@@ -11,6 +11,14 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Environment
+
+Copy `.env.example` to `.env.local` and update links/assets there.
+
+```bash
+cp .env.example .env.local
+```
+
 ## Writing posts (Markdown)
 
 Add Markdown files under `content/posts/` (example: `content/posts/2026-05-28-welcome.md`).

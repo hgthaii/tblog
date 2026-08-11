@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation';
 
+import MarkdownArticle from '../../components/MarkdownArticle';
 import ContentShell from '../../components/ContentShell';
+import { content } from '../../lib/translations';
 import { getPostBySlug, getPostSlugs } from '../../lib/posts';
-import { renderMarkdownToHtml } from '../../lib/markdown';
 
 export const dynamicParams = false;
 
@@ -14,30 +15,38 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 	const { slug } = await params;
 	const post = getPostBySlug(slug);
 	if (!post) return notFound();
-
-	const html = await renderMarkdownToHtml(post.content);
+	const metaItems = [
+		post.createdAt,
+		post.authorName,
+		`${post.readingMinutes} ${content.blog.detail.readingTimeSuffix}`,
+	].filter(Boolean);
 
 	return (
-		<ContentShell active="blog">
-			<div className="w-full max-w-[800px] flex flex-col gap-6 sm:gap-8">
-				<header className="flex flex-col gap-3 pb-5 sm:pb-6 border-b border-[rgba(255,255,255,0.06)]">
-					<h1 className="text-[2rem] leading-tight md:text-4xl font-bold text-heading tracking-tight break-words lowercase">{post.title}.</h1>
-					<div className="flex flex-wrap items-center gap-3 text-xs text-foreground opacity-70">
-						<span>{post.authorName}</span>
-						<span>•</span>
-						<span>{post.createdAt}</span>
-						<span>•</span>
-						<span className="inline-flex w-fit text-[11px] px-2 py-0.5 rounded-md bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.06)] text-foreground opacity-80 lowercase">
-							#{post.category}
-						</span>
+		<ContentShell active="blog" width="wide">
+			<div className="w-full max-w-[720px] mx-auto flex flex-col gap-7 sm:gap-9">
+				<header>
+					<h1 className="text-[26px] sm:text-[30px] leading-[1.2] font-semibold text-heading tracking-[-0.035em] break-words">
+						{post.title}
+					</h1>
+					<div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] tracking-[0.1em] text-muted">
+						{metaItems.map((item, index) => (
+							<span key={`${post.slug}-meta-${item}`}>
+								{index > 0 && <span className="mr-2 opacity-45">·</span>}
+								{item}
+							</span>
+						))}
+						{post.categories.length > 0 && metaItems.length > 0 && <span className="opacity-45">·</span>}
+						{post.categories.map((category) => (
+							<span key={category} className="tag px-2.5 py-1 text-[10px] tracking-[0.08em]">
+								{category}
+							</span>
+						))}
 					</div>
-					{post.excerpt && <p className="text-[13px] sm:text-sm text-foreground opacity-80 leading-relaxed">{post.excerpt}</p>}
 				</header>
 
-				<article
-					className="markdown text-[14px] sm:text-[15px] leading-[1.78] text-foreground max-w-[650px]"
-					dangerouslySetInnerHTML={{ __html: html }}
-				/>
+				<article className="article-body markdown text-[14px] sm:text-[15px] leading-[1.82] text-foreground w-full">
+					<MarkdownArticle content={post.content} />
+				</article>
 			</div>
 		</ContentShell>
 	);

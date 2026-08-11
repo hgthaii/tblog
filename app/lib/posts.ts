@@ -3,6 +3,7 @@ import 'server-only';
 import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
+import vi from '../../content/locales/vi.json';
 
 export type PostMeta = {
 	slug: string;
@@ -10,7 +11,8 @@ export type PostMeta = {
 	excerpt: string;
 	createdAt: string;
 	authorName: string;
-	category: string;
+	categories: string[];
+	readingMinutes: number;
 };
 
 export type PostDetail = PostMeta & {
@@ -18,9 +20,92 @@ export type PostDetail = PostMeta & {
 };
 
 const POSTS_DIR = path.join(process.cwd(), 'content', 'posts');
+const DATE_PREFIX_REGEX = /^\d{4}-\d{2}-\d{2}-(.+)$/;
 
-function normalizeSlug(filename: string) {
+function stripMarkdown(source: string) {
+	return source
+		.replace(/```[\s\S]*?```/g, ' ')
+		.replace(/`([^`]+)`/g, '$1')
+		.replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
+		.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+		.replace(/^>\s?/gm, '')
+		.replace(/^#{1,6}\s+/gm, '')
+		.replace(/^\s*[-*+]\s+/gm, '')
+		.replace(/^\s*\d+\.\s+/gm, '')
+		.replace(/[*_~]/g, '')
+		.replace(/\n+/g, ' ')
+		.replace(/\s+/g, ' ')
+		.trim();
+}
+
+function extractExcerpt(content: string) {
+	const blocks = content
+		.split(/\n\s*\n/)
+		.map((block) => block.trim())
+		.filter(Boolean);
+
+	for (const block of blocks) {
+		if (
+			block.startsWith('```') ||
+			block.startsWith('#') ||
+			block.startsWith('- ') ||
+			block.startsWith('* ') ||
+			/^\d+\.\s/.test(block)
+		) {
+			continue;
+		}
+
+		const plainText = stripMarkdown(block);
+		if (plainText) {
+			return plainText.slice(0, 220).trim();
+		}
+	}
+
+	return stripMarkdown(content).slice(0, 220).trim();
+}
+
+function parseCategories(value: unknown) {
+	if (Array.isArray(value)) {
+		return value
+			.filter((item): item is string => typeof item === 'string')
+			.map((item) => item.trim())
+			.filter(Boolean);
+	}
+
+	if (typeof value === 'string') {
+		return value
+			.split(',')
+			.map((item) => item.trim())
+			.filter(Boolean);
+	}
+
+	return [vi.blog.defaults.category];
+}
+
+function normalizeFileSlug(filename: string) {
 	return filename.replace(/\.mdx?$/i, '');
+}
+
+function toRouteSlug(fileSlug: string) {
+	return fileSlug.replace(DATE_PREFIX_REGEX, '$1');
+}
+
+function listPostFiles() {
+	if (!fs.existsSync(POSTS_DIR)) return [];
+
+	return fs
+		.readdirSync(POSTS_DIR)
+		.filter((filename) => /\.mdx?$/i.test(filename))
+		.sort();
+}
+
+function findPostFileBySlug(slug: string) {
+	const files = listPostFiles();
+
+	const exactSourceMatch = files.find((filename) => normalizeFileSlug(filename) === slug);
+	if (exactSourceMatch) return exactSourceMatch;
+
+	return files.find((filename) => toRouteSlug(normalizeFileSlug(filename)) === slug) ?? null;
 }
 
 function parseFrontmatter(slug: string, raw: string): PostDetail {
@@ -28,13 +113,12 @@ function parseFrontmatter(slug: string, raw: string): PostDetail {
 	const data = parsed.data as Record<string, unknown>;
 
 	const title = typeof data.title === 'string' ? data.title : slug;
-	const excerpt =
-		typeof data.excerpt === 'string'
-			? data.excerpt
-			: parsed.content.trim().split('\n').find((l) => l.trim())?.slice(0, 180) ?? '';
+	const excerpt = extractExcerpt(parsed.content);
 	const createdAt = typeof data.createdAt === 'string' ? data.createdAt : '';
-	const authorName = typeof data.authorName === 'string' ? data.authorName : 'unknown';
-	const category = typeof data.category === 'string' ? data.category : 'uncategorized';
+	const authorName = typeof data.authorName === 'string' ? data.authorName.trim() : '';
+	const categories = parseCategories(data.category);
+	const wordCount = parsed.content.trim().split(/\s+/).filter(Boolean).length;
+	const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
 
 	return {
 		slug,
@@ -42,33 +126,29 @@ function parseFrontmatter(slug: string, raw: string): PostDetail {
 		excerpt,
 		createdAt,
 		authorName,
-		category,
+		categories,
+		readingMinutes,
 		content: parsed.content,
 	};
 }
 
 export function getPostSlugs(): string[] {
-	if (!fs.existsSync(POSTS_DIR)) return [];
+	const routeSlugs = listPostFiles().map((filename) =>
+		toRouteSlug(normalizeFileSlug(filename)),
+	);
 
-	return fs
-		.readdirSync(POSTS_DIR)
-		.filter((f) => /\.mdx?$/i.test(f))
-		.map(normalizeSlug)
-		.sort();
+	return [...new Set(routeSlugs)];
 }
 
 export function getPostBySlug(slug: string): PostDetail | null {
-	const mdPath = path.join(POSTS_DIR, `${slug}.md`);
-	const mdxPath = path.join(POSTS_DIR, `${slug}.mdx`);
+	const filename = findPostFileBySlug(slug);
+	if (!filename) return null;
 
-	let filePath: string | null = null;
-	if (fs.existsSync(mdPath)) filePath = mdPath;
-	else if (fs.existsSync(mdxPath)) filePath = mdxPath;
-
-	if (!filePath) return null;
-
+	const filePath = path.join(POSTS_DIR, filename);
 	const raw = fs.readFileSync(filePath, 'utf8');
-	return parseFrontmatter(slug, raw);
+	const routeSlug = toRouteSlug(normalizeFileSlug(filename));
+
+	return parseFrontmatter(routeSlug, raw);
 }
 
 export function getAllPosts(): PostMeta[] {
@@ -76,13 +156,14 @@ export function getAllPosts(): PostMeta[] {
 	const posts = slugs
 		.map((slug) => getPostBySlug(slug))
 		.filter((p): p is PostDetail => Boolean(p))
-		.map(({ slug, title, excerpt, createdAt, authorName, category }) => ({
+		.map(({ slug, title, excerpt, createdAt, authorName, categories, readingMinutes }) => ({
 			slug,
 			title,
 			excerpt,
 			createdAt,
 			authorName,
-			category,
+			categories,
+			readingMinutes,
 		}));
 
 	posts.sort((a, b) => {
