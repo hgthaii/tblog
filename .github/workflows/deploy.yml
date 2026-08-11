@@ -1,0 +1,80 @@
+name: Deploy to cPanel
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_BASE_PATH: ${{ vars.NEXT_PUBLIC_BASE_PATH }}
+      NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+      NEXT_PUBLIC_CV_PDF: ${{ vars.NEXT_PUBLIC_CV_PDF }}
+      NEXT_PUBLIC_CONTACT_EMAIL: ${{ vars.NEXT_PUBLIC_CONTACT_EMAIL }}
+      NEXT_PUBLIC_PROFILE_AVATAR: ${{ vars.NEXT_PUBLIC_PROFILE_AVATAR }}
+      NEXT_PUBLIC_SOCIAL_IMAGE: ${{ vars.NEXT_PUBLIC_SOCIAL_IMAGE }}
+      NEXT_PUBLIC_FAVICON: ${{ vars.NEXT_PUBLIC_FAVICON }}
+      NEXT_PUBLIC_GITHUB_URL: ${{ vars.NEXT_PUBLIC_GITHUB_URL  }}
+      NEXT_PUBLIC_INSTAGRAM_URL: ${{ vars.NEXT_PUBLIC_INSTAGRAM_URL }}
+      NEXT_PUBLIC_LINKEDIN_URL: ${{ vars.NEXT_PUBLIC_LINKEDIN_URL }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.25.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Create CI env file
+        run: |
+          {
+            echo "NEXT_PUBLIC_BASE_PATH=$NEXT_PUBLIC_BASE_PATH"
+            echo "NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL"
+            echo "NEXT_PUBLIC_CV_PDF=$NEXT_PUBLIC_CV_PDF"
+            echo "NEXT_PUBLIC_CONTACT_EMAIL=$NEXT_PUBLIC_CONTACT_EMAIL"
+            echo "NEXT_PUBLIC_PROFILE_AVATAR=$NEXT_PUBLIC_PROFILE_AVATAR"
+            echo "NEXT_PUBLIC_SOCIAL_IMAGE=$NEXT_PUBLIC_SOCIAL_IMAGE"
+            echo "NEXT_PUBLIC_FAVICON=$NEXT_PUBLIC_FAVICON"
+            echo "NEXT_PUBLIC_GITHUB_URL=$NEXT_PUBLIC_GITHUB_URL"
+            echo "NEXT_PUBLIC_INSTAGRAM_URL=$NEXT_PUBLIC_INSTAGRAM_URL"
+            echo "NEXT_PUBLIC_LINKEDIN_URL=$NEXT_PUBLIC_LINKEDIN_URL"
+          } > .env.local
+
+      - name: Build static site
+        run: |
+          if [ -n "$NEXT_PUBLIC_BASE_PATH" ]; then
+            pnpm build:path
+          else
+            pnpm build
+          fi
+
+      - name: Upload `out/` to hosting
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ${{ vars.FTP_PROTOCOL }}
+          port: ${{ vars.FTP_PORT }}
+          local-dir: ./out/
+          server-dir: ${{ vars.FTP_TARGET_DIR }}
+          state-name: .ftp-deploy-sync-state.json
+          exclude: |
+            **/.DS_Store
