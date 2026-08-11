@@ -6,6 +6,11 @@ export default function MarkdownArticle({ content }: { content: string }) {
 		<ReactMarkdown
 			remarkPlugins={[remarkGfm]}
 			components={{
+				table: ({ children, ...props }) => (
+					<div className="markdown-table-wrap" tabIndex={0} role="region" aria-label="Bảng nội dung có thể cuộn ngang">
+						<table {...props}>{children}</table>
+					</div>
+				),
 				a: ({ href, ...props }) => {
 					const isExternal = typeof href === 'string' && /^https?:\/\//.test(href);
 

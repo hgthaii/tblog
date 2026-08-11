@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+/* Mobile refinements, anchored home bio, and tuned transitions live below. */
+
 :root {
 	--background: #1b1b1a;
 	--surface: #232322;
@@ -16,6 +18,10 @@
 	--radius-sm: 8px;
 	--radius-md: 12px;
 	--radius-lg: 16px;
+	--page-leave-duration: 90ms;
+	--page-enter-duration: 300ms;
+	--avatar-move-duration: 360ms;
+	--avatar-fade-duration: 100ms;
 }
 
 @theme inline {
@@ -43,6 +49,7 @@ body {
 	letter-spacing: -0.01em;
 	margin: 0;
 	min-height: 100vh;
+	overflow-x: hidden;
 }
 
 button,
@@ -105,6 +112,34 @@ input {
 	stroke-dasharray: 0.012 0.018;
 	filter: drop-shadow(0 0 7px rgba(236, 235, 230, 0.05));
 	animation: journey-route-drift 16s linear infinite;
+}
+
+.journey-route-mobile {
+	display: none;
+}
+
+.journey-route-mobile-base,
+.journey-route-mobile-flow {
+	fill: none;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	vector-effect: non-scaling-stroke;
+}
+
+@keyframes journey-mobile-flow {
+	from {
+		stroke-dashoffset: 1;
+		opacity: 0.28;
+	}
+
+	50% {
+		opacity: 0.82;
+	}
+
+	to {
+		stroke-dashoffset: 0;
+		opacity: 0.28;
+	}
 }
 
 .journey-stops {
@@ -354,6 +389,18 @@ input {
 	min-height: 5.25rem;
 }
 
+.home-profile-content {
+	width: 100%;
+}
+
+.bio-end-anchor {
+	position: relative;
+	display: inline-block;
+	width: 0;
+	height: 1em;
+	vertical-align: baseline;
+}
+
 .home-footer {
 	color: var(--muted);
 	font-size: 0.68rem;
@@ -364,8 +411,8 @@ input {
 
 .bio-drift {
 	position: absolute;
-	top: 3.05rem;
-	left: clamp(12rem, 55%, 17rem);
+	top: calc(100% + 0.12rem);
+	left: 0.25rem;
 	display: inline-flex;
 	flex-direction: column;
 	color: var(--foreground);
@@ -567,6 +614,10 @@ input {
 	overflow: hidden;
 }
 
+.cv-mobile-action {
+	display: none;
+}
+
 .blog-list-excerpt {
 	display: -webkit-box;
 	overflow: hidden;
@@ -605,11 +656,25 @@ input {
 	opacity: 0.35;
 }
 
+.markdown-table-wrap {
+	max-width: 100%;
+	overflow-x: auto;
+	overscroll-behavior-inline: contain;
+	-webkit-overflow-scrolling: touch;
+}
+
+.markdown-table-wrap:focus-visible {
+	outline: 1px solid var(--border-strong);
+	outline-offset: 3px;
+	border-radius: var(--radius-md);
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.profile-popover,
 	.bio-smile,
 	.avatar-halo,
 	.journey-route path,
+	.journey-route-mobile-flow,
 	.journey-card-chevron,
 	.journey-bookmark-description-wrap,
 	.bio-drift-falling {
@@ -627,51 +692,464 @@ input {
 }
 
 @media (max-width: 639px) {
+	:root {
+		--page-leave-duration: 65ms;
+		--page-enter-duration: 220ms;
+		--avatar-move-duration: 280ms;
+		--avatar-fade-duration: 70ms;
+	}
+
+	.home-page,
+	.app-shell {
+		padding-right: max(1rem, env(safe-area-inset-right));
+		padding-left: max(1rem, env(safe-area-inset-left));
+	}
+
+	.home-page {
+		padding-top: max(1rem, env(safe-area-inset-top));
+		padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+	}
+
+	.home-profile-card {
+		padding: 1.25rem;
+	}
+
+	.home-profile-content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		width: max-content;
+		max-width: 100%;
+		margin-right: auto;
+		margin-left: auto;
+		text-align: center;
+	}
+
+	.home-profile-content [data-profile-anchor] {
+		width: 100%;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+	}
+
 	.home-bio {
-		min-height: 0;
+		width: 100%;
+		text-align: center;
 	}
 
-	.bio-drift {
-		position: static;
-		margin-top: 0.35rem;
-		margin-left: 0.5rem;
+	.home-bio p {
+		text-align: center;
 	}
 
-	.journey-map {
-		padding-left: 1.75rem;
+	.home-social-links {
+		width: 100%;
+		justify-content: center;
 	}
 
-	.journey-map::before {
-		position: absolute;
-		top: 1.9rem;
-		bottom: 1.9rem;
-		left: 0.72rem;
-		width: 1px;
-		content: '';
-		background: linear-gradient(to bottom, transparent, var(--border-strong) 8%, var(--border-strong) 92%, transparent);
+	.home-nav-link {
+		min-height: 4.75rem;
+		padding: 0.875rem 1rem;
 	}
 
-	.journey-route {
+	.home-footer {
+		margin-top: 1.25rem;
+	}
+
+	.app-shell {
+		padding-top: max(1rem, env(safe-area-inset-top));
+		padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+	}
+
+	.content-canvas {
+		margin-top: 1.75rem;
+	}
+
+	.profile-chip {
+		min-height: 3rem;
+	}
+
+	.profile-popover {
+		top: 50%;
+		left: calc(100% + 0.45rem);
+		width: 10.75rem;
+		height: 2.5rem;
+		padding: 0;
+		background: transparent;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		backdrop-filter: none;
+		-webkit-backdrop-filter: none;
+		transform: translate(-0.35rem, -50%) scale(0.98);
+		transform-origin: left center;
+	}
+
+	.profile-popover::before {
 		display: none;
 	}
 
+	.profile-popover[data-state='open'] {
+		transform: translate(0, -50%) scale(1);
+	}
+
+	.profile-orbit {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		gap: 0.25rem;
+	}
+
+	.profile-menu-item,
+	.profile-menu-item:nth-child(n) {
+		position: static;
+		top: auto;
+		left: auto;
+		width: 2.5rem;
+		height: 2.5rem;
+		background: transparent;
+		box-shadow: none;
+		opacity: 0;
+		transform: translateX(-0.25rem) scale(0.9);
+	}
+
+	.profile-popover[data-state='open'] .profile-menu-item,
+	.profile-popover[data-state='open'] .profile-menu-item:nth-child(n) {
+		transform: translateY(0) scale(1);
+	}
+
+	.blog-search {
+		min-height: 2.75rem;
+		padding: 0 0.75rem;
+		border: 1px solid var(--border);
+		border-radius: var(--radius-md);
+		background: var(--surface-subtle);
+	}
+
+	.post-meta {
+		font-size: 0.6875rem;
+		line-height: 1.6;
+		letter-spacing: 0.055em;
+	}
+
+	.blog-list-link {
+		padding-top: 1.125rem;
+		padding-bottom: 1.125rem;
+	}
+
+	.page-title {
+		font-size: 1.85rem;
+	}
+
+	.article-title,
+	.markdown h1 {
+		font-size: 1.65rem;
+	}
+
+	.markdown {
+		min-width: 0;
+		overflow-wrap: anywhere;
+	}
+
+	.markdown h2 {
+		font-size: 1.35em;
+	}
+
+	.markdown pre {
+		margin-right: -0.25rem;
+		margin-left: -0.25rem;
+		padding: 0.9rem;
+		font-size: 0.82rem;
+	}
+
+	.markdown table {
+		min-width: 34rem;
+	}
+
+	.markdown th,
+	.markdown td {
+		padding: 0.7rem 0.75rem;
+	}
+
+	.cv-mobile-action {
+		display: flex;
+		min-height: 4.75rem;
+	}
+
+	.cv-document {
+		display: none;
+	}
+
+	.home-bio {
+		min-height: 5.4rem;
+	}
+
+	.journey-map {
+		padding: 0.25rem 0 0.75rem;
+	}
+
+	.journey-map::before {
+		display: none;
+	}
+
+	.journey-route-desktop {
+		display: none;
+	}
+
+	.journey-route-mobile {
+		display: block;
+		z-index: 0;
+		inset: 0;
+		height: 100%;
+	}
+
+	.journey-route-mobile-base {
+		stroke: rgba(236, 235, 230, 0.1);
+		stroke-width: 1.5;
+		stroke-dasharray: 0.008 0.014;
+		filter: drop-shadow(0 0 6px rgba(236, 235, 230, 0.035));
+	}
+
+	.journey-route-mobile-flow {
+		stroke: rgba(236, 235, 230, 0.46);
+		stroke-width: 2.5;
+		stroke-dasharray: 0.12 0.88;
+		stroke-dashoffset: 1;
+		filter: drop-shadow(0 0 8px rgba(236, 235, 230, 0.13));
+		animation: journey-mobile-flow 7.5s ease-in-out infinite;
+	}
+
 	.journey-stops {
-		gap: 1rem;
+		gap: 1.5rem;
 	}
 
 	.journey-stop {
-		grid-template-columns: 1.75rem minmax(0, 1fr);
+		display: flex;
 		min-height: 0;
 	}
 
 	.journey-stop--left .journey-card,
 	.journey-stop--right .journey-card {
-		grid-column: 2;
+		width: calc(100% - 2rem);
+	}
+
+	.journey-stop:nth-child(odd) {
+		justify-content: flex-start;
+	}
+
+	.journey-stop:nth-child(even) {
+		justify-content: flex-end;
 	}
 
 	.journey-marker {
-		grid-column: 1;
-		padding-top: 1.85rem;
+		position: absolute;
+		top: 1.45rem;
+		grid-column: auto;
+		grid-row: auto;
+		padding-top: 0;
+	}
+
+	.journey-stop:nth-child(odd) .journey-marker {
+		right: 1.65rem;
+		left: auto;
+	}
+
+	.journey-stop:nth-child(even) .journey-marker {
+		right: auto;
+		left: 1.65rem;
+	}
+
+	.journey-marker > span {
+		width: 0.7rem;
+		height: 0.7rem;
+		border: 2px solid var(--background);
+		background: rgba(236, 235, 230, 0.16);
+		box-shadow:
+			0 0 0 1px rgba(236, 235, 230, 0.13),
+			0 0 0 5px var(--background),
+			0 0 14px rgba(236, 235, 230, 0.08);
+	}
+
+	.journey-marker > span::before {
+		inset: -0.35rem;
+		opacity: 0.58;
+	}
+
+	.journey-marker > span::after {
+		width: 0.22rem;
+		height: 0.22rem;
+	}
+
+	.milestones-intro {
+		position: relative;
+		padding-bottom: 1.25rem;
+	}
+
+	.milestones-intro::after {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		height: 1px;
+		content: '';
+		background: linear-gradient(to right, var(--border-strong), transparent 82%);
+	}
+
+	.milestones-page {
+		gap: 1.5rem;
+	}
+
+	.milestones-page .journey-card {
+		border: 1px solid rgba(236, 235, 230, 0.075);
+		border-radius: 1rem;
+		background:
+			linear-gradient(135deg, rgba(242, 240, 234, 0.055), rgba(242, 240, 234, 0.018) 58%),
+			var(--background);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.025),
+			0 10px 28px rgba(0, 0, 0, 0.1);
+		overflow: hidden;
+	}
+
+	.milestones-page .journey-card-mobile-full {
+		cursor: default;
+	}
+
+	.milestones-page .journey-card-mobile-full:active {
+		transform: none;
+	}
+
+	.milestones-page .journey-card[aria-expanded='true'] {
+		border-color: rgba(236, 235, 230, 0.14);
+		background:
+			linear-gradient(135deg, rgba(242, 240, 234, 0.075), rgba(242, 240, 234, 0.025) 62%),
+			var(--background);
+	}
+
+	.milestones-page .journey-card-header {
+		padding: 1rem 3.5rem 0.55rem 1rem;
+	}
+
+	.milestones-page .journey-stage {
+		display: inline-flex;
+		align-items: center;
+		min-height: 1.4rem;
+		color: rgba(236, 235, 230, 0.72);
+		font-size: 0.7rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+	}
+
+	.milestones-page .journey-index {
+		top: 1rem;
+		right: 1rem;
+		padding: 0.25rem 0.45rem;
+		border: 1px solid rgba(236, 235, 230, 0.06);
+		border-radius: 999px;
+		background: rgba(242, 240, 234, 0.025);
+		font-size: 0.625rem;
+		letter-spacing: 0.1em;
+	}
+
+	.milestones-page .journey-bookmark-description-wrap {
+		padding: 0 3rem 1rem 1rem !important;
+	}
+
+	.milestones-page .journey-bookmark-description {
+		height: 4.95em;
+		color: rgba(236, 235, 230, 0.69);
+		font-size: 0.79rem;
+		line-height: 1.65;
+		line-clamp: 3;
+		-webkit-line-clamp: 3;
+	}
+
+	.milestones-page .journey-bookmark-description[data-unclamped='true'] {
+		height: auto;
+	}
+
+	.milestones-page .journey-bookmark-description-wrap {
+		padding-right: 1rem !important;
+	}
+
+	.milestones-page .journey-bookmark-description {
+		display: block;
+		height: auto;
+		line-clamp: unset;
+		-webkit-line-clamp: unset;
+	}
+
+	.milestones-page .journey-tags {
+		align-content: flex-end;
+		gap: 0.4rem;
+		margin-top: 0.85rem;
+		min-height: 4rem;
+	}
+
+	.milestones-page .journey-tags .tag {
+		padding: 0.32rem 0.55rem;
+		border: 1px solid rgba(236, 235, 230, 0.045);
+		border-radius: 0.5rem;
+		background: rgba(242, 240, 234, 0.035);
+		font-size: 0.6rem;
+		letter-spacing: 0.055em;
+	}
+
+	.milestones-page .journey-card-chevron {
+		right: 0.85rem;
+		bottom: 0.85rem;
+		width: 1.75rem;
+		height: 1.75rem;
+		padding: 0.38rem;
+		border: 1px solid rgba(236, 235, 230, 0.06);
+		border-radius: 999px;
+		background: rgba(242, 240, 234, 0.025);
+	}
+
+	.milestones-page .journey-card[aria-expanded='true'] .journey-card-chevron {
+		background: rgba(242, 240, 234, 0.055);
+	}
+
+	.milestones-page .journey-card-chevron {
+		display: none;
+	}
+
+	.milestones-page .journey-tags {
+		min-height: 0;
+	}
+
+	.milestones-page .journey-card-empty {
+		border: 1px dashed rgba(236, 235, 230, 0.15);
+		background: rgba(242, 240, 234, 0.018);
+		box-shadow: none;
+	}
+
+	.milestones-page .journey-empty-content {
+		display: flex;
+		align-items: center;
+		min-height: 3.75rem;
+		padding: 0.75rem 1rem;
+	}
+
+	.avatar-transition-overlay {
+		animation: none !important;
+		backface-visibility: hidden;
+		contain: layout style;
+		box-shadow:
+			0 0 0 1px rgba(255, 255, 255, 0.09),
+			0 0 14px 2px rgba(255, 255, 255, 0.07);
+		-webkit-font-smoothing: antialiased;
+	}
+}
+
+@media (hover: none) {
+	.interactive-card:hover {
+		background: var(--surface-subtle);
+		transform: none;
+	}
+
+	.interactive-card:active {
+		background: var(--surface-hover);
+		transform: scale(0.99);
 	}
 }
 
@@ -790,7 +1268,6 @@ input {
 	border-collapse: collapse;
 	border-spacing: 0;
 	font-size: 0.96em;
-	overflow: hidden;
 	border-radius: var(--radius-md);
 	background: var(--surface-subtle);
 }
@@ -855,25 +1332,25 @@ input {
 html.page-transition-leave-forward body > main:not(.app-shell),
 html.page-transition-leave-forward body > main.app-shell .content-canvas {
 	pointer-events: none;
-	animation: page-leave-forward 90ms ease-out both;
+	animation: page-leave-forward var(--page-leave-duration) ease-out both;
 }
 
 html.page-transition-enter-forward body > main:not(.app-shell),
 html.page-transition-enter-forward body > main.app-shell .content-canvas {
 	pointer-events: none;
-	animation: page-enter-forward 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+	animation: page-enter-forward var(--page-enter-duration) cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 html.page-transition-leave-backward body > main:not(.app-shell),
 html.page-transition-leave-backward body > main.app-shell .content-canvas {
 	pointer-events: none;
-	animation: page-leave-backward 90ms ease-out both;
+	animation: page-leave-backward var(--page-leave-duration) ease-out both;
 }
 
 html.page-transition-enter-backward body > main:not(.app-shell),
 html.page-transition-enter-backward body > main.app-shell .content-canvas {
 	pointer-events: none;
-	animation: page-enter-backward 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+	animation: page-enter-backward var(--page-enter-duration) cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .avatar-transition-overlay {
@@ -884,13 +1361,13 @@ html.page-transition-enter-backward body > main.app-shell .content-canvas {
 	transform-origin: top left;
 	will-change: transform, opacity;
 	transition:
-		transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
-		border-radius 360ms cubic-bezier(0.22, 1, 0.36, 1),
-		opacity 90ms ease-out;
+		transform var(--avatar-move-duration) cubic-bezier(0.22, 1, 0.36, 1),
+		border-radius var(--avatar-move-duration) cubic-bezier(0.22, 1, 0.36, 1),
+		opacity var(--avatar-fade-duration) ease-out;
 }
 
 .avatar-transition-target {
-	transition: opacity 100ms ease-out;
+	transition: opacity var(--avatar-fade-duration) ease-out;
 }
 
 @keyframes smile-tilt-right {

@@ -22,9 +22,16 @@ type MilestoneCardProps = {
 	stage: string;
 	description: string;
 	tags: string[];
+	isMobileFull: boolean;
 };
 
-function MilestoneCard({ indexLabel, stage, description, tags }: MilestoneCardProps) {
+type MobileRoute = {
+	width: number;
+	height: number;
+	path: string;
+};
+
+function MilestoneCard({ indexLabel, stage, description, tags, isMobileFull }: MilestoneCardProps) {
 	const hasDescription = description.trim().length > 0;
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [isUnclamped, setIsUnclamped] = useState(false);
@@ -33,6 +40,8 @@ function MilestoneCard({ indexLabel, stage, description, tags }: MilestoneCardPr
 	const animationRef = useRef<Animation | null>(null);
 
 	const toggle = () => {
+		if (isMobileFull) return;
+
 		const wrapper = wrapperRef.current;
 		const descriptionElement = descriptionRef.current;
 
@@ -73,13 +82,20 @@ function MilestoneCard({ indexLabel, stage, description, tags }: MilestoneCardPr
 		};
 	};
 
-	useEffect(() => () => animationRef.current?.cancel(), []);
+	useEffect(() => {
+		if (isMobileFull) {
+			animationRef.current?.cancel();
+			if (wrapperRef.current) wrapperRef.current.style.height = 'auto';
+		}
+
+		return () => animationRef.current?.cancel();
+	}, [isMobileFull]);
 
 	if (!hasDescription) {
 		return (
 			<div className="journey-card journey-card-empty" aria-label={stage}>
 				<div className="journey-empty-content px-4 sm:px-5 py-4">
-					<span className="text-[11px] text-muted">{stage}</span>
+					<span className="journey-stage text-[11px] text-muted">{stage}</span>
 				</div>
 			</div>
 		);
@@ -87,30 +103,30 @@ function MilestoneCard({ indexLabel, stage, description, tags }: MilestoneCardPr
 
 	return (
 		<div
-			className="journey-card interactive-card"
-			role="button"
-			tabIndex={0}
-			aria-expanded={isExpanded}
-			onClick={toggle}
-			onKeyDown={(event) => {
+			className={`journey-card interactive-card ${isMobileFull ? 'journey-card-mobile-full' : ''}`}
+			role={isMobileFull ? undefined : 'button'}
+			tabIndex={isMobileFull ? undefined : 0}
+			aria-expanded={isMobileFull ? undefined : isExpanded}
+			onClick={isMobileFull ? undefined : toggle}
+			onKeyDown={isMobileFull ? undefined : (event) => {
 				if (event.key === 'Enter' || event.key === ' ') {
 					event.preventDefault();
 					toggle();
 				}
 			}}
 		>
-			<span className="absolute top-4 right-4 text-[11px] font-extrabold tracking-[0.12em] text-muted">
+			<span className="journey-index absolute top-4 right-4 text-[11px] font-extrabold tracking-[0.12em] text-muted">
 				#{indexLabel}
 			</span>
-			<div className="px-4 sm:px-5 py-4">
-				<span className="text-[11px] text-muted">{stage}</span>
+			<div className="journey-card-header px-4 sm:px-5 py-4">
+				<span className="journey-stage text-[11px] text-muted">{stage}</span>
 			</div>
 			<div ref={wrapperRef} className="journey-bookmark-description-wrap px-4 sm:px-5 pb-4 sm:pb-5">
-				<div ref={descriptionRef} className="journey-bookmark-description" data-unclamped={isUnclamped}>
+				<div ref={descriptionRef} className="journey-bookmark-description" data-unclamped={isMobileFull || isUnclamped}>
 					{description}
 				</div>
 				{tags.length > 0 && (
-					<div className="mt-3 flex flex-wrap gap-2">
+					<div className="journey-tags mt-3 flex flex-wrap gap-2">
 						{tags.map((tag) => (
 							<span key={tag} className="tag px-2.5 py-1 text-[10px] tracking-[0.08em]">
 								{tag}
@@ -126,6 +142,9 @@ function MilestoneCard({ indexLabel, stage, description, tags }: MilestoneCardPr
 
 export default function MilestonesPage() {
 	const { content } = useLocale();
+	const mapRef = useRef<HTMLDivElement>(null);
+	const [isMobile, setIsMobile] = useState(false);
+	const [mobileRoute, setMobileRoute] = useState<MobileRoute>({ width: 1, height: 1, path: '' });
 	const timeline = content.milestones.timeline;
 	const items: MilestoneItem[] = timeline.items.map((item) => ({
 		stage: item.stage,
@@ -133,19 +152,66 @@ export default function MilestonesPage() {
 		tags: Array.isArray(item.tags) ? item.tags : [],
 	}));
 
+	useEffect(() => {
+		const media = window.matchMedia('(max-width: 639px)');
+		const update = () => setIsMobile(media.matches);
+
+		update();
+		media.addEventListener('change', update);
+		return () => media.removeEventListener('change', update);
+	}, []);
+
+	useEffect(() => {
+		const map = mapRef.current;
+		if (!map || !isMobile) return;
+
+		let frame = 0;
+		const updateRoute = () => {
+			cancelAnimationFrame(frame);
+			frame = requestAnimationFrame(() => {
+				const mapRect = map.getBoundingClientRect();
+				const markers = Array.from(map.querySelectorAll<HTMLElement>('.journey-marker > span'));
+				const points = markers.map((marker) => {
+					const rect = marker.getBoundingClientRect();
+					return {
+						x: rect.left + rect.width / 2 - mapRect.left,
+						y: rect.top + rect.height / 2 - mapRect.top,
+					};
+				});
+
+				setMobileRoute({
+					width: Math.max(1, mapRect.width),
+					height: Math.max(1, mapRect.height),
+					path: points.map((point, index) => `${index === 0 ? 'M' : 'L'}${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(' '),
+				});
+			});
+		};
+
+		const observer = new ResizeObserver(updateRoute);
+		observer.observe(map);
+		updateRoute();
+		window.addEventListener('resize', updateRoute);
+
+		return () => {
+			cancelAnimationFrame(frame);
+			observer.disconnect();
+			window.removeEventListener('resize', updateRoute);
+		};
+	}, [isMobile, items.length]);
+
 	return (
 		<ContentShell active="milestones">
-			<div className="w-full max-w-[720px] mx-auto flex flex-col gap-7 sm:gap-9">
-				<div className="flex flex-col gap-1">
+			<div className="milestones-page w-full max-w-[720px] mx-auto flex flex-col gap-7 sm:gap-9">
+				<div className="milestones-intro flex flex-col gap-1">
 					<h1 className="page-title">{content.milestones.pageTitle}</h1>
 					<p className="page-subtitle max-w-[720px]">{timeline.description}</p>
 				</div>
 
-				<section>
-					<div className="journey-map">
-						<svg className="journey-route" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">
+				<section className="milestones-timeline" aria-label={content.milestones.pageTitle}>
+					<div ref={mapRef} className="journey-map">
+						<svg className="journey-route journey-route-desktop" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">
 							<path
-								className="journey-route-line"
+								className="journey-route-line journey-route-line-desktop"
 								d="M500 0
 									C 500 75, 445 105, 445 185
 									S 555 265, 555 345
@@ -156,6 +222,17 @@ export default function MilestonesPage() {
 								pathLength="1"
 							/>
 						</svg>
+						{mobileRoute.path && (
+							<svg
+								className="journey-route journey-route-mobile"
+								viewBox={`0 0 ${mobileRoute.width} ${mobileRoute.height}`}
+								preserveAspectRatio="none"
+								aria-hidden="true"
+							>
+								<path className="journey-route-mobile-base" d={mobileRoute.path} pathLength="1" />
+								<path className="journey-route-mobile-flow" d={mobileRoute.path} pathLength="1" />
+							</svg>
+						)}
 
 						{items.length === 0 ? (
 							<div className="text-sm text-foreground/70">{content.milestones.empty}</div>
@@ -174,6 +251,7 @@ export default function MilestonesPage() {
 											stage={step.stage}
 											description={step.desc.join('\n\n')}
 											tags={step.tags}
+											isMobileFull={isMobile}
 										/>
 									</li>
 								))}

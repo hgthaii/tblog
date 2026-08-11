@@ -1,10 +1,10 @@
 'use client';
 
-import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { ArrowUpRight, Search } from 'lucide-react';
 import { useLocale } from '../lib/LocaleContext';
 import ContentShell from '../components/ContentShell';
+import TransitionLink from '../components/TransitionLink';
 import { SITE_CONFIG } from '../lib/config';
 import { content } from '../lib/translations';
 
@@ -57,7 +57,7 @@ export default function BlogClient({ posts }: { posts: Post[] }) {
 	return (
 		<ContentShell active="blog">
 			<div className="w-full max-w-[720px] mx-auto flex flex-col gap-7 sm:gap-9">
-				<div className="w-full md:w-auto md:ml-auto flex items-center gap-2.5">
+				<label className="blog-search w-full md:w-auto md:ml-auto flex items-center gap-2.5">
 						<Search size={15} className="text-muted shrink-0" />
 						<input
 							value={query}
@@ -66,7 +66,7 @@ export default function BlogClient({ posts }: { posts: Post[] }) {
 							title={t('blog.search')}
 							className="w-full md:w-64 px-0 py-1.5 bg-transparent border-0 text-[13px] text-heading placeholder:text-muted focus:outline-none"
 						/>
-				</div>
+				</label>
 
 				{filteredPosts.length === 0 && (
 					<div className="text-center py-10 text-sm text-foreground opacity-60">
@@ -79,13 +79,15 @@ export default function BlogClient({ posts }: { posts: Post[] }) {
 						<div>
 							{visiblePosts.map((post, index) => (
 								<article key={post.slug}>
-									<Link
+									<TransitionLink
 										href={`${SITE_CONFIG.routes.blog}/${post.slug}`}
+										direction="forward"
+										animateProfile={false}
 										title={post.title}
 										className="blog-list-link group relative block py-4 sm:py-5 pr-8"
 									>
 										<h2 title={post.title} className="card-title break-words">{post.title}</h2>
-										<p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] tracking-[0.1em] text-muted">
+										<p className="post-meta mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] tracking-[0.1em] text-muted">
 											{getMetaItems(post).map((item, index) => (
 												<span key={`${post.slug}-meta-${item}`}>
 													{index > 0 && <span className="mr-2 opacity-45">·</span>}
@@ -110,7 +112,7 @@ export default function BlogClient({ posts }: { posts: Post[] }) {
 											size={17}
 											className="absolute top-5 right-0 text-foreground opacity-45 sm:opacity-0 group-hover:opacity-60 transition-all"
 										/>
-									</Link>
+									</TransitionLink>
 									{index < visiblePosts.length - 1 && <hr className="blog-list-rule" />}
 								</article>
 							))}

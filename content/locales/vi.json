@@ -167,8 +167,8 @@
 	"cv": {
 		"title": "Bản ghi",
 		"description": "Hành trình, hành trang kỹ năng và những dấu ấn đã qua...",
-		"viewerTitle": "CV của Phùng Trần Hoàng Thái",
-		"openPdf": "Mở toàn màn hình",
+		"viewerTitle": "CV của Thái",
+		"openPdf": "Xem CV trên tab mới",
 		"downloadPdf": "Tải PDF",
 		"fallback": "Trình duyệt không thể hiển thị PDF trực tiếp."
 	},
