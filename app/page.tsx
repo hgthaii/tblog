@@ -67,7 +67,7 @@ export default function Home() {
 							</div>
 							<div>
 								<h1 className="text-[1.9rem] leading-none sm:text-[2rem] font-bold text-heading tracking-[-0.04em]">{t('home.name')}</h1>
-								<p className="mt-1 text-[11px] text-muted tracking-wide">{t('home.location')}</p>
+								<p className="mt-1 text-[11px] text-muted tracking-wide text-left">{t('home.location')}</p>
 							</div>
 							</div>
 
