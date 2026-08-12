@@ -224,16 +224,16 @@ jobs:
 
           TBL_SITE_URL="${NEXT_PUBLIC_SITE_URL%/}"
           TBL_COMMIT_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}"
-          TBL_MESSAGE="✅ Deployment completed
 
-          Version: ${TBL_RELEASE_VERSION}
-          Site: ${TBL_SITE_URL}
-          Branch: ${GITHUB_REF_NAME}
-          Commit: ${GITHUB_SHA::7}
-          Content: ${TBL_CONTENT_SHA::7}
-          Triggered by: ${GITHUB_ACTOR}
-          Release: ${TBL_RELEASE_URL}
-          Details: ${TBL_COMMIT_URL}"
+          TBL_MESSAGE="✅ *DEPLOYMENT COMPLETED*
+
+          🚀 *Version:* \`${TBL_RELEASE_VERSION}\`
+          🌐 *Site:* ${TBL_SITE_URL}
+          🌿 *Branch:* \`${GITHUB_REF_NAME}\`
+          📌 *Commit SHA:* [${GITHUB_SHA::7}](${TBL_COMMIT_URL})
+          📦 *Content SHA:* \`${TBL_CONTENT_SHA::7}\`
+          👤 *Triggered by:* \`${GITHUB_ACTOR}\`
+          🏷️ *Release:* [View Release](${TBL_RELEASE_URL})"
 
           curl --fail --silent --show-error \
             --output /dev/null \
@@ -243,4 +243,5 @@ jobs:
             "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
             --data-urlencode "text=${TBL_MESSAGE}" \
+            --data-urlencode "parse_mode=MarkdownV2" \
             --data-urlencode "disable_web_page_preview=true"
