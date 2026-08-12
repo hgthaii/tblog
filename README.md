@@ -1,6 +1,6 @@
 # tblog
 
-A minimal, atmospheric personal site and Markdown blog built with Next.js. It includes a responsive home page, writing archive, milestone timeline, CV viewer, route metadata, sitemap, custom error pages, and a static cPanel deployment workflow.
+A minimal, atmospheric personal site and Markdown blog built with Next.js. It includes a responsive home page, writing archive, milestone timeline, CV viewer, route metadata, sitemap, custom error pages, and static deployment workflows for cPanel and GitHub Pages.
 
 The project uses the App Router and static export, so the generated `out/` directory can be hosted without a Node.js server.
 
@@ -21,7 +21,7 @@ The editable [Mermaid source](docs/project-flow.mmd) shows how feature work reac
 - `dev` is used for feature work before changes are merged into `master` through a pull request.
 - Personal content is stored in a separate private repository and is applied only during deployment.
 
-The included workflow deploys directly from `master`, so no long-lived production branch or cherry-pick step is required.
+The included workflows deploy directly from `master`, so no long-lived production branch or cherry-pick step is required. After a squash merge, sync `master` back into `dev` before starting the next change so the branch keeps dependency and workflow updates made on `master`.
 
 ## Use this template
 
@@ -72,13 +72,16 @@ Keep real profile data, posts, and personal assets in a separate private reposit
 ## Quality checks
 
 ```bash
+pnpm install --frozen-lockfile
+git diff --check
 pnpm lint
+pnpm audit --prod --audit-level=moderate
 pnpm build
 ```
 
 The static output is written to `out/`.
 
-The `CI` workflow runs the same lint and static-build checks for every pull request targeting `master`. GitHub can require this check before merge through a branch protection rule.
+The `CI` workflow runs the same whitespace, lint, production dependency audit, and static-build checks for every pull request targeting `master`. GitHub can require the `Lint and static build` check before merge through a branch protection rule.
 
 For a subfolder deployment such as `https://example.com/blog/`, use:
 
@@ -151,6 +154,14 @@ After upload, the workflow verifies:
 Only after verification succeeds does it create a tag and GitHub Release containing the exact deployed archive and its SHA-256 checksum. The currently deployed version is available at `/version.json`.
 
 The release archive is public and contains the final deployed website, including overlaid content. The private repository protects source history and editing workflow, not content that is intentionally published on the website.
+
+## Documentation
+
+- [Private content deployment](docs/private-content.md): repository setup, tokens, variables, dispatch, and troubleshooting.
+- [Project flow source](docs/project-flow.mmd): editable Mermaid source for the diagram above.
+- [Project structure](project-structure.txt): tracked source tree with generated and local-only paths omitted.
+- [Contributing](CONTRIBUTING.md): development workflow and pull request checklist.
+- [Security policy](SECURITY.md): supported versions and private vulnerability reporting.
 
 ## License
 
