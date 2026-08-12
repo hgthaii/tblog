@@ -1,0 +1,55 @@
+%%{init: {"theme": "base", "themeVariables": {"background": "#141414", "primaryColor": "#242321", "primaryTextColor": "#e7e2d9", "primaryBorderColor": "#69645c", "lineColor": "#8d877d", "secondaryColor": "#1d2926", "tertiaryColor": "#28222d", "clusterBkg": "#1a1918", "clusterBorder": "#4c4842", "fontFamily": "ui-monospace, SFMono-Regular, Menlo, monospace"}}}%%
+flowchart TB
+    feature[/Feature work/]
+    devBranch[dev branch]
+    pullRequest[PR to master]
+    ciCheck{CI passes?}
+    masterBranch[master public template]
+
+    feature --> devBranch
+    devBranch --> pullRequest
+    pullRequest --> ciCheck
+    ciCheck -->|"No"| devBranch
+    ciCheck -->|"Yes"| masterBranch
+
+    subgraph publicFlow ["Public demo"]
+        direction TB
+        pagesAction[Pages workflow]
+        publicBuild[Build English content]
+        pagesArtifact[(Pages artifact)]
+        githubPages[GitHub Pages]
+
+        pagesAction --> publicBuild
+        publicBuild --> pagesArtifact
+        pagesArtifact --> githubPages
+    end
+
+    subgraph privateFlow ["Production site"]
+        direction TB
+        contentRepo[(Private content repo)]
+        dispatchEvent[content_updated event]
+        cpanelAction[cPanel workflow]
+        contentOverlay[Overlay private content]
+        privateBuild[Static build]
+        cpanelHost[cPanel hosting]
+        githubRelease[GitHub Release]
+        telegramNotify[/Telegram notification/]
+
+        contentRepo --> dispatchEvent
+        dispatchEvent --> cpanelAction
+        cpanelAction --> contentOverlay
+        contentOverlay --> privateBuild
+        privateBuild --> cpanelHost
+        privateBuild --> githubRelease
+        cpanelHost -.-> telegramNotify
+    end
+
+    masterBranch --> pagesAction
+    masterBranch --> cpanelAction
+
+    style publicFlow fill:#192420,stroke:#477469
+    style privateFlow fill:#211d27,stroke:#6f5b7d
+    style ciCheck fill:#332d20,stroke:#a28a4d
+    style masterBranch fill:#203026,stroke:#5f8f6d
+    style githubPages fill:#203026,stroke:#5f8f6d
+    style cpanelHost fill:#203026,stroke:#5f8f6d

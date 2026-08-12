@@ -4,6 +4,12 @@ A minimal, atmospheric personal site and Markdown blog built with Next.js. It in
 
 The project uses the App Router and static export, so the generated `out/` directory can be hosted without a Node.js server.
 
+## Project flow
+
+![tblog project flow](docs/assets/project-flow.svg)
+
+The editable [Mermaid source](docs/project-flow.mmd) shows how feature work reaches the public template, then branches into a public GitHub Pages demo and a private-content cPanel deployment. A complete source tree is available in [project-structure.txt](project-structure.txt).
+
 ## Requirements
 
 - Node.js 22 or newer

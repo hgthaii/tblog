@@ -1,0 +1,85 @@
+tblog/
+├── .github/
+│   ├── workflows/
+│   │   ├── ci.yml
+│   │   ├── deploy.yml
+│   │   └── pages.yml
+│   └── dependabot.yml
+├── app/
+│   ├── blog/
+│   │   ├── [slug]/
+│   │   │   ├── not-found.tsx
+│   │   │   └── page.tsx
+│   │   ├── BlogClient.tsx
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── components/
+│   │   ├── ContentShell.tsx
+│   │   ├── ErrorState.tsx
+│   │   ├── MarkdownArticle.tsx
+│   │   ├── RouteTransitionMarker.tsx
+│   │   ├── SideProfile.tsx
+│   │   └── TransitionLink.tsx
+│   ├── cv/
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── lib/
+│   │   ├── LocaleContext.tsx
+│   │   ├── config.ts
+│   │   ├── posts.ts
+│   │   └── seo.ts
+│   ├── milestones/
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── error.tsx
+│   ├── favicon.ico
+│   ├── global-error.tsx
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── not-found.tsx
+│   ├── page.tsx
+│   ├── robots.ts
+│   └── sitemap.ts
+├── content/
+│   ├── locales/
+│   │   ├── en.json
+│   │   └── vi.json
+│   └── posts/
+│       ├── 2025-01-01-welcome.md
+│       └── 2025-01-02-markdown-example.md
+├── docs/
+│   ├── assets/
+│   │   └── project-flow.svg
+│   ├── content-repository/
+│   │   └── trigger-tblog-deploy.yml
+│   ├── private-content.md
+│   └── project-flow.mmd
+├── public/
+│   ├── .htaccess
+│   ├── avatar.svg
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── icon.svg
+│   ├── next.svg
+│   ├── og-image.png
+│   ├── vercel.svg
+│   └── window.svg
+├── .editorconfig
+├── .env.example
+├── .gitignore
+├── .nvmrc
+├── CONTRIBUTING.md
+├── LICENSE
+├── README.md
+├── SECURITY.md
+├── eslint.config.mjs
+├── next-env.d.ts
+├── next.config.ts
+├── package.json
+├── pnpm-lock.yaml
+├── postcss.config.mjs
+├── project-structure.txt
+└── tsconfig.json
+
+Generated and local-only paths such as .git/, .next/, node_modules/, out/,
+.env.local, and .DS_Store are intentionally omitted.
