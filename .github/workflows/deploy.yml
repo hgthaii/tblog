@@ -4,6 +4,17 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'lib/**'
+      - 'public/**'
+      - 'styles/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'next.config.*'
+      - 'tsconfig.json'
+      - '.github/workflows/deploy.yml'
   repository_dispatch:
     types:
       - content_updated
@@ -154,7 +165,7 @@ jobs:
           port: ${{ vars.FTP_PORT || '21' }}
           local-dir: ./deploy-assets/
           server-dir: ${{ vars.FTP_TARGET_DIR }}
-          state-name: .ftp-assets-${{ github.run_id }}.json
+          state-name: .ftp-assets-sync-state.json
           log-level: minimal
           exclude: |
             **/.DS_Store

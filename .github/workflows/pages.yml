@@ -4,6 +4,17 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'lib/**'
+      - 'public/**'
+      - 'styles/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'next.config.*'
+      - 'tsconfig.json'
+      - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:
