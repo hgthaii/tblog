@@ -23,6 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 	}
 
 	const url = absoluteUrl(`/blog/${post.slug}/`);
+	const ogImageUrl = absoluteUrl(`/blog/${post.slug}/opengraph-image`);
 
 	return {
 		title: { absolute: `${post.title} | ${SITE_CONFIG.site.title}` },
@@ -42,7 +43,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 			tags: post.categories,
 			images: [
 				{
-					url: SITE_CONFIG.site.ogImage,
+					url: ogImageUrl,
 					width: 1200,
 					height: 630,
 					alt: post.title,
@@ -53,7 +54,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 			card: 'summary_large_image',
 			title: post.title,
 			description: post.excerpt,
-			images: [SITE_CONFIG.site.ogImage],
+			images: [ogImageUrl],
 		},
 	};
 }
@@ -63,6 +64,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 	const post = getPostBySlug(slug);
 	if (!post) return notFound();
 	const canonicalUrl = absoluteUrl(`/blog/${post.slug}/`);
+	const ogImageUrl = absoluteUrl(`/blog/${post.slug}/opengraph-image`);
 	const authorName = post.authorName || SITE_CONFIG.profile.name;
 	const jsonLd = {
 		'@context': SITE_CONFIG.external.schemaContext,
@@ -74,7 +76,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 			'@type': 'WebPage',
 			'@id': canonicalUrl,
 		},
-		image: [absoluteAssetUrl(SITE_CONFIG.site.ogImage)],
+		image: [absoluteAssetUrl(ogImageUrl)],
 		datePublished: post.publishedAt || undefined,
 		dateModified: post.publishedAt || undefined,
 		inLanguage: 'vi-VN',
