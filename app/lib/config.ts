@@ -47,6 +47,12 @@ const withOptionalBasePath = (value: string) =>
 		? value
 		: withBasePath(value);
 
+const absoluteSiteAsset = (pathname: string) =>
+	new URL(
+		pathname.replace(/^\/+/, ''),
+		`${env.siteUrl.replace(/\/+$/, '')}/`,
+	).toString();
+
 export const SITE_CONFIG = {
 	locale: {
 		code: locale,
@@ -66,7 +72,7 @@ export const SITE_CONFIG = {
 		email: env.contactEmail,
 		emailHref: `mailto:${env.contactEmail}`,
 		socialImage: withOptionalBasePath(env.socialImage),
-		ogImage: withBasePath('/og-image.png'),
+		ogImage: absoluteSiteAsset('/og-image.png'),
 		favicon: withOptionalBasePath(env.favicon),
 	},
 	profile: {

@@ -117,6 +117,19 @@ Optional repository variables:
 
 Without `DEPLOY_ENABLED=true`, the deployment job is safely skipped. This keeps forks and new template repositories from failing before their deployment settings exist. After configuration, merge a pull request into `master`, push to the private content repository, or manually run the workflow on `master`.
 
+## Public demo on GitHub Pages
+
+The workflow in `.github/workflows/pages.yml` builds and deploys only the public English example content tracked in this repository. It never checks out or overlays the private content repository.
+
+To enable it:
+
+1. Open **Settings → Pages** and set **Source** to **GitHub Actions**.
+2. Open **Settings → Secrets and variables → Actions → Variables**.
+3. Add `PAGES_DEPLOY_ENABLED` with the value `true`.
+4. Merge the workflow into `master` or run **Deploy public template to GitHub Pages** manually.
+
+The workflow reads the Pages URL and base path from GitHub, so both project sites such as `https://owner.github.io/repository/` and custom domains build with the correct asset paths and canonical metadata. Forks remain safely disabled until their owner adds the variable.
+
 ## Releases and production verification
 
 Each successful deployment creates a version in the format `v<major>.<minor>.<GitHub run number>`. The major and minor values come from `package.json`.
