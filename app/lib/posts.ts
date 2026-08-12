@@ -14,6 +14,7 @@ export type PostMeta = {
 	authorName: string;
 	categories: string[];
 	readingMinutes: number;
+	order: number;
 };
 
 export type PostDetail = PostMeta & {
@@ -132,6 +133,7 @@ function parseFrontmatter(slug: string, raw: string): PostDetail {
 	const categories = parseCategories(data.category);
 	const wordCount = parsed.content.trim().split(/\s+/).filter(Boolean).length;
 	const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
+	const order = Number.parseInt(String(data.order ?? ''), 10) || 0;
 
 	return {
 		slug,
@@ -143,6 +145,7 @@ function parseFrontmatter(slug: string, raw: string): PostDetail {
 		categories,
 		readingMinutes,
 		content: parsed.content,
+		order,
 	};
 }
 
@@ -170,7 +173,7 @@ export function getAllPosts(): PostMeta[] {
 	const posts = slugs
 		.map((slug) => getPostBySlug(slug))
 		.filter((p): p is PostDetail => Boolean(p))
-		.map(({ slug, title, excerpt, createdAt, publishedAt, authorName, categories, readingMinutes }) => ({
+		.map(({ slug, title, excerpt, createdAt, publishedAt, authorName, categories, readingMinutes, order }) => ({
 			slug,
 			title,
 			excerpt,
@@ -179,12 +182,13 @@ export function getAllPosts(): PostMeta[] {
 			authorName,
 			categories,
 			readingMinutes,
+			order,
 		}));
 
 	posts.sort((a, b) => {
 		const ad = Date.parse(a.publishedAt) || 0;
 		const bd = Date.parse(b.publishedAt) || 0;
-		return bd - ad;
+		return (bd - ad) || ((b.order ?? 0) - (a.order ?? 0));
 	});
 
 	return posts;
