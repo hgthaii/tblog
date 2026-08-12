@@ -7,10 +7,10 @@ The project uses the App Router and static export, so the generated `out/` direc
 ## Branch model
 
 - `master` is the public template. It contains sample profile data, Lorem Ipsum milestones, example posts, and placeholder links.
-- `production` is intended for the site owner's real content and is the only branch deployed by the included workflow.
-- `dev` can be used for feature work before changes are merged into `master` or `production`.
+- `dev` is used for feature work before changes are merged into `master` through a pull request.
+- Personal content is stored in a separate private repository and is applied only during deployment.
 
-The `production` branch is still visible when the repository is public. Use a separate private repository if your content must not be publicly accessible in Git history.
+The included workflow deploys directly from `master`, so no long-lived production branch or cherry-pick step is required.
 
 ## Use this template
 
@@ -50,23 +50,9 @@ category: "notes, personal"
 Write the post here.
 ```
 
-## Create a personal production branch
+## Store personal content privately
 
-Keep the reusable template on `master` and create your content branch once:
-
-```bash
-git switch -c production
-```
-
-Replace the sample content, commit it, and push the branch:
-
-```bash
-git add .
-git commit -m "Personalize site content"
-git push -u origin production
-```
-
-When template code changes later, merge `master` into `production` and keep the personal versions of your content files when resolving conflicts.
+Keep real profile data, posts, and personal assets in a separate private repository. The deployment workflow overlays them onto the public template immediately before building. Follow [Private content deployment](docs/private-content.md) to configure both repositories.
 
 ## Quality checks
 
@@ -87,7 +73,7 @@ NEXT_PUBLIC_BASE_PATH=/blog pnpm build:path
 
 ## Automatic cPanel deployment
 
-The workflow in `.github/workflows/deploy.yml` runs only for the `production` branch. It builds the static site, uploads immutable assets before pages, verifies production, creates a versioned GitHub Release, and can send a Telegram notification.
+The workflow in `.github/workflows/deploy.yml` deploys the `master` template with content from a separate private repository. It runs after code reaches `master`, when the content repository sends a `content_updated` event, or when it is started manually. See [Private content deployment](docs/private-content.md) for setup.
 
 Add these repository secrets under **Settings -> Secrets and variables -> Actions**:
 
@@ -96,11 +82,13 @@ Add these repository secrets under **Settings -> Secrets and variables -> Action
 - `FTP_PASSWORD`
 - `TELEGRAM_BOT_TOKEN` (optional)
 - `TELEGRAM_CHAT_ID` (optional)
+- `PRIVATE_CONTENT_TOKEN`: a fine-grained token with read-only access to the private content repository
 
 Add these required repository variables:
 
 - `FTP_TARGET_DIR`: for example `public_html/`
 - `NEXT_PUBLIC_SITE_URL`: the public site URL used by metadata and production verification
+- `PRIVATE_CONTENT_REPOSITORY`: for example `hgthaii/tblog-content`
 
 Optional repository variables:
 
@@ -116,7 +104,7 @@ Optional repository variables:
 - `NEXT_PUBLIC_INSTAGRAM_URL`
 - `NEXT_PUBLIC_LINKEDIN_URL`
 
-Push to `production`, or manually run the workflow and select the `production` branch. The job has an additional branch guard, so running it from `master` cannot overwrite production.
+Merge a pull request into `master`, push to the private content repository, or manually run the workflow on `master`.
 
 ## Releases and production verification
 
@@ -131,6 +119,8 @@ After upload, the workflow verifies:
 - the live `version.json` matches the current deployment.
 
 Only after verification succeeds does it create a tag and GitHub Release containing the exact deployed archive and its SHA-256 checksum. The currently deployed version is available at `/version.json`.
+
+The release archive is public and contains the final deployed website, including overlaid content. The private repository protects source history and editing workflow, not content that is intentionally published on the website.
 
 ## License
 

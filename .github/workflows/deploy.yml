@@ -3,7 +3,10 @@ name: Deploy to cPanel
 on:
   push:
     branches:
-      - production
+      - master
+  repository_dispatch:
+    types:
+      - content_updated
   workflow_dispatch:
 
 permissions:
@@ -15,7 +18,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/production'
+    if: github.event_name == 'repository_dispatch' || github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_BASE_PATH: ${{ vars.NEXT_PUBLIC_BASE_PATH }}
@@ -30,8 +33,32 @@ jobs:
       NEXT_PUBLIC_LINKEDIN_URL: ${{ vars.NEXT_PUBLIC_LINKEDIN_URL }}
 
     steps:
-      - name: Checkout
+      - name: Checkout template
         uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Checkout private content
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ vars.PRIVATE_CONTENT_REPOSITORY }}
+          ref: ${{ github.event.client_payload.content_sha || 'master' }}
+          token: ${{ secrets.PRIVATE_CONTENT_TOKEN }}
+          path: .private-content
+          persist-credentials: false
+
+      - name: Apply private content
+        run: |
+          test -f .private-content/content/locales/vi.json
+          test -d .private-content/content/posts
+
+          rsync --archive --delete .private-content/content/ content/
+          if [ -d .private-content/public ]; then
+            rsync --archive .private-content/public/ public/
+          fi
+
+          TBL_CONTENT_SHA="$(git -C .private-content rev-parse HEAD)"
+          echo "TBL_CONTENT_SHA=$TBL_CONTENT_SHA" >> "$GITHUB_ENV"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -81,6 +108,7 @@ jobs:
             printf '{\n'
             printf '  "version": "%s",\n' "$TBL_RELEASE_VERSION"
             printf '  "commit": "%s",\n' "$GITHUB_SHA"
+            printf '  "contentCommit": "%s",\n' "$TBL_CONTENT_SHA"
             printf '  "builtAt": "%s"\n' "$TBL_BUILT_AT"
             printf '}\n'
           } > out/version.json
@@ -191,6 +219,7 @@ jobs:
           Site: ${TBL_SITE_URL}
           Branch: ${GITHUB_REF_NAME}
           Commit: ${GITHUB_SHA::7}
+          Content: ${TBL_CONTENT_SHA::7}
           Người deploy: ${GITHUB_ACTOR}
           Release: ${TBL_RELEASE_URL}
           Chi tiết: ${TBL_COMMIT_URL}"
