@@ -1,5 +1,13 @@
 This is a Next.js (App Router) site configured for **static export** so it can be hosted on shared hosting (cPanel) without a backend.
 
+## Branches
+
+- `master` contains reusable sample content for the public open-source template.
+- `production` contains the site owner's content and is the only deployable branch.
+- `dev` is available for feature work.
+
+Merge reusable code changes from `master` into `production` while keeping the production versions of personal content files.
+
 ## Getting Started
 
 Install deps and run the dev server:
@@ -49,7 +57,7 @@ Notes:
 
 ## GitHub Actions deploy to cPanel
 
-This repo includes [`.github/workflows/deploy.yml`](/Users/gpryan/windway/tblog/.github/workflows/deploy.yml:1) to build the static site and upload `out/` to your hosting automatically on every push to `master`.
+This repo includes `.github/workflows/deploy.yml` to build the static site and upload `out/` to your hosting automatically on every push to `production`.
 
 ### 1. Add repository secrets
 
@@ -95,7 +103,7 @@ If you do not set the optional `NEXT_PUBLIC_*` variables, the workflow uses the 
 
 ### 3. Trigger deploy
 
-Push to `master`, or run the workflow manually from the `Actions` tab.
+Push to `production`, or run the workflow manually from the `Actions` tab with `production` selected.
 
 Each successful production deployment creates a version using the format `v<major>.<minor>.<GitHub run number>`. The major and minor values come from `package.json`. For example, package version `0.1.0` and workflow run `42` produce release `v0.1.42`.
 
