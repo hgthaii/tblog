@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title description">
+  <title id="title">Sample profile avatar</title>
+  <desc id="description">An abstract profile silhouette on a dark background</desc>
+  <rect width="256" height="256" rx="64" fill="#181817"/>
+  <circle cx="128" cy="94" r="42" fill="#9a9991"/>
+  <path d="M52 222c4-48 34-76 76-76s72 28 76 76" fill="#9a9991"/>
+  <path d="M28 30h200v196H28z" fill="none" stroke="#d1d0c8" stroke-width="3" stroke-dasharray="10 10" opacity=".36"/>
+</svg>

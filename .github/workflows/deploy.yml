@@ -111,8 +111,8 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ${{ vars.FTP_PROTOCOL }}
-          port: ${{ vars.FTP_PORT }}
+          protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}
+          port: ${{ vars.FTP_PORT || '21' }}
           local-dir: ./deploy-assets/
           server-dir: ${{ vars.FTP_TARGET_DIR }}
           state-name: .ftp-assets-${{ github.run_id }}.json
@@ -126,8 +126,8 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ${{ vars.FTP_PROTOCOL }}
-          port: ${{ vars.FTP_PORT }}
+          protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}
+          port: ${{ vars.FTP_PORT || '21' }}
           local-dir: ./out/
           server-dir: ${{ vars.FTP_TARGET_DIR }}
           state-name: .ftp-deploy-sync-state.json
@@ -178,8 +178,10 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          test -n "$TELEGRAM_BOT_TOKEN"
-          test -n "$TELEGRAM_CHAT_ID"
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+            echo "Telegram notification is not configured; skipping."
+            exit 0
+          fi
 
           TBL_SITE_URL="${NEXT_PUBLIC_SITE_URL%/}"
           TBL_COMMIT_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}"

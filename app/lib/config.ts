@@ -8,24 +8,16 @@ const basePath = rawBasePath
 const withBasePath = (pathname: string) =>
 	`${basePath}${pathname.startsWith('/') ? pathname : `/${pathname}`}`;
 
-const requiredEnv = (name: string, value: string | undefined) => {
-	if (!value) {
-		throw new Error(`${name} is required. Copy .env.example to .env.local and update it.`);
-	}
-
-	return value;
-};
-
 const env = {
-	siteUrl: requiredEnv('NEXT_PUBLIC_SITE_URL', process.env.NEXT_PUBLIC_SITE_URL),
-	cvPdf: requiredEnv('NEXT_PUBLIC_CV_PDF', process.env.NEXT_PUBLIC_CV_PDF),
-	contactEmail: requiredEnv('NEXT_PUBLIC_CONTACT_EMAIL', process.env.NEXT_PUBLIC_CONTACT_EMAIL),
-	profileAvatar: requiredEnv('NEXT_PUBLIC_PROFILE_AVATAR', process.env.NEXT_PUBLIC_PROFILE_AVATAR),
-	socialImage: requiredEnv('NEXT_PUBLIC_SOCIAL_IMAGE', process.env.NEXT_PUBLIC_SOCIAL_IMAGE),
-	favicon: requiredEnv('NEXT_PUBLIC_FAVICON', process.env.NEXT_PUBLIC_FAVICON),
-	githubUrl: requiredEnv('NEXT_PUBLIC_GITHUB_URL', process.env.NEXT_PUBLIC_GITHUB_URL),
-	instagramUrl: requiredEnv('NEXT_PUBLIC_INSTAGRAM_URL', process.env.NEXT_PUBLIC_INSTAGRAM_URL),
-	linkedinUrl: requiredEnv('NEXT_PUBLIC_LINKEDIN_URL', process.env.NEXT_PUBLIC_LINKEDIN_URL),
+	siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com',
+	cvPdf: process.env.NEXT_PUBLIC_CV_PDF || 'https://example.com/cv.pdf',
+	contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'hello@example.com',
+	profileAvatar: process.env.NEXT_PUBLIC_PROFILE_AVATAR || '/avatar.svg',
+	socialImage: process.env.NEXT_PUBLIC_SOCIAL_IMAGE || '/og-image.png',
+	favicon: process.env.NEXT_PUBLIC_FAVICON || '/icon.svg',
+	githubUrl: process.env.NEXT_PUBLIC_GITHUB_URL || 'https://github.com/your-username',
+	instagramUrl: process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com/your-username',
+	linkedinUrl: process.env.NEXT_PUBLIC_LINKEDIN_URL || 'https://linkedin.com/in/your-username',
 };
 
 const withOptionalBasePath = (value: string) =>

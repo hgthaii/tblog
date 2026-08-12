@@ -9,15 +9,15 @@ export const SEO = {
 	},
 	blog: {
 		title: 'Bài viết',
-		description: 'Những bài viết, ghi chú và suy nghĩ của thái. về lập trình, công việc và những ngày đang lặng trôi.',
+		description: 'Những bài viết, ghi chú và suy nghĩ về lập trình, công việc và cuộc sống.',
 	},
 	milestones: {
 		title: 'Cột mốc',
-		description: 'Những cột mốc trong hành trình học tập, làm việc và trưởng thành của thái.',
+		description: 'Những cột mốc trong hành trình học tập, làm việc và trưởng thành.',
 	},
 	cv: {
 		title: 'Bản ghi',
-		description: 'Kinh nghiệm, kỹ năng và hành trình làm nghề của thái. — Backend Developer.',
+		description: 'Kinh nghiệm, kỹ năng và hành trình phát triển nghề nghiệp.',
 	},
 } as const;
 

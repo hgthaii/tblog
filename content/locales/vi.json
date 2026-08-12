@@ -1,7 +1,7 @@
 {
 	"site": {
-		"title": "thái. — một vài âm điệu từ tôi",
-		"description": "gửi tôi cho những ngày vội vã, vài âm điệu đang hối hả... lặng trôi"
+		"title": "tên bạn. — một góc nhỏ trên internet",
+		"description": "nơi lưu lại những dòng viết, cột mốc và điều đáng nhớ"
 	},
 	"nav": {
 		"home": "Trang chủ",
@@ -11,7 +11,7 @@
 	"menu": {
 		"writing": {
 			"label": "Bài viết",
-			"description": "Ít hơn đôi khi lại nhiều hơn"
+			"description": "Những điều bạn muốn lưu lại"
 		},
 		"milestones": {
 			"label": "Cột mốc",
@@ -23,14 +23,14 @@
 		}
 	},
 	"home": {
-		"name": "thái.",
-		"bio": "gửi tôi cho những ngày vội vã\nvài âm điệu đang hối hả...",
+		"name": "tên bạn.",
+		"bio": "lorem ipsum dolor sit amet\nconsectetur adipiscing elit...",
 		"bioDrift": {
-			"anchor": "lặng",
-			"falling": "trôi"
+			"anchor": "lorem",
+			"falling": "ipsum"
 		},
-		"location": "@hgthaii",
-		"copyrightOwner": "thái."
+		"location": "@yourname",
+		"copyrightOwner": "your name."
 	},
 	"blog": {
 		"search": "Tìm bài viết...",
@@ -48,7 +48,7 @@
 			"description": "Trang bạn đang tìm không tồn tại."
 		},
 		"defaults": {
-			"authorName": "không rõ",
+			"authorName": "tác giả",
 			"category": "chưa phân loại"
 		}
 	},
@@ -56,7 +56,7 @@
 		"pageTitle": "Cột mốc",
 		"empty": "Chưa có điểm dừng nào. Có thể thêm một chặng mới trong file nội dung.",
 		"timeline": {
-			"description": "Vài nơi từng đi qua, vài lần học cách bắt đầu lại.\nDừng chân ngẫm lại một chút, để biết mình vẫn đang đi trên những ngày vội vã.",
+			"description": "Một vài cột mốc mẫu trên hành trình của bạn.\nHãy thay nội dung này bằng những câu chuyện thật của riêng mình.",
 			"items": [
 				{
 					"stage": "còn nữa...",
@@ -64,110 +64,33 @@
 					"tags": []
 				},
 				{
-					"stage": "07/2026",
+					"stage": "2025 — hiện tại",
 					"desc": [
-						"Một khoảng dừng cần thiết để nghỉ ngơi, trau dồi lại ngoại ngữ và kiến thức lập trình — sẵn sàng cho những thử thách mới ở chặng đường tiếp theo."
+						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Đây là nơi mô tả công việc hoặc dự án gần nhất của bạn."
 					],
-					"tags": ["Về quê", "Nghỉ ngơi", "Làm mới"]
+					"tags": ["Công việc", "Dự án", "Kỹ năng"]
 				},
 				{
-					"stage": "03/2026 — 06/2026",
+					"stage": "2023 — 2025",
 					"desc": [
-						"Bắt đầu một chương mới trong môi trường mới. Vẫn là những dòng code quen thuộc, nhưng lần này đi kèm nhiều câu hỏi hơn về cách làm nghề sao cho bền vững."
+						"Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Hãy kể ngắn gọn điều bạn đã học được trong giai đoạn này."
 					],
-					"tags": ["Công ty mới", "Tinhvan JSC", "Backend Developer"]
+					"tags": ["Phát triển", "Trải nghiệm"]
 				},
 				{
-					"stage": "03/2025",
+					"stage": "2019 — 2023",
 					"desc": [
-						"Cảm thấy nơi đây không còn đồng đội thân thương, quản lý tốt và phát triển bản thân được nữa nên mình đã quyết định nghỉ việc sau kỳ nghỉ Tết nguyên đán."
+						"Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris. Bạn có thể dùng mục này cho học vấn hoặc điểm khởi đầu."
 					],
-					"tags": ["Nghỉ việc", "VNPT"]
-				},
-				{
-					"stage": "02/2025 — 02/2026",
-					"desc": [
-						"Trở thành thành viên chủ chốt của một dự án lớn — quả ngọt sau những nỗ lực không ngừng nghỉ suốt chặng đường qua."
-					],
-					"tags": ["Key member", "VNPT"]
-				},
-				{
-					"stage": "02/2025",
-					"desc": [
-						"Sau 1 năm cố gắng và cống hiến hết mình thì mình cũng đã được công nhận."
-					],
-					"tags": ["Nhân viên xuất sắc của năm 2024", "VNPT"]
-				},
-				{
-					"stage": "02/2024 — 02/2025",
-					"desc": [
-						"Mình đã là một Kỹ sư lập trình chính thức của VNPT. \nNỗ lực hết sức để cống hiến."
-					],
-					"tags": ["Kỹ sư lập trình", "VNPT"]
-				},
-				{
-					"stage": "12/2023 — 02/2024",
-					"desc": [
-						"Tiếp tục là cơ hội để mình leo tháp lên vị trí Nhân viên chính thức sau khi vượt qua được 11 đối thủ tại VNPT."
-					],
-					"tags": ["Thử việc", "VNPT", "4/12"]
-				},
-				{
-					"stage": "09/2023 — 11/2023",
-					"desc": [
-						"Cơ hội đã mở ra nhờ sự giúp đỡ của các anh/chị trong VNPT khi mình còn thực tập lúc trước."
-					],
-					"tags": ["VNPT", "Cộng tác viên"]
-				},
-				{
-					"stage": "09/2023",
-					"desc": [
-						"Mình tốt nghiệp Đại học loại giỏi với tấm bằng Cử nhân Công nghệ thông tin."
-					],
-					"tags": ["Tốt nghiệp", "3.21"]
-				},
-				{
-					"stage": "08/2023 — 2",
-					"desc": [
-						"Thất vọng khoảng vài ngày thì có 1 công ty F&B ở Gò Vấp gọi phỏng vấn. Buổi phỏng vấn suôn sẻ và mình đã được nhận đi làm ngay ngày hôm sau. \nBằng 1 thế lực nào đó, mình đã xin phép ngưng thực tập chỉ sau 1 ngày làm việc."
-					],
-					"tags": ["Thực tập sinh", "Node.js", "Nest.js"]
-				},
-				{
-					"stage": "08/2023 — 1",
-					"desc": [
-						"Sau khi hoàn thành đồ án tốt nghiệp, mình đã rải CV nhiều nơi. \nMình được 1 công ty ở Tân Bình gọi đến phỏng vấn nhưng đã biết tạch khi ra về vì ngồi gần 2 giờ không trình bày được giải thuật trên giấy."
-					],
-					"tags": ["Lần đầu phỏng vấn", "Node.js", "React Native"]
-				},
-				{
-					"stage": "03/2023 — 07/2023",
-					"desc": [
-						"Quyết định không ký hợp đồng CTV với VNPT và dọn về nhà làm đồ án tốt nghiệp"
-					],
-					"tags": ["Đồ án", "Rủi ro", "3.18"]
-				},
-				{
-					"stage": "11/2022 — 03/2023",
-					"desc": [
-						"Loay hoay không tìm được nơi thực tập. Được trường giới thiệu và hành trình của mình bắt đầu từ đây."
-					],
-					"tags": ["Thực tập sinh", "VNPT"]
-				},
-				{
-					"stage": "09/2019 — 09/2023",
-					"desc": [
-						"Quãng thời gian tập làm quen với những kiến thức mới, những mối quan hệ mới và cảm giác bắt đầu tự đi trên đôi chân mình. \nNhiều thứ đã lùi lại ở quá khứ nhưng sự cố gắng vẫn ở lại đến hiện tại."
-					],
-					"tags": ["Đại học", "Sinh viên", "Bạn bè"]
+					"tags": ["Học tập", "Khởi đầu"]
 				}
 			]
 		}
 	},
 	"cv": {
 		"title": "Bản ghi",
-		"description": "Hành trình, hành trang kỹ năng và những dấu ấn đã qua...",
-		"viewerTitle": "CV của Thái",
+		"description": "Hành trình, kỹ năng và những dấu ấn bạn muốn giới thiệu...",
+		"viewerTitle": "CV của bạn",
 		"openPdf": "Xem CV trên tab mới",
 		"downloadPdf": "Tải PDF",
 		"fallback": "Trình duyệt không thể hiển thị PDF trực tiếp."

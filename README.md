@@ -1,87 +1,110 @@
-This is a Next.js (App Router) site configured for **static export** so it can be hosted on shared hosting (cPanel) without a backend.
+# tblog
 
-## Getting Started
+A minimal, atmospheric personal site and Markdown blog built with Next.js. It includes a responsive home page, writing archive, milestone timeline, CV viewer, route metadata, sitemap, custom error pages, and a static cPanel deployment workflow.
 
-Install deps and run the dev server:
+The project uses the App Router and static export, so the generated `out/` directory can be hosted without a Node.js server.
+
+## Branch model
+
+- `master` is the public template. It contains sample profile data, Lorem Ipsum milestones, example posts, and placeholder links.
+- `production` is intended for the site owner's real content and is the only branch deployed by the included workflow.
+- `dev` can be used for feature work before changes are merged into `master` or `production`.
+
+The `production` branch is still visible when the repository is public. Use a separate private repository if your content must not be publicly accessible in Git history.
+
+## Use this template
+
+Fork the repository or select **Use this template** on GitHub, then clone your copy:
 
 ```bash
+git clone https://github.com/your-username/tblog.git
+cd tblog
 pnpm install
+cp .env.example .env.local
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Environment
+## Personalize the site
 
-Copy `.env.example` to `.env.local` and update links/assets there.
+Update these files:
 
-```bash
-cp .env.example .env.local
+- `content/locales/vi.json`: profile copy, navigation labels, milestones, and CV labels.
+- `content/posts/*.md`: Markdown blog posts. The filename becomes the post slug.
+- `.env.local`: website URL, avatar, CV, email, and social links.
+- `public/avatar.svg`: sample avatar.
+- `public/og-image.png`: default Open Graph image. Keep it at `1200 x 630` for reliable social previews.
+- `public/icon.svg` and `app/favicon.ico`: site icons.
+
+A post uses this frontmatter format:
+
+```md
+---
+title: "My first post"
+createdAt: "01/01/2025"
+authorName: "Your name"
+category: "notes, personal"
+---
+
+Write the post here.
 ```
 
-## Writing posts (Markdown)
+## Create a personal production branch
 
-Add Markdown files under `content/posts/` (example: `content/posts/2026-05-28-welcome.md`).
-
-## Static build (for cPanel)
-
-This repo uses `output: 'export'`, so build generates `out/`.
+Keep the reusable template on `master` and create your content branch once:
 
 ```bash
+git switch -c production
+```
+
+Replace the sample content, commit it, and push the branch:
+
+```bash
+git add .
+git commit -m "Personalize site content"
+git push -u origin production
+```
+
+When template code changes later, merge `master` into `production` and keep the personal versions of your content files when resolving conflicts.
+
+## Quality checks
+
+```bash
+pnpm lint
 pnpm build
 ```
 
-If you deploy to a subfolder (example: `https://domain.com/sub/`), use:
+The static output is written to `out/`.
+
+For a subfolder deployment such as `https://example.com/blog/`, use:
 
 ```bash
-NEXT_PUBLIC_BASE_PATH=/sub pnpm build:path
+NEXT_PUBLIC_BASE_PATH=/blog pnpm build:path
 ```
 
-Then upload `out/` contents to your cPanel `public_html/` (or the domain document root).
+## Automatic cPanel deployment
 
-Subfolder deploy note:
-- For `https://domain.com/sub/`, upload `out/` contents to `public_html/sub/` (including `_next/`).
+The workflow in `.github/workflows/deploy.yml` runs only for the `production` branch. It builds the static site, uploads immutable assets before pages, verifies production, creates a versioned GitHub Release, and can send a Telegram notification.
 
-Notes:
+Add these repository secrets under **Settings -> Secrets and variables -> Actions**:
 
-- This is a fully static site: no Spring Boot / API needed.
-- `next/image` is configured with `images.unoptimized = true` for static hosting.
+- `FTP_SERVER`
+- `FTP_USERNAME`
+- `FTP_PASSWORD`
+- `TELEGRAM_BOT_TOKEN` (optional)
+- `TELEGRAM_CHAT_ID` (optional)
 
-## GitHub Actions deploy to cPanel
+Add these required repository variables:
 
-This repo includes [`.github/workflows/deploy.yml`](/Users/gpryan/windway/tblog/.github/workflows/deploy.yml:1) to build the static site and upload `out/` to your hosting automatically on every push to `master`.
+- `FTP_TARGET_DIR`: for example `public_html/`
+- `NEXT_PUBLIC_SITE_URL`: the public site URL used by metadata and production verification
 
-### 1. Add repository secrets
+Optional repository variables:
 
-GitHub repo -> `Settings` -> `Secrets and variables` -> `Actions` -> `New repository secret`
-
-Create these secrets:
-
-- `FTP_SERVER`: FTP/FTPS host from cPanel
-- `FTP_USERNAME`: FTP account username
-- `FTP_PASSWORD`: FTP account password
-- `TELEGRAM_BOT_TOKEN`: bot token created with BotFather
-- `TELEGRAM_CHAT_ID`: ID of the user, group, or channel that receives deployment notifications
-
-Before the first deployment, open a conversation and send a message to the bot, or add the bot to the target group or channel. Telegram bots cannot initiate conversations with users.
-
-### 2. Add repository variables
-
-GitHub repo -> `Settings` -> `Secrets and variables` -> `Actions` -> `Variables` -> `New repository variable`
-
-Required hosting variables:
-
-- `FTP_TARGET_DIR`: `public_html/` for root domain, or `public_html/sub/` for a subfolder
-
-Optional hosting variables:
-
-- `FTP_PROTOCOL`: default is `ftps`
-- `FTP_PORT`: default is `21`
-
-Optional build variables:
-
-- `NEXT_PUBLIC_BASE_PATH`: leave empty for root deploy, set `/sub` when deploying to `https://domain.com/sub/`
-- `NEXT_PUBLIC_SITE_URL`
+- `FTP_PROTOCOL`: defaults to `ftps`
+- `FTP_PORT`: defaults to `21`
+- `NEXT_PUBLIC_BASE_PATH`
 - `NEXT_PUBLIC_CV_PDF`
 - `NEXT_PUBLIC_CONTACT_EMAIL`
 - `NEXT_PUBLIC_PROFILE_AVATAR`
@@ -91,33 +114,22 @@ Optional build variables:
 - `NEXT_PUBLIC_INSTAGRAM_URL`
 - `NEXT_PUBLIC_LINKEDIN_URL`
 
-If you do not set the optional `NEXT_PUBLIC_*` variables, the workflow uses the current site defaults already baked into the workflow.
+Push to `production`, or manually run the workflow and select the `production` branch. The job has an additional branch guard, so running it from `master` cannot overwrite production.
 
-### 3. Trigger deploy
+## Releases and production verification
 
-Push to `master`, or run the workflow manually from the `Actions` tab.
+Each successful deployment creates a version in the format `v<major>.<minor>.<GitHub run number>`. The major and minor values come from `package.json`.
 
-Each successful production deployment creates a version using the format `v<major>.<minor>.<GitHub run number>`. The major and minor values come from `package.json`. For example, package version `0.1.0` and workflow run `42` produce release `v0.1.42`.
+After upload, the workflow verifies:
 
-After production verification succeeds, the workflow:
+- `robots.txt` points to the production sitemap;
+- the sitemap contains the blog route;
+- the blog page has the expected canonical URL;
+- the Open Graph image is reachable;
+- the live `version.json` matches the current deployment.
 
-- publishes `version.json` with the deployed version, commit, and build timestamp;
-- creates a Git tag for the deployed commit;
-- packages the exact deployed `out/` directory as `tblog-<version>.tar.gz`;
-- generates a SHA-256 checksum;
-- creates a GitHub Release containing the package and checksum;
-- includes the version and release URL in the Telegram notification.
+Only after verification succeeds does it create a tag and GitHub Release containing the exact deployed archive and its SHA-256 checksum. The currently deployed version is available at `/version.json`.
 
-The currently deployed version is available at `/version.json` on the production site.
+## License
 
-### 4. Typical values
-
-For root domain deploy:
-
-- `NEXT_PUBLIC_BASE_PATH`: empty
-- `FTP_TARGET_DIR`: `public_html/`
-
-For subfolder deploy like `https://domain.com/sub/`:
-
-- `NEXT_PUBLIC_BASE_PATH`: `/sub`
-- `FTP_TARGET_DIR`: `public_html/sub/`
+Released under the [MIT License](LICENSE).
