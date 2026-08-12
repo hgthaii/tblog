@@ -8,15 +8,15 @@ export const SEO = {
 		description: SITE_CONFIG.site.description,
 	},
 	blog: {
-		title: content.seo.blog.title,
+		title: content.labels.writing,
 		description: content.seo.blog.description,
 	},
 	milestones: {
-		title: content.seo.milestones.title,
+		title: content.labels.milestones,
 		description: content.seo.milestones.description,
 	},
 	cv: {
-		title: content.seo.cv.title,
+		title: content.labels.cv,
 		description: content.seo.cv.description,
 	},
 } as const;

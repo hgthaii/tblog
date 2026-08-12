@@ -3,17 +3,20 @@
 		"title": "tên bạn. — một góc nhỏ trên internet",
 		"description": "nơi lưu lại những dòng viết, cột mốc và điều đáng nhớ"
 	},
+	"labels": {
+		"home": "Trang chủ",
+		"writing": "Bài viết",
+		"milestones": "Cột mốc",
+		"cv": "Bản ghi"
+	},
 	"seo": {
 		"blog": {
-			"title": "Bài viết",
 			"description": "Những bài viết, ghi chú và suy nghĩ về lập trình, công việc và cuộc sống."
 		},
 		"milestones": {
-			"title": "Cột mốc",
 			"description": "Những cột mốc trong hành trình học tập, làm việc và trưởng thành."
 		},
 		"cv": {
-			"title": "Bản ghi",
 			"description": "Kinh nghiệm, kỹ năng và hành trình phát triển nghề nghiệp."
 		}
 	},
@@ -43,22 +46,14 @@
 		"scrollableTable": "Bảng nội dung có thể cuộn ngang",
 		"pagination": "Phân trang"
 	},
-	"nav": {
-		"home": "Trang chủ",
-		"writing": "Bài viết",
-		"milestones": "Cột mốc"
-	},
 	"menu": {
 		"writing": {
-			"label": "Bài viết",
 			"description": "Những điều bạn muốn lưu lại"
 		},
 		"milestones": {
-			"label": "Cột mốc",
 			"description": "Những đoạn đường đã đi qua"
 		},
 		"cv": {
-			"label": "Bản ghi",
 			"description": "Kinh nghiệm & kỹ năng"
 		}
 	},
@@ -69,8 +64,7 @@
 			"anchor": "lorem",
 			"falling": "ipsum"
 		},
-		"location": "@yourname",
-		"copyrightOwner": "your name."
+		"location": "@yourname"
 	},
 	"blog": {
 		"search": "Tìm bài viết...",
@@ -93,7 +87,6 @@
 		}
 	},
 	"milestones": {
-		"pageTitle": "Cột mốc",
 		"empty": "Chưa có điểm dừng nào. Có thể thêm một chặng mới trong file nội dung.",
 		"timeline": {
 			"description": "Một vài cột mốc mẫu trên hành trình của bạn.\nHãy thay nội dung này bằng những câu chuyện thật của riêng mình.",
@@ -128,7 +121,6 @@
 		}
 	},
 	"cv": {
-		"title": "Bản ghi",
 		"description": "Hành trình, kỹ năng và những dấu ấn bạn muốn giới thiệu...",
 		"viewerTitle": "CV của bạn",
 		"openPdf": "Xem CV trên tab mới",

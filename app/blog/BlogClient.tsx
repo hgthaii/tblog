@@ -57,7 +57,7 @@ export default function BlogClient({ posts }: { posts: Post[] }) {
 	return (
 		<ContentShell active="blog">
 			<div className="w-full max-w-[720px] mx-auto flex flex-col gap-7 sm:gap-9">
-				<h1 className="sr-only">{t('nav.writing')}</h1>
+				<h1 className="sr-only">{t('labels.writing')}</h1>
 				<label className="blog-search w-full md:w-auto md:ml-auto flex items-center gap-2.5">
 						<Search size={15} className="text-muted shrink-0" />
 						<input

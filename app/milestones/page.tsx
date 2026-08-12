@@ -203,11 +203,11 @@ export default function MilestonesPage() {
 		<ContentShell active="milestones">
 			<div className="milestones-page w-full max-w-[720px] mx-auto flex flex-col gap-7 sm:gap-9">
 				<div className="milestones-intro flex flex-col gap-1">
-					<h1 className="page-title">{content.milestones.pageTitle}</h1>
+					<h1 className="page-title">{content.labels.milestones}</h1>
 					<p className="page-subtitle max-w-[720px]">{timeline.description}</p>
 				</div>
 
-				<section className="milestones-timeline" aria-label={content.milestones.pageTitle}>
+				<section className="milestones-timeline" aria-label={content.labels.milestones}>
 					<div ref={mapRef} className="journey-map">
 						<svg className="journey-route journey-route-desktop" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">
 							<path

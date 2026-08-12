@@ -3,17 +3,20 @@
 		"title": "your name. — a quiet corner of the internet",
 		"description": "a place for notes, milestones, and things worth remembering"
 	},
+	"labels": {
+		"home": "Home",
+		"writing": "Writing",
+		"milestones": "Milestones",
+		"cv": "Résumé"
+	},
 	"seo": {
 		"blog": {
-			"title": "Writing",
 			"description": "Articles, notes, and reflections on software, work, and everyday life."
 		},
 		"milestones": {
-			"title": "Milestones",
 			"description": "Milestones from a journey through learning, work, and personal growth."
 		},
 		"cv": {
-			"title": "Résumé",
 			"description": "Experience, skills, and a continuing professional journey."
 		}
 	},
@@ -43,22 +46,14 @@
 		"scrollableTable": "Horizontally scrollable table",
 		"pagination": "Pagination"
 	},
-	"nav": {
-		"home": "Home",
-		"writing": "Writing",
-		"milestones": "Milestones"
-	},
 	"menu": {
 		"writing": {
-			"label": "Writing",
 			"description": "Thoughts you want to keep"
 		},
 		"milestones": {
-			"label": "Milestones",
 			"description": "Places you have been"
 		},
 		"cv": {
-			"label": "Résumé",
 			"description": "Experience & skills"
 		}
 	},
@@ -69,8 +64,7 @@
 			"anchor": "lorem",
 			"falling": "ipsum"
 		},
-		"location": "@yourname",
-		"copyrightOwner": "your name."
+		"location": "@yourname"
 	},
 	"blog": {
 		"search": "Search posts...",
@@ -93,7 +87,6 @@
 		}
 	},
 	"milestones": {
-		"pageTitle": "Milestones",
 		"empty": "No milestones yet. Add a new stop in the locale file.",
 		"timeline": {
 			"description": "A few sample milestones from your journey.\nReplace them with stories of your own.",
@@ -128,7 +121,6 @@
 		}
 	},
 	"cv": {
-		"title": "Résumé",
 		"description": "Your journey, skills, and the work you want to share...",
 		"viewerTitle": "Your résumé",
 		"openPdf": "Open résumé in a new tab",
