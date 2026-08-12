@@ -225,23 +225,54 @@ jobs:
           TBL_SITE_URL="${NEXT_PUBLIC_SITE_URL%/}"
           TBL_COMMIT_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}"
 
-          TBL_MESSAGE="✅ *DEPLOYMENT COMPLETED*
+          html_escape() {
+            printf '%s' "$1" |
+              sed \
+                -e 's/&/\&amp;/g' \
+                -e 's/</\&lt;/g' \
+                -e 's/>/\&gt;/g' \
+                -e 's/"/\&quot;/g'
+          }
 
-          🚀 *Version:* \`${TBL_RELEASE_VERSION}\`
-          🌐 *Site:* ${TBL_SITE_URL}
-          🌿 *Branch:* \`${GITHUB_REF_NAME}\`
-          📌 *Commit SHA:* [${GITHUB_SHA::7}](${TBL_COMMIT_URL})
-          📦 *Content SHA:* \`${TBL_CONTENT_SHA::7}\`
-          👤 *Triggered by:* \`${GITHUB_ACTOR}\`
-          🏷️ *Release:* [View Release](${TBL_RELEASE_URL})"
+          TBL_SITE_URL_HTML="$(html_escape "$TBL_SITE_URL")"
+          TBL_COMMIT_URL_HTML="$(html_escape "$TBL_COMMIT_URL")"
+          TBL_RELEASE_URL_HTML="$(html_escape "$TBL_RELEASE_URL")"
+          TBL_RELEASE_VERSION_HTML="$(html_escape "$TBL_RELEASE_VERSION")"
+          TBL_BRANCH_HTML="$(html_escape "$GITHUB_REF_NAME")"
+          TBL_COMMIT_SHA_HTML="$(html_escape "${GITHUB_SHA::7}")"
+          TBL_CONTENT_SHA_HTML="$(html_escape "${TBL_CONTENT_SHA::7}")"
+          TBL_ACTOR_HTML="$(html_escape "$GITHUB_ACTOR")"
 
-          curl --fail --silent --show-error \
-            --output /dev/null \
+          TBL_MESSAGE="<b>✅ DEPLOYMENT COMPLETED</b>
+
+          🚀 <b>Version:</b> <code>${TBL_RELEASE_VERSION_HTML}</code>
+          🌐 <b>Site:</b> <a href=\"${TBL_SITE_URL_HTML}\">${TBL_SITE_URL_HTML}</a>
+          🌿 <b>Branch:</b> <code>${TBL_BRANCH_HTML}</code>
+          📌 <b>Commit SHA:</b> <a href=\"${TBL_COMMIT_URL_HTML}\">${TBL_COMMIT_SHA_HTML}</a>
+          📦 <b>Content SHA:</b> <code>${TBL_CONTENT_SHA_HTML}</code>
+          👤 <b>Triggered by:</b> <code>${TBL_ACTOR_HTML}</code>
+          🏷️ <b>Release:</b> <a href=\"${TBL_RELEASE_URL_HTML}\">View release</a>"
+
+          TBL_TELEGRAM_RESPONSE="$(mktemp)"
+          trap 'rm -f "$TBL_TELEGRAM_RESPONSE"' EXIT
+
+          if ! curl --fail-with-body --silent --show-error \
+            --output "$TBL_TELEGRAM_RESPONSE" \
             --retry 3 \
-            --retry-all-errors \
             --request POST \
             "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
             --data-urlencode "text=${TBL_MESSAGE}" \
-            --data-urlencode "parse_mode=MarkdownV2" \
-            --data-urlencode "disable_web_page_preview=true"
+            --data-urlencode "parse_mode=HTML" \
+            --data-urlencode "disable_web_page_preview=true"; then
+            node -e '
+              const fs = require("fs");
+              try {
+                const response = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+                console.error(`Telegram API: ${response.description || "Unknown error"}`);
+              } catch {
+                console.error("Telegram API returned an unreadable error response.");
+              }
+            ' "$TBL_TELEGRAM_RESPONSE"
+            exit 1
+          fi
