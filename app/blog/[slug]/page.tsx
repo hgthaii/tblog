@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import MarkdownArticle from '../../components/MarkdownArticle';
 import ContentShell from '../../components/ContentShell';
 import { SITE_CONFIG } from '../../lib/config';
-import { content } from '../../lib/translations';
+import { content } from '../../lib/config';
 import { absoluteAssetUrl, absoluteUrl } from '../../lib/seo';
 import { getPostBySlug, getPostSlugs } from '../../lib/posts';
 
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 		},
 		openGraph: {
 			type: 'article',
-			locale: 'vi_VN',
+			locale: SITE_CONFIG.locale.openGraph,
 			url,
 			title: post.title,
 			description: post.excerpt,
@@ -65,7 +65,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 	const canonicalUrl = absoluteUrl(`/blog/${post.slug}/`);
 	const authorName = post.authorName || SITE_CONFIG.profile.name;
 	const jsonLd = {
-		'@context': 'https://schema.org',
+		'@context': SITE_CONFIG.external.schemaContext,
 		'@type': 'BlogPosting',
 		headline: post.title,
 		description: post.excerpt,

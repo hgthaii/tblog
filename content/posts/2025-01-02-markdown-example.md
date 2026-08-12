@@ -1,27 +1,27 @@
 ---
-title: "Ví dụ trình bày Markdown"
+title: "Markdown formatting example"
 createdAt: "02/01/2025"
-authorName: "tên bạn"
-category: "hướng dẫn, markdown"
+authorName: "your name"
+category: "guide, markdown"
 ---
 
-Bài viết này minh họa các thành phần Markdown đã được thiết kế sẵn trong template.
+This sample demonstrates the Markdown elements already styled by the template.
 
-## Một tiêu đề phụ
+## A section heading
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Một đoạn văn ngắn thường dễ đọc hơn trên cả màn hình web và mobile.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Short paragraphs remain comfortable to read on both desktop and mobile screens.
 
-### Danh sách
+### A list
 
-- Một ý đáng nhớ.
-- Một đường dẫn đến [trang cột mốc](/milestones/).
-- Một câu lệnh như `pnpm build`.
+- One thought worth remembering.
+- A link to the [milestones page](/milestones/).
+- A command such as `pnpm build`.
 
-### Đoạn mã
+### A code block
 
 ```ts
 const greeting = 'hello, world';
 console.log(greeting);
 ```
 
-Bạn có thể xóa cả hai bài mẫu sau khi đã thêm nội dung của riêng mình.
+You can delete both sample posts after adding content of your own.

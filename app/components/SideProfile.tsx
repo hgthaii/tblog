@@ -15,9 +15,9 @@ export default function SideProfile({ active }: { active: SidebarSection }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const profileRef = useRef<HTMLDivElement>(null);
 	const activeLabel = {
-		blog: t('nav.writing'),
-		milestones: t('nav.milestones'),
-		cv: t('menu.cv.label'),
+		blog: t('labels.writing'),
+		milestones: t('labels.milestones'),
+		cv: t('labels.cv'),
 	}[active];
 
 	useEffect(() => {
@@ -83,46 +83,46 @@ export default function SideProfile({ active }: { active: SidebarSection }) {
 				data-state={isOpen ? 'open' : 'closed'}
 				className="profile-popover"
 			>
-				<nav className="profile-orbit" aria-label={t('nav.home')}>
+				<nav className="profile-orbit" aria-label={t('labels.home')}>
 					<TransitionLink
 						href={SITE_CONFIG.routes.home}
 						direction="backward"
 						onNavigate={() => setIsOpen(false)}
-						title={t('nav.home')}
+						title={t('labels.home')}
 						className="profile-menu-item flex w-9 h-9 items-center justify-center text-foreground"
 					>
 						<House size={16} strokeWidth={1.5} />
-						<span className="sr-only">{t('nav.home')}</span>
+						<span className="sr-only">{t('labels.home')}</span>
 					</TransitionLink>
 					<TransitionLink
 						href={SITE_CONFIG.routes.blog}
 						direction="forward"
 						onNavigate={() => setIsOpen(false)}
-						title={t('nav.writing')}
+						title={t('labels.writing')}
 						className={`profile-menu-item flex w-9 h-9 items-center justify-center ${navItemClass('blog')}`}
 					>
 						<NotebookPen size={16} strokeWidth={1.5} />
-						<span className="sr-only">{t('nav.writing')}</span>
+						<span className="sr-only">{t('labels.writing')}</span>
 					</TransitionLink>
 					<TransitionLink
 						href={SITE_CONFIG.routes.milestones}
 						direction="forward"
 						onNavigate={() => setIsOpen(false)}
-						title={t('nav.milestones')}
+						title={t('labels.milestones')}
 						className={`profile-menu-item flex w-9 h-9 items-center justify-center ${navItemClass('milestones')}`}
 					>
 						<Milestone size={16} strokeWidth={1.5} />
-						<span className="sr-only">{t('nav.milestones')}</span>
+						<span className="sr-only">{t('labels.milestones')}</span>
 					</TransitionLink>
 					<TransitionLink
 						href={SITE_CONFIG.routes.cv}
 						direction="forward"
 						onNavigate={() => setIsOpen(false)}
-						title={t('menu.cv.label')}
+						title={t('labels.cv')}
 						className={`profile-menu-item flex w-9 h-9 items-center justify-center ${navItemClass('cv')}`}
 					>
 						<FileText size={16} strokeWidth={1.5} />
-						<span className="sr-only">{t('menu.cv.label')}</span>
+						<span className="sr-only">{t('labels.cv')}</span>
 					</TransitionLink>
 				</nav>
 			</div>

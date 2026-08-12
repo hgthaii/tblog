@@ -4,13 +4,18 @@ A minimal, atmospheric personal site and Markdown blog built with Next.js. It in
 
 The project uses the App Router and static export, so the generated `out/` directory can be hosted without a Node.js server.
 
+## Requirements
+
+- Node.js 22 or newer
+- pnpm 10.25.0 (declared through the `packageManager` field)
+
 ## Branch model
 
 - `master` is the public template. It contains sample profile data, Lorem Ipsum milestones, example posts, and placeholder links.
-- `production` is intended for the site owner's real content and is the only branch deployed by the included workflow.
-- `dev` can be used for feature work before changes are merged into `master` or `production`.
+- `dev` is used for feature work before changes are merged into `master` through a pull request.
+- Personal content is stored in a separate private repository and is applied only during deployment.
 
-The `production` branch is still visible when the repository is public. Use a separate private repository if your content must not be publicly accessible in Git history.
+The included workflow deploys directly from `master`, so no long-lived production branch or cherry-pick step is required.
 
 ## Use this template
 
@@ -30,7 +35,9 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Update these files:
 
-- `content/locales/vi.json`: profile copy, navigation labels, milestones, and CV labels.
+- `app/lib/config.ts`: the single source for routes, environment-backed URLs, locale selection, asset paths, and external protocol constants.
+- `content/locales/en.json`: default English profile copy, navigation labels, milestones, and CV labels.
+- `content/locales/vi.json`: example Vietnamese translation and the expected shape for another locale.
 - `content/posts/*.md`: Markdown blog posts. The filename becomes the post slug.
 - `.env.local`: website URL, avatar, CV, email, and social links.
 - `public/avatar.svg`: sample avatar.
@@ -50,23 +57,11 @@ category: "notes, personal"
 Write the post here.
 ```
 
-## Create a personal production branch
+Keep user-facing copy in the locale JSON files rather than components. Both locale files must retain the same key structure.
 
-Keep the reusable template on `master` and create your content branch once:
+## Store personal content privately
 
-```bash
-git switch -c production
-```
-
-Replace the sample content, commit it, and push the branch:
-
-```bash
-git add .
-git commit -m "Personalize site content"
-git push -u origin production
-```
-
-When template code changes later, merge `master` into `production` and keep the personal versions of your content files when resolving conflicts.
+Keep real profile data, posts, and personal assets in a separate private repository. The deployment workflow overlays them onto the public template immediately before building. Follow [Private content deployment](docs/private-content.md) to configure both repositories.
 
 ## Quality checks
 
@@ -87,7 +82,7 @@ NEXT_PUBLIC_BASE_PATH=/blog pnpm build:path
 
 ## Automatic cPanel deployment
 
-The workflow in `.github/workflows/deploy.yml` runs only for the `production` branch. It builds the static site, uploads immutable assets before pages, verifies production, creates a versioned GitHub Release, and can send a Telegram notification.
+The workflow in `.github/workflows/deploy.yml` deploys the `master` template with content from a separate private repository. It runs after code reaches `master`, when the content repository sends a `content_updated` event, or when it is started manually. See [Private content deployment](docs/private-content.md) for setup.
 
 Add these repository secrets under **Settings -> Secrets and variables -> Actions**:
 
@@ -96,17 +91,21 @@ Add these repository secrets under **Settings -> Secrets and variables -> Action
 - `FTP_PASSWORD`
 - `TELEGRAM_BOT_TOKEN` (optional)
 - `TELEGRAM_CHAT_ID` (optional)
+- `PRIVATE_CONTENT_TOKEN`: a fine-grained token with read-only access to the private content repository
 
 Add these required repository variables:
 
 - `FTP_TARGET_DIR`: for example `public_html/`
 - `NEXT_PUBLIC_SITE_URL`: the public site URL used by metadata and production verification
+- `PRIVATE_CONTENT_REPOSITORY`: for example `your-username/tblog-content`
+- `DEPLOY_ENABLED`: set to `true` only after cPanel and private content deployment are configured
 
 Optional repository variables:
 
 - `FTP_PROTOCOL`: defaults to `ftps`
 - `FTP_PORT`: defaults to `21`
 - `NEXT_PUBLIC_BASE_PATH`
+- `NEXT_PUBLIC_LOCALE`: defaults to `en`; set `vi` when deploying Vietnamese private content
 - `NEXT_PUBLIC_CV_PDF`
 - `NEXT_PUBLIC_CONTACT_EMAIL`
 - `NEXT_PUBLIC_PROFILE_AVATAR`
@@ -116,7 +115,7 @@ Optional repository variables:
 - `NEXT_PUBLIC_INSTAGRAM_URL`
 - `NEXT_PUBLIC_LINKEDIN_URL`
 
-Push to `production`, or manually run the workflow and select the `production` branch. The job has an additional branch guard, so running it from `master` cannot overwrite production.
+Without `DEPLOY_ENABLED=true`, the deployment job is safely skipped. This keeps forks and new template repositories from failing before their deployment settings exist. After configuration, merge a pull request into `master`, push to the private content repository, or manually run the workflow on `master`.
 
 ## Releases and production verification
 
@@ -132,6 +131,10 @@ After upload, the workflow verifies:
 
 Only after verification succeeds does it create a tag and GitHub Release containing the exact deployed archive and its SHA-256 checksum. The currently deployed version is available at `/version.json`.
 
+The release archive is public and contains the final deployed website, including overlaid content. The private repository protects source history and editing workflow, not content that is intentionally published on the website.
+
 ## License
 
 Released under the [MIT License](LICENSE).
+
+Security reports and contributions are covered by [SECURITY.md](SECURITY.md) and [CONTRIBUTING.md](CONTRIBUTING.md).

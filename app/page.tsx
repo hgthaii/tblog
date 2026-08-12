@@ -22,19 +22,19 @@ export default function Home() {
 	const navLinks = [
 		{
 			href: SITE_CONFIG.routes.blog,
-			label: t('menu.writing.label'),
+			label: t('labels.writing'),
 			description: t('menu.writing.description'),
 			icon: NotebookPen,
 		},
 		{
 			href: SITE_CONFIG.routes.milestones,
-			label: t('menu.milestones.label'),
+			label: t('labels.milestones'),
 			description: t('menu.milestones.description'),
 			icon: Milestone,
 		},
 		{
 			href: SITE_CONFIG.routes.cv,
-			label: t('menu.cv.label'),
+			label: t('labels.cv'),
 			description: t('menu.cv.description'),
 			icon: FileText,
 		},
@@ -104,7 +104,7 @@ export default function Home() {
 						</div>
 					</section>
 
-					<nav className="home-nav w-full md:w-[380px] flex flex-col gap-2.5 md:gap-4" aria-label={t('nav.home')}>
+					<nav className="home-nav w-full md:w-[380px] flex flex-col gap-2.5 md:gap-4" aria-label={t('labels.home')}>
 						{navLinks.map((link) => {
 							const Icon = link.icon;
 							const className = 'home-nav-link interactive-card group p-4 sm:p-5 flex items-center justify-between';
@@ -143,7 +143,7 @@ export default function Home() {
 				</div>
 			</div>
 			<footer className="home-footer mt-6">
-				© {new Date().getFullYear()} {content.home.copyrightOwner}
+				© {new Date().getFullYear()} {content.home.name}
 			</footer>
 		</main>
 	);

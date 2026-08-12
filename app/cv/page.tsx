@@ -14,7 +14,7 @@ export default function CvPage() {
 			<div className="w-full max-w-[720px] mx-auto flex flex-col gap-5 sm:gap-6">
 				<header className="flex flex-col gap-1">
 					<div className="flex flex-col gap-1">
-						<h1 className="page-title">{content.cv.title}</h1>
+						<h1 className="page-title">{content.labels.cv}</h1>
 						<p className="page-subtitle max-w-[580px]">{content.cv.description}</p>
 					</div>
 				</header>

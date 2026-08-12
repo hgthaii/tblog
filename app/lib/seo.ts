@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import { SITE_CONFIG } from './config';
+import { content, SITE_CONFIG } from './config';
 
 export const SEO = {
 	home: {
@@ -8,16 +8,16 @@ export const SEO = {
 		description: SITE_CONFIG.site.description,
 	},
 	blog: {
-		title: 'Bài viết',
-		description: 'Những bài viết, ghi chú và suy nghĩ về lập trình, công việc và cuộc sống.',
+		title: content.labels.writing,
+		description: content.seo.blog.description,
 	},
 	milestones: {
-		title: 'Cột mốc',
-		description: 'Những cột mốc trong hành trình học tập, làm việc và trưởng thành.',
+		title: content.labels.milestones,
+		description: content.seo.milestones.description,
 	},
 	cv: {
-		title: 'Bản ghi',
-		description: 'Kinh nghiệm, kỹ năng và hành trình phát triển nghề nghiệp.',
+		title: content.labels.cv,
+		description: content.seo.cv.description,
 	},
 } as const;
 
@@ -43,7 +43,7 @@ export const createPageMetadata = (
 	},
 	openGraph: {
 		type: 'website',
-		locale: 'vi_VN',
+		locale: SITE_CONFIG.locale.openGraph,
 		url: absoluteUrl(pathname),
 		title,
 		description,

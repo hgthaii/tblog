@@ -3,22 +3,57 @@
 		"title": "tên bạn. — một góc nhỏ trên internet",
 		"description": "nơi lưu lại những dòng viết, cột mốc và điều đáng nhớ"
 	},
-	"nav": {
+	"labels": {
 		"home": "Trang chủ",
 		"writing": "Bài viết",
-		"milestones": "Cột mốc"
+		"milestones": "Cột mốc",
+		"cv": "Bản ghi"
+	},
+	"seo": {
+		"blog": {
+			"description": "Những bài viết, ghi chú và suy nghĩ về lập trình, công việc và cuộc sống."
+		},
+		"milestones": {
+			"description": "Những cột mốc trong hành trình học tập, làm việc và trưởng thành."
+		},
+		"cv": {
+			"description": "Kinh nghiệm, kỹ năng và hành trình phát triển nghề nghiệp."
+		}
+	},
+	"errors": {
+		"kicker": "một khoảng lặng ngoài dự tính",
+		"retry": "thử lại",
+		"home": "về trang chủ",
+		"pageNotFound": {
+			"metadataTitle": "Không tìm thấy trang",
+			"title": "trang này đã lặng trôi.",
+			"description": "Có lẽ đường dẫn đã đổi, hoặc nơi này chưa từng tồn tại. Mình quay về nhịp quen thuộc nhé."
+		},
+		"pageError": {
+			"title": "nhịp này vừa bị ngắt.",
+			"description": "Có một lỗi nhỏ khi mở trang. Bạn có thể thử lại, hoặc quay về trang chủ để bắt đầu từ đầu."
+		},
+		"globalError": {
+			"title": "mọi thứ vừa chậm lại một nhịp.",
+			"description": "Trang chưa thể tiếp tục lúc này. Thử tải lại một lần nữa, mình sẽ nối lại đoạn đường còn dang dở."
+		},
+		"postNotFound": {
+			"title": "bài viết này đã lặng trôi.",
+			"description": "Không tìm thấy bài viết bạn đang tìm. Có thể chiếc tên đã đổi, hoặc câu chuyện vẫn chưa được viết ra."
+		}
+	},
+	"accessibility": {
+		"scrollableTable": "Bảng nội dung có thể cuộn ngang",
+		"pagination": "Phân trang"
 	},
 	"menu": {
 		"writing": {
-			"label": "Bài viết",
 			"description": "Những điều bạn muốn lưu lại"
 		},
 		"milestones": {
-			"label": "Cột mốc",
 			"description": "Những đoạn đường đã đi qua"
 		},
 		"cv": {
-			"label": "Bản ghi",
 			"description": "Kinh nghiệm & kỹ năng"
 		}
 	},
@@ -29,8 +64,7 @@
 			"anchor": "lorem",
 			"falling": "ipsum"
 		},
-		"location": "@yourname",
-		"copyrightOwner": "your name."
+		"location": "@yourname"
 	},
 	"blog": {
 		"search": "Tìm bài viết...",
@@ -53,7 +87,6 @@
 		}
 	},
 	"milestones": {
-		"pageTitle": "Cột mốc",
 		"empty": "Chưa có điểm dừng nào. Có thể thêm một chặng mới trong file nội dung.",
 		"timeline": {
 			"description": "Một vài cột mốc mẫu trên hành trình của bạn.\nHãy thay nội dung này bằng những câu chuyện thật của riêng mình.",
@@ -88,7 +121,6 @@
 		}
 	},
 	"cv": {
-		"title": "Bản ghi",
 		"description": "Hành trình, kỹ năng và những dấu ấn bạn muốn giới thiệu...",
 		"viewerTitle": "CV của bạn",
 		"openPdf": "Xem CV trên tab mới",

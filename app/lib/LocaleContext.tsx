@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext } from "react";
-import { content, LocaleContent } from "./translations";
+import { content, LocaleContent } from "./config";
 
 type LocaleContextValue = {
 	content: LocaleContent;

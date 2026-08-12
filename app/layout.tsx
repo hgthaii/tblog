@@ -36,7 +36,7 @@ export const metadata: Metadata = {
 	},
 	openGraph: {
 		type: 'website',
-		locale: 'vi_VN',
+		locale: SITE_CONFIG.locale.openGraph,
 		url: SITE_CONFIG.site.url,
 		title: SITE_CONFIG.site.title,
 		description: SITE_CONFIG.site.description,
@@ -72,7 +72,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="vi">
+		<html lang={SITE_CONFIG.locale.code}>
 			<body className="antialiased">
 				<LocaleProvider>
 					<RouteTransitionMarker />

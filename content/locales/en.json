@@ -1,0 +1,137 @@
+{
+	"site": {
+		"title": "your name. — a quiet corner of the internet",
+		"description": "a place for notes, milestones, and things worth remembering"
+	},
+	"labels": {
+		"home": "Home",
+		"writing": "Writing",
+		"milestones": "Milestones",
+		"cv": "Résumé"
+	},
+	"seo": {
+		"blog": {
+			"description": "Articles, notes, and reflections on software, work, and everyday life."
+		},
+		"milestones": {
+			"description": "Milestones from a journey through learning, work, and personal growth."
+		},
+		"cv": {
+			"description": "Experience, skills, and a continuing professional journey."
+		}
+	},
+	"errors": {
+		"kicker": "an unexpected quiet moment",
+		"retry": "try again",
+		"home": "back home",
+		"pageNotFound": {
+			"metadataTitle": "Page not found",
+			"title": "this page has drifted away.",
+			"description": "The address may have changed, or this place may never have existed. Let us return home."
+		},
+		"pageError": {
+			"title": "the rhythm was interrupted.",
+			"description": "Something went wrong while opening this page. Try again, or return home for a fresh start."
+		},
+		"globalError": {
+			"title": "everything slowed down for a moment.",
+			"description": "The page cannot continue right now. Try loading it again and we will pick up where we left off."
+		},
+		"postNotFound": {
+			"title": "this post has drifted away.",
+			"description": "The post you are looking for could not be found. Its name may have changed, or the story may not have been written yet."
+		}
+	},
+	"accessibility": {
+		"scrollableTable": "Horizontally scrollable table",
+		"pagination": "Pagination"
+	},
+	"menu": {
+		"writing": {
+			"description": "Thoughts you want to keep"
+		},
+		"milestones": {
+			"description": "Places you have been"
+		},
+		"cv": {
+			"description": "Experience & skills"
+		}
+	},
+	"home": {
+		"name": "your name.",
+		"bio": "lorem ipsum dolor sit amet\nconsectetur adipiscing elit...",
+		"bioDrift": {
+			"anchor": "lorem",
+			"falling": "ipsum"
+		},
+		"location": "@yourname"
+	},
+	"blog": {
+		"search": "Search posts...",
+		"noEntries": "No posts found.",
+		"pagination": {
+			"previous": "previous",
+			"next": "next",
+			"page": "page"
+		},
+		"detail": {
+			"readingTimeSuffix": "min read"
+		},
+		"notFound": {
+			"title": "Post not found",
+			"description": "The page you are looking for does not exist."
+		},
+		"defaults": {
+			"authorName": "author",
+			"category": "uncategorized"
+		}
+	},
+	"milestones": {
+		"empty": "No milestones yet. Add a new stop in the locale file.",
+		"timeline": {
+			"description": "A few sample milestones from your journey.\nReplace them with stories of your own.",
+			"items": [
+				{
+					"stage": "more to come...",
+					"desc": [],
+					"tags": []
+				},
+				{
+					"stage": "2025 — present",
+					"desc": [
+						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Describe your latest role or project here."
+					],
+					"tags": ["Work", "Projects", "Skills"]
+				},
+				{
+					"stage": "2023 — 2025",
+					"desc": [
+						"Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Briefly share what you learned during this chapter."
+					],
+					"tags": ["Growth", "Experience"]
+				},
+				{
+					"stage": "2019 — 2023",
+					"desc": [
+						"Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris. Use this entry for education or the beginning of your journey."
+					],
+					"tags": ["Education", "Beginnings"]
+				}
+			]
+		}
+	},
+	"cv": {
+		"description": "Your journey, skills, and the work you want to share...",
+		"viewerTitle": "Your résumé",
+		"openPdf": "Open résumé in a new tab",
+		"downloadPdf": "Download PDF",
+		"fallback": "Your browser cannot display the PDF directly."
+	},
+	"social": {
+		"github": "GitHub",
+		"instagram": "Instagram",
+		"linkedin": "LinkedIn",
+		"email": "Email",
+		"ariaLabel": "Open link"
+	}
+}

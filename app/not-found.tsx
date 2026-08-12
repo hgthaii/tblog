@@ -1,17 +1,18 @@
 import type { Metadata } from 'next';
 
 import ErrorState from './components/ErrorState';
+import { content } from './lib/config';
 
 export const metadata: Metadata = {
-	title: 'Không tìm thấy trang',
+	title: content.errors.pageNotFound.metadataTitle,
 };
 
 export default function NotFound() {
 	return (
 		<ErrorState
 			code="404"
-			title="trang này đã lặng trôi."
-			description="Có lẽ đường dẫn đã đổi, hoặc nơi này chưa từng tồn tại. Mình quay về nhịp quen thuộc nhé."
+			title={content.errors.pageNotFound.title}
+			description={content.errors.pageNotFound.description}
 		/>
 	);
 }
