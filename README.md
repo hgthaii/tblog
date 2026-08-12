@@ -4,6 +4,11 @@ A minimal, atmospheric personal site and Markdown blog built with Next.js. It in
 
 The project uses the App Router and static export, so the generated `out/` directory can be hosted without a Node.js server.
 
+## Requirements
+
+- Node.js 22 or newer
+- pnpm 10.25.0 (declared through the `packageManager` field)
+
 ## Branch model
 
 - `master` is the public template. It contains sample profile data, Lorem Ipsum milestones, example posts, and placeholder links.
@@ -92,7 +97,8 @@ Add these required repository variables:
 
 - `FTP_TARGET_DIR`: for example `public_html/`
 - `NEXT_PUBLIC_SITE_URL`: the public site URL used by metadata and production verification
-- `PRIVATE_CONTENT_REPOSITORY`: for example `hgthaii/tblog-content`
+- `PRIVATE_CONTENT_REPOSITORY`: for example `your-username/tblog-content`
+- `DEPLOY_ENABLED`: set to `true` only after cPanel and private content deployment are configured
 
 Optional repository variables:
 
@@ -109,7 +115,7 @@ Optional repository variables:
 - `NEXT_PUBLIC_INSTAGRAM_URL`
 - `NEXT_PUBLIC_LINKEDIN_URL`
 
-Merge a pull request into `master`, push to the private content repository, or manually run the workflow on `master`.
+Without `DEPLOY_ENABLED=true`, the deployment job is safely skipped. This keeps forks and new template repositories from failing before their deployment settings exist. After configuration, merge a pull request into `master`, push to the private content repository, or manually run the workflow on `master`.
 
 ## Releases and production verification
 
@@ -130,3 +136,5 @@ The release archive is public and contains the final deployed website, including
 ## License
 
 Released under the [MIT License](LICENSE).
+
+Security reports and contributions are covered by [SECURITY.md](SECURITY.md) and [CONTRIBUTING.md](CONTRIBUTING.md).

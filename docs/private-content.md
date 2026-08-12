@@ -4,7 +4,7 @@ The public `tblog` repository contains the reusable English template. Personal c
 
 ## Private repository layout
 
-Create a private repository such as `hgthaii/tblog-content` with this structure:
+Create a private repository such as `your-username/tblog-content` with this structure:
 
 ```text
 content/
@@ -28,7 +28,7 @@ Create a fine-grained personal access token with access to only the private cont
 In the public `tblog` repository, add:
 
 - Actions secret `PRIVATE_CONTENT_TOKEN`: the read-only token.
-- Actions variable `PRIVATE_CONTENT_REPOSITORY`: for example `hgthaii/tblog-content`.
+- Actions variable `PRIVATE_CONTENT_REPOSITORY`: for example `your-username/tblog-content`.
 
 ## Trigger deployment from the private repository
 

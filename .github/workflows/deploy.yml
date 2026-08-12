@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: tblog-production-deploy
@@ -18,8 +18,13 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.event_name == 'repository_dispatch' || github.ref == 'refs/heads/master'
+    if: >-
+      vars.DEPLOY_ENABLED == 'true' &&
+      (github.event_name == 'repository_dispatch' ||
+      github.ref == 'refs/heads/master')
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       NEXT_PUBLIC_BASE_PATH: ${{ vars.NEXT_PUBLIC_BASE_PATH }}
       NEXT_PUBLIC_LOCALE: ${{ vars.NEXT_PUBLIC_LOCALE }}
@@ -35,12 +40,13 @@ jobs:
 
     steps:
       - name: Checkout template
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           ref: ${{ github.sha }}
+          persist-credentials: false
 
       - name: Checkout private content
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           repository: ${{ vars.PRIVATE_CONTENT_REPOSITORY }}
           ref: ${{ github.event.client_payload.content_sha || 'master' }}
@@ -50,7 +56,9 @@ jobs:
 
       - name: Apply private content
         run: |
-          test -f .private-content/content/locales/vi.json
+          TBL_PRIVATE_LOCALE="${NEXT_PUBLIC_LOCALE:-en}"
+
+          test -f ".private-content/content/locales/${TBL_PRIVATE_LOCALE}.json"
           test -d .private-content/content/posts
 
           rsync --archive .private-content/content/locales/ content/locales/
@@ -63,12 +71,12 @@ jobs:
           echo "TBL_CONTENT_SHA=$TBL_CONTENT_SHA" >> "$GITHUB_ENV"
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
           version: 10.25.0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: pnpm
@@ -137,7 +145,7 @@ jobs:
           done
 
       - name: Upload assets before pages
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        uses: SamKirkland/FTP-Deploy-Action@110f9186c050f71550953127052e77650219c287 # v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
@@ -152,7 +160,7 @@ jobs:
             **/.DS_Store
 
       - name: Upload pages and metadata last
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        uses: SamKirkland/FTP-Deploy-Action@110f9186c050f71550953127052e77650219c287 # v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
@@ -216,16 +224,16 @@ jobs:
 
           TBL_SITE_URL="${NEXT_PUBLIC_SITE_URL%/}"
           TBL_COMMIT_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}"
-          TBL_MESSAGE="✅ Deploy hoàn tất
+          TBL_MESSAGE="✅ Deployment completed
 
           Version: ${TBL_RELEASE_VERSION}
           Site: ${TBL_SITE_URL}
           Branch: ${GITHUB_REF_NAME}
           Commit: ${GITHUB_SHA::7}
           Content: ${TBL_CONTENT_SHA::7}
-          Người deploy: ${GITHUB_ACTOR}
+          Triggered by: ${GITHUB_ACTOR}
           Release: ${TBL_RELEASE_URL}
-          Chi tiết: ${TBL_COMMIT_URL}"
+          Details: ${TBL_COMMIT_URL}"
 
           curl --fail --silent --show-error \
             --output /dev/null \

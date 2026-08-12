@@ -18,13 +18,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout content
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
 
       - name: Validate content
         run: |
-          test -f content/locales/vi.json
+          test -d content/locales
           test -d content/posts
-          node -e "JSON.parse(require('fs').readFileSync('content/locales/vi.json', 'utf8'))"
+
+          find content/locales -maxdepth 1 -name '*.json' -print -quit |
+            grep --quiet .
+
+          for locale_file in content/locales/*.json; do
+            node -e \
+              "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" \
+              "$locale_file"
+          done
 
       - name: Dispatch content revision to tblog
         env:
