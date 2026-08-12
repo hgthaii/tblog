@@ -3,7 +3,7 @@ import 'server-only';
 import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
-import { content } from './translations';
+import { content } from './config';
 
 export type PostMeta = {
 	slug: string;

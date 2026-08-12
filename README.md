@@ -30,6 +30,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Update these files:
 
+- `app/lib/config.ts`: the single source for routes, environment-backed URLs, locale selection, asset paths, and external protocol constants.
 - `content/locales/en.json`: default English profile copy, navigation labels, milestones, and CV labels.
 - `content/locales/vi.json`: example Vietnamese translation and the expected shape for another locale.
 - `content/posts/*.md`: Markdown blog posts. The filename becomes the post slug.
@@ -50,6 +51,8 @@ category: "notes, personal"
 
 Write the post here.
 ```
+
+Keep user-facing copy in the locale JSON files rather than components. Both locale files must retain the same key structure.
 
 ## Store personal content privately
 

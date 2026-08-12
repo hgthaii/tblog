@@ -3,6 +3,46 @@
 		"title": "tên bạn. — một góc nhỏ trên internet",
 		"description": "nơi lưu lại những dòng viết, cột mốc và điều đáng nhớ"
 	},
+	"seo": {
+		"blog": {
+			"title": "Bài viết",
+			"description": "Những bài viết, ghi chú và suy nghĩ về lập trình, công việc và cuộc sống."
+		},
+		"milestones": {
+			"title": "Cột mốc",
+			"description": "Những cột mốc trong hành trình học tập, làm việc và trưởng thành."
+		},
+		"cv": {
+			"title": "Bản ghi",
+			"description": "Kinh nghiệm, kỹ năng và hành trình phát triển nghề nghiệp."
+		}
+	},
+	"errors": {
+		"kicker": "một khoảng lặng ngoài dự tính",
+		"retry": "thử lại",
+		"home": "về trang chủ",
+		"pageNotFound": {
+			"metadataTitle": "Không tìm thấy trang",
+			"title": "trang này đã lặng trôi.",
+			"description": "Có lẽ đường dẫn đã đổi, hoặc nơi này chưa từng tồn tại. Mình quay về nhịp quen thuộc nhé."
+		},
+		"pageError": {
+			"title": "nhịp này vừa bị ngắt.",
+			"description": "Có một lỗi nhỏ khi mở trang. Bạn có thể thử lại, hoặc quay về trang chủ để bắt đầu từ đầu."
+		},
+		"globalError": {
+			"title": "mọi thứ vừa chậm lại một nhịp.",
+			"description": "Trang chưa thể tiếp tục lúc này. Thử tải lại một lần nữa, mình sẽ nối lại đoạn đường còn dang dở."
+		},
+		"postNotFound": {
+			"title": "bài viết này đã lặng trôi.",
+			"description": "Không tìm thấy bài viết bạn đang tìm. Có thể chiếc tên đã đổi, hoặc câu chuyện vẫn chưa được viết ra."
+		}
+	},
+	"accessibility": {
+		"scrollableTable": "Bảng nội dung có thể cuộn ngang",
+		"pagination": "Phân trang"
+	},
 	"nav": {
 		"home": "Trang chủ",
 		"writing": "Bài viết",

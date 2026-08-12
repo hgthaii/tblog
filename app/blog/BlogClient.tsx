@@ -6,7 +6,7 @@ import { useLocale } from '../lib/LocaleContext';
 import ContentShell from '../components/ContentShell';
 import TransitionLink from '../components/TransitionLink';
 import { SITE_CONFIG } from '../lib/config';
-import { content } from '../lib/translations';
+import { content } from '../lib/config';
 
 const POSTS_PER_PAGE = 5;
 
@@ -119,7 +119,7 @@ export default function BlogClient({ posts }: { posts: Post[] }) {
 						</div>
 
 						{hasPagination && (
-							<nav className="blog-pagination" aria-label="pagination">
+							<nav className="blog-pagination" aria-label={content.accessibility.pagination}>
 								<button
 									type="button"
 									onClick={() => setPage((current) => Math.max(1, current - 1))}

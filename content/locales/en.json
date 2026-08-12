@@ -3,6 +3,46 @@
 		"title": "your name. — a quiet corner of the internet",
 		"description": "a place for notes, milestones, and things worth remembering"
 	},
+	"seo": {
+		"blog": {
+			"title": "Writing",
+			"description": "Articles, notes, and reflections on software, work, and everyday life."
+		},
+		"milestones": {
+			"title": "Milestones",
+			"description": "Milestones from a journey through learning, work, and personal growth."
+		},
+		"cv": {
+			"title": "Résumé",
+			"description": "Experience, skills, and a continuing professional journey."
+		}
+	},
+	"errors": {
+		"kicker": "an unexpected quiet moment",
+		"retry": "try again",
+		"home": "back home",
+		"pageNotFound": {
+			"metadataTitle": "Page not found",
+			"title": "this page has drifted away.",
+			"description": "The address may have changed, or this place may never have existed. Let us return home."
+		},
+		"pageError": {
+			"title": "the rhythm was interrupted.",
+			"description": "Something went wrong while opening this page. Try again, or return home for a fresh start."
+		},
+		"globalError": {
+			"title": "everything slowed down for a moment.",
+			"description": "The page cannot continue right now. Try loading it again and we will pick up where we left off."
+		},
+		"postNotFound": {
+			"title": "this post has drifted away.",
+			"description": "The post you are looking for could not be found. Its name may have changed, or the story may not have been written yet."
+		}
+	},
+	"accessibility": {
+		"scrollableTable": "Horizontally scrollable table",
+		"pagination": "Pagination"
+	},
 	"nav": {
 		"home": "Home",
 		"writing": "Writing",

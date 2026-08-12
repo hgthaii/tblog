@@ -1,4 +1,26 @@
-import { content, locale, openGraphLocale } from './translations';
+import en from '../../content/locales/en.json';
+import vi from '../../content/locales/vi.json';
+
+export type LocaleCode = 'en' | 'vi';
+export type LocaleContent = typeof en;
+
+const DEFAULTS = {
+	locale: 'en' as LocaleCode,
+	siteUrl: 'https://example.com',
+	cvPdf: 'https://example.com/cv.pdf',
+	contactEmail: 'hello@example.com',
+	profileAvatar: '/avatar.svg',
+	socialImage: '/og-image.png',
+	favicon: '/icon.svg',
+	githubUrl: 'https://github.com/your-username',
+	instagramUrl: 'https://instagram.com/your-username',
+	linkedinUrl: 'https://linkedin.com/in/your-username',
+} as const;
+
+const LOCALES: Record<LocaleCode, LocaleContent> = { en, vi };
+const requestedLocale = process.env.NEXT_PUBLIC_LOCALE;
+export const locale: LocaleCode = requestedLocale === 'vi' ? 'vi' : DEFAULTS.locale;
+export const content = LOCALES[locale];
 
 const rawBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 const basePath = rawBasePath
@@ -9,15 +31,15 @@ const withBasePath = (pathname: string) =>
 	`${basePath}${pathname.startsWith('/') ? pathname : `/${pathname}`}`;
 
 const env = {
-	siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com',
-	cvPdf: process.env.NEXT_PUBLIC_CV_PDF || 'https://example.com/cv.pdf',
-	contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'hello@example.com',
-	profileAvatar: process.env.NEXT_PUBLIC_PROFILE_AVATAR || '/avatar.svg',
-	socialImage: process.env.NEXT_PUBLIC_SOCIAL_IMAGE || '/og-image.png',
-	favicon: process.env.NEXT_PUBLIC_FAVICON || '/icon.svg',
-	githubUrl: process.env.NEXT_PUBLIC_GITHUB_URL || 'https://github.com/your-username',
-	instagramUrl: process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com/your-username',
-	linkedinUrl: process.env.NEXT_PUBLIC_LINKEDIN_URL || 'https://linkedin.com/in/your-username',
+	siteUrl: process.env.NEXT_PUBLIC_SITE_URL || DEFAULTS.siteUrl,
+	cvPdf: process.env.NEXT_PUBLIC_CV_PDF || DEFAULTS.cvPdf,
+	contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL || DEFAULTS.contactEmail,
+	profileAvatar: process.env.NEXT_PUBLIC_PROFILE_AVATAR || DEFAULTS.profileAvatar,
+	socialImage: process.env.NEXT_PUBLIC_SOCIAL_IMAGE || DEFAULTS.socialImage,
+	favicon: process.env.NEXT_PUBLIC_FAVICON || DEFAULTS.favicon,
+	githubUrl: process.env.NEXT_PUBLIC_GITHUB_URL || DEFAULTS.githubUrl,
+	instagramUrl: process.env.NEXT_PUBLIC_INSTAGRAM_URL || DEFAULTS.instagramUrl,
+	linkedinUrl: process.env.NEXT_PUBLIC_LINKEDIN_URL || DEFAULTS.linkedinUrl,
 };
 
 const withOptionalBasePath = (value: string) =>
@@ -25,9 +47,11 @@ const withOptionalBasePath = (value: string) =>
 		? value
 		: withBasePath(value);
 
-const profileName = content.home.name;
-
 export const SITE_CONFIG = {
+	locale: {
+		code: locale,
+		openGraph: locale === 'vi' ? 'vi_VN' : 'en_US',
+	},
 	routes: {
 		home: '/',
 		blog: '/blog',
@@ -37,8 +61,6 @@ export const SITE_CONFIG = {
 	site: {
 		title: content.site.title,
 		description: content.site.description,
-		locale,
-		openGraphLocale,
 		url: env.siteUrl,
 		cvPdf: withOptionalBasePath(env.cvPdf),
 		email: env.contactEmail,
@@ -48,10 +70,13 @@ export const SITE_CONFIG = {
 		favicon: withOptionalBasePath(env.favicon),
 	},
 	profile: {
-		name: profileName,
+		name: content.home.name,
 		avatar: withOptionalBasePath(env.profileAvatar),
 		github: env.githubUrl,
 		instagram: env.instagramUrl,
 		linkedin: env.linkedinUrl,
+	},
+	external: {
+		schemaContext: 'https://schema.org',
 	},
 } as const;

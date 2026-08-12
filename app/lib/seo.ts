@@ -1,9 +1,6 @@
 import type { Metadata } from 'next';
 
-import { SITE_CONFIG } from './config';
-import { locale } from './translations';
-
-const isVietnamese = locale === 'vi';
+import { content, SITE_CONFIG } from './config';
 
 export const SEO = {
 	home: {
@@ -11,16 +8,16 @@ export const SEO = {
 		description: SITE_CONFIG.site.description,
 	},
 	blog: {
-		title: isVietnamese ? 'Bài viết' : 'Writing',
-		description: isVietnamese ? 'Những bài viết, ghi chú và suy nghĩ về lập trình, công việc và cuộc sống.' : 'Articles, notes, and reflections on software, work, and everyday life.',
+		title: content.seo.blog.title,
+		description: content.seo.blog.description,
 	},
 	milestones: {
-		title: isVietnamese ? 'Cột mốc' : 'Milestones',
-		description: isVietnamese ? 'Những cột mốc trong hành trình học tập, làm việc và trưởng thành.' : 'Milestones from a journey through learning, work, and personal growth.',
+		title: content.seo.milestones.title,
+		description: content.seo.milestones.description,
 	},
 	cv: {
-		title: isVietnamese ? 'Bản ghi' : 'Résumé',
-		description: isVietnamese ? 'Kinh nghiệm, kỹ năng và hành trình phát triển nghề nghiệp.' : 'Experience, skills, and a continuing professional journey.',
+		title: content.seo.cv.title,
+		description: content.seo.cv.description,
 	},
 } as const;
 
@@ -46,7 +43,7 @@ export const createPageMetadata = (
 	},
 	openGraph: {
 		type: 'website',
-		locale: SITE_CONFIG.site.openGraphLocale,
+		locale: SITE_CONFIG.locale.openGraph,
 		url: absoluteUrl(pathname),
 		title,
 		description,

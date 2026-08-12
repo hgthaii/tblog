@@ -34,7 +34,7 @@ In the public `tblog` repository, add:
 
 Create a second fine-grained personal access token with access to only the public `tblog` repository and grant `Contents: Read and write`. GitHub requires write-level Contents permission to create a repository dispatch event.
 
-In the private content repository, add the token as the Actions secret `TBLOG_DISPATCH_TOKEN`, then copy [`trigger-tblog-deploy.yml`](content-repository/trigger-tblog-deploy.yml) to `.github/workflows/trigger-tblog-deploy.yml`.
+In the private content repository, add the token as the Actions secret `TBLOG_DISPATCH_TOKEN`, add `TBLOG_REPOSITORY` as an Actions variable using `owner/repository` format, then copy [`trigger-tblog-deploy.yml`](content-repository/trigger-tblog-deploy.yml) to `.github/workflows/trigger-tblog-deploy.yml`.
 
 Every push to the private repository's `master` branch will send the exact content commit SHA to `tblog`. The public deployment workflow checks out `master`, overlays that content revision, builds, verifies production, creates a release, and sends the Telegram notification.
 
