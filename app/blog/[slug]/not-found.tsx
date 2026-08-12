@@ -1,17 +1,11 @@
-'use client';
-
-import ContentShell from '../../components/ContentShell';
-import { useLocale } from '../../lib/LocaleContext';
+import ErrorState from '../../components/ErrorState';
 
 export default function NotFound() {
-	const { content } = useLocale();
-
 	return (
-		<ContentShell active="blog">
-			<div className="interactive-card p-5 sm:p-7 max-w-md w-full">
-				<h1 className="card-title mb-2">{content.blog.notFound.title}</h1>
-				<p className="page-subtitle">{content.blog.notFound.description}</p>
-			</div>
-		</ContentShell>
+		<ErrorState
+			code="404"
+			title="bài viết này đã lặng trôi."
+			description="Không tìm thấy bài viết bạn đang tìm. Có thể chiếc tên đã đổi, hoặc câu chuyện vẫn chưa được viết ra."
+		/>
 	);
 }

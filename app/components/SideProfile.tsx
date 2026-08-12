@@ -87,7 +87,6 @@ export default function SideProfile({ active }: { active: SidebarSection }) {
 					<TransitionLink
 						href={SITE_CONFIG.routes.home}
 						direction="backward"
-						animateProfile={false}
 						onNavigate={() => setIsOpen(false)}
 						title={t('nav.home')}
 						className="profile-menu-item flex w-9 h-9 items-center justify-center text-foreground"
@@ -98,7 +97,6 @@ export default function SideProfile({ active }: { active: SidebarSection }) {
 					<TransitionLink
 						href={SITE_CONFIG.routes.blog}
 						direction="forward"
-						animateProfile={false}
 						onNavigate={() => setIsOpen(false)}
 						title={t('nav.writing')}
 						className={`profile-menu-item flex w-9 h-9 items-center justify-center ${navItemClass('blog')}`}
@@ -109,7 +107,6 @@ export default function SideProfile({ active }: { active: SidebarSection }) {
 					<TransitionLink
 						href={SITE_CONFIG.routes.milestones}
 						direction="forward"
-						animateProfile={false}
 						onNavigate={() => setIsOpen(false)}
 						title={t('nav.milestones')}
 						className={`profile-menu-item flex w-9 h-9 items-center justify-center ${navItemClass('milestones')}`}
@@ -120,7 +117,6 @@ export default function SideProfile({ active }: { active: SidebarSection }) {
 					<TransitionLink
 						href={SITE_CONFIG.routes.cv}
 						direction="forward"
-						animateProfile={false}
 						onNavigate={() => setIsOpen(false)}
 						title={t('menu.cv.label')}
 						className={`profile-menu-item flex w-9 h-9 items-center justify-center ${navItemClass('cv')}`}
