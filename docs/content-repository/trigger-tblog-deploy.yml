@@ -17,6 +17,15 @@ jobs:
   dispatch:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout content
+        uses: actions/checkout@v5
+
+      - name: Validate content
+        run: |
+          test -f content/locales/vi.json
+          test -d content/posts
+          node -e "JSON.parse(require('fs').readFileSync('content/locales/vi.json', 'utf8'))"
+
       - name: Dispatch content revision to tblog
         env:
           GH_TOKEN: ${{ secrets.TBLOG_DISPATCH_TOKEN }}
