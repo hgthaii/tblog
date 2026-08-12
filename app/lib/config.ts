@@ -1,4 +1,4 @@
-import vi from '../../content/locales/vi.json';
+import { content, locale, openGraphLocale } from './translations';
 
 const rawBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 const basePath = rawBasePath
@@ -25,7 +25,7 @@ const withOptionalBasePath = (value: string) =>
 		? value
 		: withBasePath(value);
 
-const profileName = vi.home.name;
+const profileName = content.home.name;
 
 export const SITE_CONFIG = {
 	routes: {
@@ -35,8 +35,10 @@ export const SITE_CONFIG = {
 		cv: '/cv',
 	},
 	site: {
-		title: vi.site.title,
-		description: vi.site.description,
+		title: content.site.title,
+		description: content.site.description,
+		locale,
+		openGraphLocale,
 		url: env.siteUrl,
 		cvPdf: withOptionalBasePath(env.cvPdf),
 		email: env.contactEmail,

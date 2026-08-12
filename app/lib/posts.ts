@@ -3,7 +3,7 @@ import 'server-only';
 import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
-import vi from '../../content/locales/vi.json';
+import { content } from './translations';
 
 export type PostMeta = {
 	slug: string;
@@ -80,7 +80,7 @@ function parseCategories(value: unknown) {
 			.filter(Boolean);
 	}
 
-	return [vi.blog.defaults.category];
+	return [content.blog.defaults.category];
 }
 
 function normalizeFileSlug(filename: string) {

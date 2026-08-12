@@ -30,7 +30,8 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Update these files:
 
-- `content/locales/vi.json`: profile copy, navigation labels, milestones, and CV labels.
+- `content/locales/en.json`: default English profile copy, navigation labels, milestones, and CV labels.
+- `content/locales/vi.json`: example Vietnamese translation and the expected shape for another locale.
 - `content/posts/*.md`: Markdown blog posts. The filename becomes the post slug.
 - `.env.local`: website URL, avatar, CV, email, and social links.
 - `public/avatar.svg`: sample avatar.
@@ -95,6 +96,7 @@ Optional repository variables:
 - `FTP_PROTOCOL`: defaults to `ftps`
 - `FTP_PORT`: defaults to `21`
 - `NEXT_PUBLIC_BASE_PATH`
+- `NEXT_PUBLIC_LOCALE`: defaults to `en`; set `vi` when deploying Vietnamese private content
 - `NEXT_PUBLIC_CV_PDF`
 - `NEXT_PUBLIC_CONTACT_EMAIL`
 - `NEXT_PUBLIC_PROFILE_AVATAR`

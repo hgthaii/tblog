@@ -1,6 +1,6 @@
 # Private content deployment
 
-The public `tblog` repository contains the reusable template. Personal content lives in a separate private repository and is overlaid immediately before the static build.
+The public `tblog` repository contains the reusable English template. Personal content lives in a separate private repository and is overlaid immediately before the static build.
 
 ## Private repository layout
 
@@ -18,6 +18,8 @@ public/
 ```
 
 The `public/` directory is optional. Do not store FTP credentials, Telegram tokens, personal access tokens, or other secrets in this repository.
+
+Set the public repository variable `NEXT_PUBLIC_LOCALE` to `vi` when the private locale is Vietnamese. The English locale remains available from the template, while private posts replace all sample posts during deployment.
 
 ## Allow tblog to read private content
 

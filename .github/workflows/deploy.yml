@@ -22,6 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_BASE_PATH: ${{ vars.NEXT_PUBLIC_BASE_PATH }}
+      NEXT_PUBLIC_LOCALE: ${{ vars.NEXT_PUBLIC_LOCALE }}
       NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
       NEXT_PUBLIC_CV_PDF: ${{ vars.NEXT_PUBLIC_CV_PDF }}
       NEXT_PUBLIC_CONTACT_EMAIL: ${{ vars.NEXT_PUBLIC_CONTACT_EMAIL }}
@@ -52,7 +53,8 @@ jobs:
           test -f .private-content/content/locales/vi.json
           test -d .private-content/content/posts
 
-          rsync --archive --delete .private-content/content/ content/
+          rsync --archive .private-content/content/locales/ content/locales/
+          rsync --archive --delete .private-content/content/posts/ content/posts/
           if [ -d .private-content/public ]; then
             rsync --archive .private-content/public/ public/
           fi
@@ -78,6 +80,7 @@ jobs:
         run: |
           {
             echo "NEXT_PUBLIC_BASE_PATH=$NEXT_PUBLIC_BASE_PATH"
+            echo "NEXT_PUBLIC_LOCALE=$NEXT_PUBLIC_LOCALE"
             echo "NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL"
             echo "NEXT_PUBLIC_CV_PDF=$NEXT_PUBLIC_CV_PDF"
             echo "NEXT_PUBLIC_CONTACT_EMAIL=$NEXT_PUBLIC_CONTACT_EMAIL"

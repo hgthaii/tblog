@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowLeft, RotateCcw } from 'lucide-react';
+import { locale } from '../lib/translations';
 
 type ErrorStateProps = {
 	code: string;
@@ -24,7 +25,7 @@ export default function ErrorState({ code, title, description, onRetry }: ErrorS
 			<section className="error-state" aria-labelledby="error-title">
 				<p className="error-code" aria-hidden="true">{code}</p>
 				<div className="error-copy">
-					<p className="error-kicker">một khoảng lặng ngoài dự tính</p>
+					<p className="error-kicker">{locale === 'vi' ? 'một khoảng lặng ngoài dự tính' : 'an unexpected quiet moment'}</p>
 					<h1 id="error-title">{title}</h1>
 					<p>{description}</p>
 				</div>
@@ -33,12 +34,12 @@ export default function ErrorState({ code, title, description, onRetry }: ErrorS
 					{onRetry && (
 						<button type="button" onClick={onRetry} className="error-action error-action-primary">
 							<RotateCcw size={15} strokeWidth={1.5} />
-							thử lại
+							{locale === 'vi' ? 'thử lại' : 'try again'}
 						</button>
 					)}
 					<Link href="/" className={`error-action ${onRetry ? '' : 'error-action-primary'}`}>
 						<ArrowLeft size={15} strokeWidth={1.5} />
-						về trang chủ
+						{locale === 'vi' ? 'về trang chủ' : 'back home'}
 					</Link>
 				</div>
 			</section>
