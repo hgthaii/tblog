@@ -77,6 +77,8 @@ pnpm build
 
 The static output is written to `out/`.
 
+The `CI` workflow runs the same lint and static-build checks for every pull request targeting `master`. GitHub can require this check before merge through a branch protection rule.
+
 For a subfolder deployment such as `https://example.com/blog/`, use:
 
 ```bash
