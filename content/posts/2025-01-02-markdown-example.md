@@ -3,6 +3,7 @@ title: "Markdown formatting example"
 createdAt: "02/01/2025"
 authorName: "your name"
 category: "guide, markdown"
+order: 2
 ---
 
 This sample demonstrates the Markdown elements already styled by the template.
