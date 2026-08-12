@@ -8,34 +8,36 @@ type LocaleContextValue = {
 	t: (path: string) => string;
 }
 
-const LocaleContext = createContext<LocaleContextValue | undefined>(undefined);
+const translate = (path: string) => {
+	const keys = path.split('.');
+	let result: Record<string, unknown> | string | unknown = content;
 
-export function LocaleProvider({ children }: { children: React.ReactNode }) {
-	const t = (path: string) => {
-		const keys = path.split('.');
-		let result: Record<string, unknown> | string | unknown = content;
-		for (const key of keys) {
-			if (result && typeof result === 'object' && key in result) {
-				result = (result as Record<string, unknown>)[key];
-			} else {
-				return path;
-			}
+	for (const key of keys) {
+		if (result && typeof result === 'object' && key in result) {
+			result = (result as Record<string, unknown>)[key];
+		} else {
+			return path;
 		}
-
-		return typeof result === 'string' ? result : path;
 	}
 
+	return typeof result === 'string' ? result : path;
+};
+
+const defaultLocale: LocaleContextValue = {
+	content,
+	t: translate,
+};
+
+const LocaleContext = createContext<LocaleContextValue>(defaultLocale);
+
+export function LocaleProvider({ children }: { children: React.ReactNode }) {
 	return (
-		<LocaleContext.Provider value={{ content, t }}>
+		<LocaleContext.Provider value={defaultLocale}>
 			{children}
 		</LocaleContext.Provider>
 	);
 }
 
 export function useLocale() {
-	const context = useContext(LocaleContext);
-	if (context === undefined) {
-		throw new Error('useLocale must be used within a LocaleProvider');
-	}
-	return context;
+	return useContext(LocaleContext);
 }

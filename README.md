@@ -60,6 +60,10 @@ Create these secrets:
 - `FTP_SERVER`: FTP/FTPS host from cPanel
 - `FTP_USERNAME`: FTP account username
 - `FTP_PASSWORD`: FTP account password
+- `TELEGRAM_BOT_TOKEN`: bot token created with BotFather
+- `TELEGRAM_CHAT_ID`: ID of the user, group, or channel that receives deployment notifications
+
+Before the first deployment, open a conversation and send a message to the bot, or add the bot to the target group or channel. Telegram bots cannot initiate conversations with users.
 
 ### 2. Add repository variables
 
@@ -92,6 +96,19 @@ If you do not set the optional `NEXT_PUBLIC_*` variables, the workflow uses the 
 ### 3. Trigger deploy
 
 Push to `master`, or run the workflow manually from the `Actions` tab.
+
+Each successful production deployment creates a version using the format `v<major>.<minor>.<GitHub run number>`. The major and minor values come from `package.json`. For example, package version `0.1.0` and workflow run `42` produce release `v0.1.42`.
+
+After production verification succeeds, the workflow:
+
+- publishes `version.json` with the deployed version, commit, and build timestamp;
+- creates a Git tag for the deployed commit;
+- packages the exact deployed `out/` directory as `tblog-<version>.tar.gz`;
+- generates a SHA-256 checksum;
+- creates a GitHub Release containing the package and checksum;
+- includes the version and release URL in the Telegram notification.
+
+The currently deployed version is available at `/version.json` on the production site.
 
 ### 4. Typical values
 

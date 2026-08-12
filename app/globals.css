@@ -18,10 +18,8 @@
 	--radius-sm: 8px;
 	--radius-md: 12px;
 	--radius-lg: 16px;
-	--page-leave-duration: 90ms;
-	--page-enter-duration: 300ms;
-	--avatar-move-duration: 360ms;
-	--avatar-fade-duration: 100ms;
+	--page-leave-duration: 110ms;
+	--page-enter-duration: 240ms;
 }
 
 @theme inline {
@@ -50,6 +48,155 @@ body {
 	margin: 0;
 	min-height: 100vh;
 	overflow-x: hidden;
+}
+
+.error-page {
+	position: relative;
+	display: grid;
+	min-height: 100svh;
+	place-items: center;
+	overflow: hidden;
+	padding: clamp(1.25rem, 4vw, 3rem);
+	isolation: isolate;
+}
+
+.error-page::before {
+	position: absolute;
+	inset: 0;
+	z-index: -2;
+	background:
+		radial-gradient(circle at 25% 22%, rgba(133, 149, 160, 0.07), transparent 34%),
+		radial-gradient(circle at 78% 78%, rgba(145, 132, 117, 0.045), transparent 38%),
+		var(--background);
+	content: '';
+}
+
+.error-page::after {
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E");
+	background-size: 160px;
+	content: '';
+	mix-blend-mode: soft-light;
+	opacity: 0.025;
+}
+
+.error-ambient {
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+}
+
+.error-ambient svg {
+	width: 100%;
+	height: 100%;
+}
+
+.error-ambient path {
+	fill: none;
+	stroke: rgba(236, 235, 230, 0.12);
+	stroke-width: 1.1;
+	stroke-dasharray: 0.012 0.022;
+	stroke-linecap: round;
+	animation: error-route-drift 18s linear infinite;
+}
+
+.error-ambient circle {
+	fill: var(--background);
+	stroke: rgba(236, 235, 230, 0.2);
+	stroke-width: 1.2;
+}
+
+@keyframes error-route-drift {
+	to { stroke-dashoffset: -1; }
+}
+
+.error-state {
+	width: min(100%, 34rem);
+	padding: clamp(1.5rem, 5vw, 2.5rem);
+	border: 1px dashed rgba(236, 235, 230, 0.13);
+	border-radius: var(--radius-lg);
+	background: rgba(35, 35, 34, 0.54);
+	box-shadow: 0 24px 80px rgba(0, 0, 0, 0.14);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+}
+
+.error-code {
+	margin: 0 0 1.6rem;
+	color: var(--heading);
+	font-size: clamp(3.6rem, 13vw, 6.5rem);
+	font-weight: 700;
+	letter-spacing: -0.09em;
+	line-height: 0.78;
+	opacity: 0.1;
+}
+
+.error-kicker {
+	margin: 0 0 0.65rem;
+	color: var(--muted);
+	font-size: 0.65rem;
+	letter-spacing: 0.13em;
+	text-transform: lowercase;
+}
+
+.error-copy h1 {
+	margin: 0;
+	color: var(--heading);
+	font-size: clamp(1.55rem, 5vw, 2rem);
+	font-weight: 650;
+	letter-spacing: -0.045em;
+	line-height: 1.2;
+}
+
+.error-copy > p:last-child {
+	max-width: 29rem;
+	margin: 0.85rem 0 0;
+	color: var(--foreground);
+	font-size: 0.82rem;
+	line-height: 1.75;
+}
+
+.error-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.65rem;
+	margin-top: 1.75rem;
+}
+
+.error-action {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 2.5rem;
+	gap: 0.55rem;
+	padding: 0.6rem 0.85rem;
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
+	background: transparent;
+	color: var(--foreground);
+	font-size: 0.72rem;
+	cursor: pointer;
+	transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.error-action:hover,
+.error-action:focus-visible {
+	border-color: var(--border-strong);
+	background: var(--surface-hover);
+	color: var(--heading);
+}
+
+.error-action:active {
+	transform: scale(0.98);
+}
+
+.error-action-primary {
+	border-color: rgba(236, 235, 230, 0.13);
+	background: var(--surface-raised);
+	color: var(--heading);
 }
 
 button,
@@ -682,6 +829,10 @@ input {
 		transition: none;
 	}
 
+	.error-ambient path {
+		animation: none;
+	}
+
 	.interactive-card,
 	.icon-tile,
 	.icon-button,
@@ -693,16 +844,32 @@ input {
 
 @media (max-width: 639px) {
 	:root {
-		--page-leave-duration: 65ms;
-		--page-enter-duration: 220ms;
-		--avatar-move-duration: 280ms;
-		--avatar-fade-duration: 70ms;
+		--page-leave-duration: 90ms;
+		--page-enter-duration: 200ms;
 	}
 
 	.home-page,
 	.app-shell {
 		padding-right: max(1rem, env(safe-area-inset-right));
 		padding-left: max(1rem, env(safe-area-inset-left));
+	}
+
+	.error-state {
+		padding: 1.5rem;
+		backdrop-filter: blur(7px);
+		-webkit-backdrop-filter: blur(7px);
+	}
+
+	.error-code {
+		margin-bottom: 1.35rem;
+	}
+
+	.error-actions {
+		flex-direction: column;
+	}
+
+	.error-action {
+		width: 100%;
 	}
 
 	.home-page {
@@ -1130,15 +1297,6 @@ input {
 		padding: 0.75rem 1rem;
 	}
 
-	.avatar-transition-overlay {
-		animation: none !important;
-		backface-visibility: hidden;
-		contain: layout style;
-		box-shadow:
-			0 0 0 1px rgba(255, 255, 255, 0.09),
-			0 0 14px 2px rgba(255, 255, 255, 0.07);
-		-webkit-font-smoothing: antialiased;
-	}
 }
 
 @media (hover: none) {
@@ -1301,73 +1459,80 @@ input {
 	border-radius: var(--radius-md);
 }
 
-@keyframes page-leave-forward {
-	to {
-		opacity: 0.45;
-		transform: translateX(-5px) scale(0.998);
-	}
+@keyframes page-curtain-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
 }
 
-@keyframes page-enter-forward {
-	from {
-		opacity: 0.45;
-		transform: translateX(8px) scale(0.998);
-	}
+@keyframes page-curtain-out {
+	from { opacity: 1; }
+	to { opacity: 0; }
 }
 
-@keyframes page-leave-backward {
-	to {
-		opacity: 0.45;
-		transform: translateX(5px) scale(0.998);
-	}
-}
-
-@keyframes page-enter-backward {
-	from {
-		opacity: 0.45;
-		transform: translateX(-8px) scale(0.998);
-	}
-}
-
-html.page-transition-leave-forward body > main:not(.app-shell),
-html.page-transition-leave-forward body > main.app-shell .content-canvas {
-	pointer-events: none;
-	animation: page-leave-forward var(--page-leave-duration) ease-out both;
-}
-
-html.page-transition-enter-forward body > main:not(.app-shell),
-html.page-transition-enter-forward body > main.app-shell .content-canvas {
-	pointer-events: none;
-	animation: page-enter-forward var(--page-enter-duration) cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-html.page-transition-leave-backward body > main:not(.app-shell),
-html.page-transition-leave-backward body > main.app-shell .content-canvas {
-	pointer-events: none;
-	animation: page-leave-backward var(--page-leave-duration) ease-out both;
-}
-
-html.page-transition-enter-backward body > main:not(.app-shell),
-html.page-transition-enter-backward body > main.app-shell .content-canvas {
-	pointer-events: none;
-	animation: page-enter-backward var(--page-enter-duration) cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.avatar-transition-overlay {
+html::after {
 	position: fixed;
-	z-index: 100;
-	margin: 0 !important;
+	inset: 0;
+	z-index: 9999;
+	background: var(--background);
+	content: '';
+	opacity: 0;
 	pointer-events: none;
-	transform-origin: top left;
-	will-change: transform, opacity;
-	transition:
-		transform var(--avatar-move-duration) cubic-bezier(0.22, 1, 0.36, 1),
-		border-radius var(--avatar-move-duration) cubic-bezier(0.22, 1, 0.36, 1),
-		opacity var(--avatar-fade-duration) ease-out;
+	will-change: opacity;
 }
 
-.avatar-transition-target {
-	transition: opacity var(--avatar-fade-duration) ease-out;
+@keyframes route-loading-spin {
+	to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes route-loading-appear {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+html::before {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	z-index: 10000;
+	width: 1.5rem;
+	height: 1.5rem;
+	border: 1px dashed rgba(236, 235, 230, 0.26);
+	border-top-color: var(--heading);
+	border-radius: 999px;
+	content: '';
+	opacity: 0;
+	pointer-events: none;
+	transform: translate(-50%, -50%);
+}
+
+html.route-transition-loading::before {
+	animation:
+		route-loading-appear 120ms ease-out both,
+		route-loading-spin 800ms linear infinite;
+}
+
+html.route-transition-loading::after {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+html.page-transition-leave-forward::after,
+html.page-transition-leave-backward::after {
+	animation: page-curtain-in var(--page-leave-duration) ease-out both;
+	pointer-events: auto;
+}
+
+html.page-transition-enter-forward::after,
+html.page-transition-enter-backward::after {
+	animation: page-curtain-out var(--page-enter-duration) cubic-bezier(0.22, 1, 0.36, 1) both;
+	pointer-events: auto;
+}
+
+html.route-transition-active .avatar-halo,
+html.route-transition-active .journey-route path,
+html.route-transition-active .bio-drift-falling,
+html.route-transition-active .bio-smile {
+	animation-play-state: paused;
 }
 
 @keyframes smile-tilt-right {

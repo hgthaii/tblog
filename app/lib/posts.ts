@@ -10,6 +10,7 @@ export type PostMeta = {
 	title: string;
 	excerpt: string;
 	createdAt: string;
+	publishedAt: string;
 	authorName: string;
 	categories: string[];
 	readingMinutes: number;
@@ -86,6 +87,17 @@ function normalizeFileSlug(filename: string) {
 	return filename.replace(/\.mdx?$/i, '');
 }
 
+function normalizePostDate(value: string) {
+	const vietnameseDate = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value.trim());
+	if (vietnameseDate) {
+		const [, day, month, year] = vietnameseDate;
+		return `${year}-${month}-${day}`;
+	}
+
+	const isoDate = /^(\d{4}-\d{2}-\d{2})/.exec(value.trim());
+	return isoDate?.[1] ?? '';
+}
+
 function toRouteSlug(fileSlug: string) {
 	return fileSlug.replace(DATE_PREFIX_REGEX, '$1');
 }
@@ -115,6 +127,7 @@ function parseFrontmatter(slug: string, raw: string): PostDetail {
 	const title = typeof data.title === 'string' ? data.title : slug;
 	const excerpt = extractExcerpt(parsed.content);
 	const createdAt = typeof data.createdAt === 'string' ? data.createdAt : '';
+	const publishedAt = normalizePostDate(createdAt);
 	const authorName = typeof data.authorName === 'string' ? data.authorName.trim() : '';
 	const categories = parseCategories(data.category);
 	const wordCount = parsed.content.trim().split(/\s+/).filter(Boolean).length;
@@ -125,6 +138,7 @@ function parseFrontmatter(slug: string, raw: string): PostDetail {
 		title,
 		excerpt,
 		createdAt,
+		publishedAt,
 		authorName,
 		categories,
 		readingMinutes,
@@ -156,19 +170,20 @@ export function getAllPosts(): PostMeta[] {
 	const posts = slugs
 		.map((slug) => getPostBySlug(slug))
 		.filter((p): p is PostDetail => Boolean(p))
-		.map(({ slug, title, excerpt, createdAt, authorName, categories, readingMinutes }) => ({
+		.map(({ slug, title, excerpt, createdAt, publishedAt, authorName, categories, readingMinutes }) => ({
 			slug,
 			title,
 			excerpt,
 			createdAt,
+			publishedAt,
 			authorName,
 			categories,
 			readingMinutes,
 		}));
 
 	posts.sort((a, b) => {
-		const ad = Date.parse(a.createdAt) || 0;
-		const bd = Date.parse(b.createdAt) || 0;
+		const ad = Date.parse(a.publishedAt) || 0;
+		const bd = Date.parse(b.publishedAt) || 0;
 		return bd - ad;
 	});
 

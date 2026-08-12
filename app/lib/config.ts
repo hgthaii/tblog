@@ -50,6 +50,7 @@ export const SITE_CONFIG = {
 		email: env.contactEmail,
 		emailHref: `mailto:${env.contactEmail}`,
 		socialImage: withOptionalBasePath(env.socialImage),
+		ogImage: withBasePath('/og-image.png'),
 		favicon: withOptionalBasePath(env.favicon),
 	},
 	profile: {
