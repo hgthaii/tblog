@@ -23,6 +23,11 @@ export default async function Image({
   const { slug } = await params;
   const post = await getPostBySlug(slug);
 
+	const truncate = (text?: string, limit: number = 140) => {
+		if (!text) return '';
+		return text.length > limit ? text.slice(0, limit) + '...' : text;
+	};
+
   return new ImageResponse(
     (
       <div
@@ -39,20 +44,6 @@ export default async function Image({
           position: 'relative',
         }}
       >
-        {/* Subtle Ambient Glow */}
-        <div
-          style={{
-            position: 'absolute',
-            top: -120,
-            left: -120,
-            width: 600,
-            height: 600,
-            borderRadius: '50%',
-            background:
-              'radial-gradient(circle, rgba(255,255,255,0.035) 0%, rgba(18,18,18,0) 70%)',
-          }}
-        />
-
         {/* Card Container matching site's clean border style */}
         <div
           style={{
@@ -64,7 +55,7 @@ export default async function Image({
             border: '1px solid rgba(255, 255, 255, 0.08)',
             borderRadius: '16px',
             padding: '44px 48px',
-            backgroundColor: 'rgba(255, 255, 255, 0.015)',
+            backgroundColor: '#1b1b1a',
           }}
         >
           {/* Top Bar: Author & Site Identity */}
@@ -80,74 +71,48 @@ export default async function Image({
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '10px',
+                gap: '12px',
                 fontSize: 22,
                 color: '#71717a',
               }}
             >
-              <span style={{ color: '#f4f4f5', fontWeight: 600 }}>{SITE_CONFIG.profile.name}</span>
               <span>{content.home.location}</span>
-            </div>
-
-            <div
-              style={{
-                display: 'flex',
-                fontSize: 18,
-                color: '#a1a1aa',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                padding: '4px 12px',
-                borderRadius: '999px',
-                backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              }}
-            >
-              {post?.categories}
             </div>
           </div>
 
-          {/* Middle Content */}
+          {/* Middle Content - Centered Vertically */}
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: 20,
-              margin: '16px 0',
+              justifyContent: 'center', // Căn giữa nội dung theo chiều dọc
+              flexGrow: 1, // Để khu vực này chiếm hết không gian trống giữa Top và Bottom Bar
+              margin: '32px 0',
             }}
           >
-            <div
-              style={{
-                display: 'flex',
-                fontSize: 54,
-                fontWeight: 700,
-                lineHeight: 1.2,
-                color: '#ffffff',
-                maxWidth: '1000px',
-                letterSpacing: '-0.02em',
-              }}
-            >
-              {post?.title}
-            </div>
-
             {post?.quote ? (
               <div
                 style={{
-                  display: 'flex',
-                  fontSize: 24,
-                  color: '#a1a1aa',
-                  maxWidth: '920px',
-                  lineHeight: 1.5,
-                  fontStyle: 'italic',
+									display: 'flex',
+                  fontSize: 48, // Nâng size cực lớn để làm điểm nhấn
+                  fontWeight: 600, // Đậm hơn 1 chút
+                  color: '#ffffff', // Đổi sang trắng sáng
+                  maxWidth: '1000px',
+                  lineHeight: 1.35,
+                  letterSpacing: '-0.01em',
+                  fontStyle: 'italic', // Giữ phong cách quote
                 }}
               >
-                “{post?.quote}”
+                {`“${truncate(post?.quote)}”`}
               </div>
             ) : (
               <div
                 style={{
                   display: 'flex',
-                  fontSize: 22,
-                  color: '#71717a',
-                  maxWidth: '920px',
-                  lineHeight: 1.5,
+                  fontSize: 40,
+                  color: '#e4e4e7',
+                  maxWidth: '1000px',
+                  lineHeight: 1.4,
                 }}
               >
                 {post?.excerpt}
@@ -162,7 +127,7 @@ export default async function Image({
               alignItems: 'center',
               justifyContent: 'space-between',
               borderTop: '1px solid rgba(255, 255, 255, 0.06)',
-              paddingTop: '20px',
+              paddingTop: '24px',
               fontSize: 20,
               color: '#52525b',
             }}
@@ -174,7 +139,7 @@ export default async function Image({
             </div>
 
             <div style={{ display: 'flex', color: '#71717a', fontWeight: 500 }}>
-              {SITE_CONFIG.site.url}
+              {SITE_CONFIG.site.url.replace(/^https?:\/\//, '') /* Bỏ http:// nếu có để domain trông gọn hơn */}
             </div>
           </div>
         </div>
