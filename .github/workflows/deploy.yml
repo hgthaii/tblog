@@ -48,6 +48,8 @@ jobs:
       NEXT_PUBLIC_GITHUB_URL: ${{ vars.NEXT_PUBLIC_GITHUB_URL  }}
       NEXT_PUBLIC_INSTAGRAM_URL: ${{ vars.NEXT_PUBLIC_INSTAGRAM_URL }}
       NEXT_PUBLIC_LINKEDIN_URL: ${{ vars.NEXT_PUBLIC_LINKEDIN_URL }}
+      NEXT_PUBLIC_TRACKING_SRC: ${{ vars.NEXT_PUBLIC_TRACKING_SRC }}
+      NEXT_PUBLIC_TRACKING_WEBSITE_ID: ${{ vars.NEXT_PUBLIC_TRACKING_WEBSITE_ID }}
 
     steps:
       - name: Checkout template
@@ -109,6 +111,8 @@ jobs:
             echo "NEXT_PUBLIC_GITHUB_URL=$NEXT_PUBLIC_GITHUB_URL"
             echo "NEXT_PUBLIC_INSTAGRAM_URL=$NEXT_PUBLIC_INSTAGRAM_URL"
             echo "NEXT_PUBLIC_LINKEDIN_URL=$NEXT_PUBLIC_LINKEDIN_URL"
+            echo "NEXT_PUBLIC_TRACKING_SRC=$NEXT_PUBLIC_TRACKING_SRC"
+            echo "NEXT_PUBLIC_TRACKING_WEBSITE_ID=$NEXT_PUBLIC_TRACKING_WEBSITE_ID"
           } > .env.local
 
       - name: Build static site
@@ -256,13 +260,15 @@ jobs:
 
           TBL_MESSAGE="<b>✅ DEPLOYMENT COMPLETED</b>
 
-          🚀 <b>Version:</b> <code>${TBL_RELEASE_VERSION_HTML}</code>
-          🌐 <b>Site:</b> <a href=\"${TBL_SITE_URL_HTML}\">${TBL_SITE_URL_HTML}</a>
-          🌿 <b>Branch:</b> <code>${TBL_BRANCH_HTML}</code>
-          📌 <b>Commit SHA:</b> <a href=\"${TBL_COMMIT_URL_HTML}\">${TBL_COMMIT_SHA_HTML}</a>
-          📦 <b>Content SHA:</b> <code>${TBL_CONTENT_SHA_HTML}</code>
-          👤 <b>Triggered by:</b> <code>${TBL_ACTOR_HTML}</code>
-          🏷️ <b>Release:</b> <a href=\"${TBL_RELEASE_URL_HTML}\">View release</a>"
+          <pre>
+          🚀 Version: <code>${TBL_RELEASE_VERSION_HTML}</code>
+          🌐 Site: <a href=\"${TBL_SITE_URL_HTML}\">${TBL_SITE_URL_HTML}</a>
+          🌿 Branch: <code>${TBL_BRANCH_HTML}</code>
+          📌 Commit: <a href=\"${TBL_COMMIT_URL_HTML}\">${TBL_COMMIT_SHA_HTML}</a>
+          📦 Content: <code>${TBL_CONTENT_SHA_HTML}</code>
+          👤 Triggered by: <code>${TBL_ACTOR_HTML}</code>
+          🏷️ Release: <a href=\"${TBL_RELEASE_URL_HTML}\">View release</a>
+          </pre>"
 
           TBL_TELEGRAM_RESPONSE="$(mktemp)"
           trap 'rm -f "$TBL_TELEGRAM_RESPONSE"' EXIT
