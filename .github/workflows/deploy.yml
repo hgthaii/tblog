@@ -259,7 +259,6 @@ jobs:
           TBL_ACTOR_HTML="$(html_escape "$GITHUB_ACTOR")"
 
           TBL_MESSAGE="<b>✅ DEPLOYMENT COMPLETED</b>
-
           <pre>
           🚀 Version: <code>${TBL_RELEASE_VERSION_HTML}</code>
           🌐 Site: <a href=\"${TBL_SITE_URL_HTML}\">${TBL_SITE_URL_HTML}</a>
