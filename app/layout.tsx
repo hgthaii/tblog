@@ -79,6 +79,13 @@ export default function RootLayout({
 					{children}
 				</LocaleProvider>
 			</body>
+
+			<script 
+				defer 
+				src={SITE_CONFIG.analytics.umami.src} 
+				data-website-id={SITE_CONFIG.analytics.umami.websiteId}
+			>
+			</script>
 		</html>
 	);
 }
