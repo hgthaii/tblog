@@ -65,6 +65,7 @@ export const metadata: Metadata = {
 
 import { LocaleProvider } from "./lib/LocaleContext";
 import RouteTransitionMarker from "./components/RouteTransitionMarker";
+import Script from "next/script";
 
 export default function RootLayout({
 	children,
@@ -78,12 +79,12 @@ export default function RootLayout({
 					<RouteTransitionMarker />
 					{children}
 				</LocaleProvider>
-				<script 
-					defer 
-					src={SITE_CONFIG.analytics.umami.src} 
-					data-website-id={SITE_CONFIG.analytics.umami.websiteId}
-				>
-				</script>
+				<Script
+          id="umami-analytics"
+          src={SITE_CONFIG.analytics.umami.src}
+          data-website-id={SITE_CONFIG.analytics.umami.websiteId}
+          strategy="afterInteractive"
+        />
 			</body>
 
 			<script 
