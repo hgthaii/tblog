@@ -15,6 +15,8 @@ const DEFAULTS = {
 	githubUrl: 'https://github.com/your-username',
 	instagramUrl: 'https://instagram.com/your-username',
 	linkedinUrl: 'https://linkedin.com/in/your-username',
+	trackingSrc: '',
+	trackingWebsiteId: '',
 } as const;
 
 const LOCALES: Record<LocaleCode, LocaleContent> = { en, vi };
@@ -40,6 +42,8 @@ const env = {
 	githubUrl: process.env.NEXT_PUBLIC_GITHUB_URL || DEFAULTS.githubUrl,
 	instagramUrl: process.env.NEXT_PUBLIC_INSTAGRAM_URL || DEFAULTS.instagramUrl,
 	linkedinUrl: process.env.NEXT_PUBLIC_LINKEDIN_URL || DEFAULTS.linkedinUrl,
+	trackingSrc: process.env.NEXT_PUBLIC_TRACKING_SRC || DEFAULTS.trackingSrc,
+	trackingWebsiteId: process.env.NEXT_PUBLIC_TRACKING_WEBSITE_ID || DEFAULTS.trackingWebsiteId,
 };
 
 const withOptionalBasePath = (value: string) =>
@@ -84,5 +88,11 @@ export const SITE_CONFIG = {
 	},
 	external: {
 		schemaContext: 'https://schema.org',
+	},
+	analytics: {
+		umami: {
+			src: env.trackingSrc,
+			websiteId: env.trackingWebsiteId
+		},
 	},
 } as const;
