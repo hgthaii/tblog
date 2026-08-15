@@ -78,6 +78,12 @@ export default function RootLayout({
 					<RouteTransitionMarker />
 					{children}
 				</LocaleProvider>
+				<script 
+					defer 
+					src={SITE_CONFIG.analytics.umami.src} 
+					data-website-id={SITE_CONFIG.analytics.umami.websiteId}
+				>
+				</script>
 			</body>
 
 			<script 
