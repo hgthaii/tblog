@@ -266,8 +266,9 @@ jobs:
           📌 Commit: <a href=\"${TBL_COMMIT_URL_HTML}\">${TBL_COMMIT_SHA_HTML}</a>
           📦 Content: <code>${TBL_CONTENT_SHA_HTML}</code>
           👤 Triggered by: <code>${TBL_ACTOR_HTML}</code>
-          🏷️ Release: <a href=\"${TBL_RELEASE_URL_HTML}\">View release</a>
-          </pre>"
+          </pre>
+          🏷️ <a href=\"${TBL_RELEASE_URL_HTML}\">View release</a>
+          "
 
           TBL_TELEGRAM_RESPONSE="$(mktemp)"
           trap 'rm -f "$TBL_TELEGRAM_RESPONSE"' EXIT
