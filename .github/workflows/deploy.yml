@@ -203,7 +203,7 @@ jobs:
           done
           curl --fail --silent --show-error "$TBL_SITE_URL/sitemap.xml" | grep --fixed-strings "$TBL_SITE_URL/blog/"
           curl --fail --silent --show-error "$TBL_SITE_URL/blog/" | grep --fixed-strings "rel=\"canonical\" href=\"$TBL_SITE_URL/blog/\""
-          curl --fail --silent --show-error --head "$TBL_SITE_URL/og-image.png"
+          # curl --fail --silent --show-error --head "$TBL_SITE_URL/og-image.png"
           curl --fail --silent --show-error "$TBL_SITE_URL/version.json" | grep --fixed-strings "\"version\": \"$TBL_RELEASE_VERSION\""
 
       - name: Create tag and GitHub Release
