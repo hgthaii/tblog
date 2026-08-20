@@ -46,6 +46,12 @@
 		"scrollableTable": "Horizontally scrollable table",
 		"pagination": "Pagination"
 	},
+	"theme": {
+		"label": "Theme",
+		"switchTo": "Switch to",
+		"light": "light",
+		"dark": "dark"
+	},
 	"menu": {
 		"writing": {
 			"description": "Thoughts you want to keep"

@@ -1,4 +1,6 @@
 import { Particles } from './Particles';
+import type { ParticleMotion } from './Particles';
+import { Fireworks } from './Fireworks';
 
 export interface IconSceneDefinition {
 	hero: string;
@@ -6,6 +8,8 @@ export interface IconSceneDefinition {
 	signature?: string;
 	particles: readonly string[];
 	particleCount?: number;
+	particleMotion?: ParticleMotion;
+	fireworks?: boolean;
 }
 
 export function IconScene({ scene }: { scene: IconSceneDefinition }) {
@@ -21,7 +25,15 @@ export function IconScene({ scene }: { scene: IconSceneDefinition }) {
 				<span className="seasonal-scene-signature">{scene.signature}</span>
 			)}
 			<span className="seasonal-scene-line" />
-			<Particles symbols={scene.particles} count={scene.particleCount} />
+			{scene.fireworks ? (
+				<Fireworks />
+			) : (
+				<Particles
+					symbols={scene.particles}
+					count={scene.particleCount}
+					motion={scene.particleMotion}
+				/>
+			)}
 		</>
 	);
 }

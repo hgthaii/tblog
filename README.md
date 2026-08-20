@@ -19,6 +19,8 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000). Content changes under `content/` and asset changes under `public/` use the normal Next.js development reload; there is no private overlay or second repository.
 
+The color theme follows the visitor's operating-system preference until they use the theme control. That explicit choice is then kept in local storage and applied before the page paints to avoid a theme flash. Pointer-based desktop layouts use the MIT-licensed [`pullcord`](https://www.npmjs.com/package/pullcord) control: drag, click, or focus it and press Enter/Space to switch themes. Touch layouts keep the compact light/dark switch visible. Theme labels are localized under `theme` in both locale files.
+
 The production build is a static site in `out/`:
 
 ```bash
@@ -74,7 +76,7 @@ Important values:
 - `NEXT_PUBLIC_TRACKING_SRC` and `NEXT_PUBLIC_TRACKING_WEBSITE_ID`: enable Umami only when both are set.
 - `NEXT_PUBLIC_SEASONAL_THEME`: `auto`, `none`, a supported celebration, or a season.
 
-In `auto`, celebration themes are active only during the seven calendar days ending on the event date in `Asia/Ho_Chi_Minh`. The supported celebrations are New Year, Lunar New Year, Reunification Day/Labour Day, International Children's Day, National Day, Mid-Autumn Festival, and Christmas. Outside those windows, the site uses its spring, summer, autumn, or winter scene. Decorations remain fixed outside route transitions and respect reduced-motion preferences.
+In `auto`, celebration themes are active only during the seven calendar days ending on the event date in `Asia/Ho_Chi_Minh`. The supported celebrations are New Year, Lunar New Year, Reunification Day/Labour Day, International Children's Day, National Day, Mid-Autumn Festival, and Christmas. Outside those windows, the site uses its spring, summer, autumn, or winter scene. Winter and Christmas use falling snow, Mid-Autumn uses drifting fireflies, Lunar New Year uses minimal fireworks, and the remaining celebrations use flying confetti. Decorations adapt their ink, wash, and icon treatment to the active light or dark color theme, remain fixed outside route transitions, and become static when reduced motion is preferred.
 
 ## Branch and merge model
 

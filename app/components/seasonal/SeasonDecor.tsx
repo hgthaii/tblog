@@ -25,6 +25,8 @@ const SEASON_SCENES: Record<SeasonThemeName, IconSceneDefinition> = {
 		hero: '☃︎',
 		accent: '❄︎',
 		particles: ['❄︎', '·'],
+		particleCount: 10,
+		particleMotion: 'snow',
 	},
 };
 

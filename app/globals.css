@@ -2,7 +2,47 @@
 
 /* Mobile refinements, anchored home bio, and tuned transitions live below. */
 
-:root {
+:root,
+:root[data-theme='light'] {
+	color-scheme: light;
+	--background: #d1d3d1;
+	--surface: #c3c6c3;
+	--surface-subtle: rgba(36, 40, 38, 0.045);
+	--surface-hover: rgba(36, 40, 38, 0.085);
+	--surface-raised: rgba(36, 40, 38, 0.12);
+	--foreground: #555a57;
+	--muted: #6b716d;
+	--spec-text: #3f4441;
+	--heading: #242725;
+	--border: rgba(36, 40, 38, 0.11);
+	--border-strong: rgba(36, 40, 38, 0.2);
+	--code-text: #315647;
+	--selection-background: #aab7b1;
+	--theme-ink: 36 40 38;
+	--theme-shadow: 45 49 47;
+	--seasonal-icon-filter: saturate(0.48) contrast(0.92) brightness(0.82);
+	--seasonal-hero-opacity: 0.27;
+	--seasonal-mobile-hero-opacity: 0.23;
+	--seasonal-accent-opacity: 0.22;
+	--seasonal-mobile-accent-opacity: 0.18;
+	--seasonal-signature-opacity: 0.46;
+	--seasonal-line-opacity: 0.32;
+	--seasonal-mobile-line-opacity: 0.22;
+	--seasonal-particle-rest-opacity: 0.1;
+	--seasonal-particle-peak-opacity: 0.19;
+	--seasonal-particle-tail-opacity: 0.13;
+	--seasonal-effect-rest-opacity: 0.14;
+	--seasonal-effect-peak-opacity: 0.58;
+	--seasonal-effect-tail-opacity: 0.3;
+	--font-site: ui-monospace, "SFMono-Regular", "Cascadia Code", "Roboto Mono", Menlo, Consolas, monospace;
+	--radius-sm: 8px;
+	--radius-md: 12px;
+	--radius-lg: 16px;
+	--route-transition-duration: 140ms;
+}
+
+:root[data-theme='dark'] {
+	color-scheme: dark;
 	--background: #1b1b1a;
 	--surface: #232322;
 	--surface-subtle: rgba(242, 240, 234, 0.025);
@@ -15,11 +55,58 @@
 	--border: rgba(236, 235, 230, 0.08);
 	--border-strong: rgba(236, 235, 230, 0.14);
 	--code-text: #c5dacb;
-	--font-site: ui-monospace, "SFMono-Regular", "Cascadia Code", "Roboto Mono", Menlo, Consolas, monospace;
-	--radius-sm: 8px;
-	--radius-md: 12px;
-	--radius-lg: 16px;
-	--route-transition-duration: 140ms;
+	--selection-background: #5f7087;
+	--theme-ink: 236 235 230;
+	--theme-shadow: 0 0 0;
+	--seasonal-icon-filter: saturate(0.62) contrast(0.92);
+	--seasonal-hero-opacity: 0.32;
+	--seasonal-mobile-hero-opacity: 0.26;
+	--seasonal-accent-opacity: 0.2;
+	--seasonal-mobile-accent-opacity: 0.16;
+	--seasonal-signature-opacity: 0.34;
+	--seasonal-line-opacity: 0.26;
+	--seasonal-mobile-line-opacity: 0.18;
+	--seasonal-particle-rest-opacity: 0.08;
+	--seasonal-particle-peak-opacity: 0.15;
+	--seasonal-particle-tail-opacity: 0.1;
+	--seasonal-effect-rest-opacity: 0.1;
+	--seasonal-effect-peak-opacity: 0.48;
+	--seasonal-effect-tail-opacity: 0.24;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme='light']) {
+		color-scheme: dark;
+		--background: #1b1b1a;
+		--surface: #232322;
+		--surface-subtle: rgba(242, 240, 234, 0.025);
+		--surface-hover: rgba(242, 240, 234, 0.06);
+		--surface-raised: rgba(242, 240, 234, 0.075);
+		--foreground: #9b9a94;
+		--muted: #6f6e69;
+		--spec-text: #ecebe6b2;
+		--heading: #ecebe6;
+		--border: rgba(236, 235, 230, 0.08);
+		--border-strong: rgba(236, 235, 230, 0.14);
+		--code-text: #c5dacb;
+		--selection-background: #5f7087;
+		--theme-ink: 236 235 230;
+		--theme-shadow: 0 0 0;
+		--seasonal-icon-filter: saturate(0.62) contrast(0.92);
+		--seasonal-hero-opacity: 0.32;
+		--seasonal-mobile-hero-opacity: 0.26;
+		--seasonal-accent-opacity: 0.2;
+		--seasonal-mobile-accent-opacity: 0.16;
+		--seasonal-signature-opacity: 0.34;
+		--seasonal-line-opacity: 0.26;
+		--seasonal-mobile-line-opacity: 0.18;
+		--seasonal-particle-rest-opacity: 0.08;
+		--seasonal-particle-peak-opacity: 0.15;
+		--seasonal-particle-tail-opacity: 0.1;
+		--seasonal-effect-rest-opacity: 0.1;
+		--seasonal-effect-peak-opacity: 0.48;
+		--seasonal-effect-tail-opacity: 0.24;
+	}
 }
 
 @theme inline {
@@ -32,8 +119,12 @@
 }
 
 ::selection {
-	background: #5f7087;
+	background: var(--selection-background);
 	color: var(--heading);
+}
+
+html {
+	background: var(--background);
 }
 
 body {
@@ -48,6 +139,96 @@ body {
 	margin: 0;
 	min-height: 100vh;
 	overflow-x: hidden;
+	transition: background-color 180ms ease, color 180ms ease;
+}
+
+.theme-toggle-shell {
+	position: fixed;
+	right: max(0.85rem, env(safe-area-inset-right));
+	bottom: max(1rem, env(safe-area-inset-bottom));
+	z-index: 60;
+	display: flex;
+	align-items: center;
+}
+
+.theme-pullcord {
+	display: none;
+}
+
+.theme-toggle {
+	width: 3.25rem;
+	height: 1.8rem;
+	padding: 0.2rem;
+	border: 1px solid var(--border);
+	border-radius: 999px;
+	background: color-mix(in srgb, var(--surface-raised) 84%, var(--background));
+	box-shadow: 0 8px 22px rgb(var(--theme-shadow) / 0.1);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	cursor: pointer;
+	transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease;
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
+	border-color: var(--border-strong);
+	background: var(--surface-raised);
+	box-shadow: 0 10px 26px rgb(var(--theme-shadow) / 0.14);
+}
+
+.theme-toggle:focus-visible {
+	outline: 2px solid var(--border-strong);
+	outline-offset: 3px;
+}
+
+.theme-toggle:active {
+	transform: scale(0.97);
+}
+
+.theme-toggle-thumb {
+	display: grid;
+	width: 1.3rem;
+	height: 1.3rem;
+	place-items: center;
+	border-radius: 999px;
+	background: var(--heading);
+	box-shadow: 0 2px 7px rgb(var(--theme-shadow) / 0.2);
+	color: var(--background);
+	transform: translateX(0);
+	transition: background-color 180ms ease, color 180ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.theme-toggle-icon {
+	grid-area: 1 / 1;
+	width: 0.72rem;
+	height: 0.72rem;
+	opacity: 0;
+	transform: scale(0.7) rotate(-20deg);
+	transition: opacity 160ms ease, transform 180ms ease;
+}
+
+:root[data-theme='light'] .theme-toggle-icon--light,
+:root[data-theme='dark'] .theme-toggle-icon--dark {
+	opacity: 1;
+	transform: scale(1) rotate(0);
+}
+
+:root[data-theme='dark'] .theme-toggle-thumb {
+	transform: translateX(1.45rem);
+}
+
+@media (min-width: 640px) and (hover: hover) and (pointer: fine) {
+	.theme-toggle-shell {
+		display: none;
+	}
+
+	.theme-pullcord {
+		display: block;
+		--pullcord-top: 0;
+		--pullcord-right: max(0.75rem, calc(env(safe-area-inset-right) + 0.25rem));
+		--pullcord-z: 60;
+		--pullcord-ink: rgb(var(--theme-ink) / 0.34);
+	}
 }
 
 .error-page {
@@ -135,7 +316,7 @@ body {
 }
 
 .error-action-primary {
-	border-color: rgba(236, 235, 230, 0.13);
+	border-color: rgb(var(--theme-ink) / 0.13);
 	background: var(--surface-raised);
 	color: var(--heading);
 }
@@ -195,7 +376,7 @@ input {
 }
 
 .journey-route-line {
-	stroke: rgba(236, 235, 230, 0.22);
+	stroke: rgb(var(--theme-ink) / 0.22);
 	stroke-width: 2.8;
 	stroke-dasharray: 0.012 0.018;
 	animation: journey-route-drift 16s linear infinite;
@@ -377,10 +558,10 @@ input {
 	width: 0.2rem;
 	height: 0.2rem;
 	border-radius: inherit;
-	background: rgba(236, 235, 230, 0.78);
+	background: rgb(var(--theme-ink) / 0.78);
 	box-shadow:
-		0 0 0 1px rgba(236, 235, 230, 0.05),
-		0 0 4px rgba(236, 235, 230, 0.14);
+		0 0 0 1px rgb(var(--theme-ink) / 0.05),
+		0 0 4px rgb(var(--theme-ink) / 0.14);
 	content: '';
 	transform: translate(-50%, -50%);
 }
@@ -461,6 +642,8 @@ input {
 }
 
 .corner-profile {
+	position: relative;
+	z-index: 40;
 	isolation: isolate;
 }
 
@@ -494,8 +677,8 @@ input {
 
 .avatar-halo {
 	box-shadow:
-		0 0 0 1px rgba(255, 255, 255, 0.07),
-		0 0 14px 2px rgba(255, 255, 255, 0.06);
+		0 0 0 1px rgb(var(--theme-ink) / 0.07),
+		0 0 14px 2px rgb(var(--theme-ink) / 0.06);
 	animation: avatar-halo-breathe 7s ease-in-out infinite;
 }
 
@@ -503,19 +686,19 @@ input {
 	0%,
 	100% {
 		box-shadow:
-			0 0 0 1px rgba(255, 255, 255, 0.07),
-			0 0 14px 2px rgba(255, 255, 255, 0.06);
+			0 0 0 1px rgb(var(--theme-ink) / 0.07),
+			0 0 14px 2px rgb(var(--theme-ink) / 0.06);
 	}
 
 	50% {
 		box-shadow:
-			0 0 0 1px rgba(255, 255, 255, 0.1),
-			0 0 18px 3px rgba(255, 255, 255, 0.08);
+			0 0 0 1px rgb(var(--theme-ink) / 0.1),
+			0 0 18px 3px rgb(var(--theme-ink) / 0.08);
 	}
 }
 
 .seasonal-theme {
-	--seasonal-ink: rgba(236, 235, 230, 0.24);
+	--seasonal-ink: rgb(var(--theme-ink) / 0.24);
 	--seasonal-wash: transparent;
 	position: fixed;
 	inset: 0;
@@ -556,6 +739,7 @@ input {
 
 .seasonal-theme--tet {
 	--seasonal-ink: rgba(230, 184, 66, 0.27);
+	--seasonal-firework-color: rgba(230, 184, 66, 0.65);
 	--seasonal-wash: linear-gradient(135deg, rgba(146, 35, 25, 0.038), transparent 50%, rgba(195, 146, 44, 0.025));
 }
 
@@ -584,6 +768,58 @@ input {
 	--seasonal-wash: radial-gradient(circle at 90% 8%, rgba(126, 171, 188, 0.03), transparent 44%);
 }
 
+:root[data-theme='light'] .seasonal-theme--national-day,
+:root[data-theme='light'] .seasonal-theme--reunification-day {
+	--seasonal-ink: rgba(132, 84, 11, 0.46);
+	--seasonal-wash: radial-gradient(circle at 92% 8%, rgba(132, 38, 31, 0.09), transparent 38%);
+}
+
+:root[data-theme='light'] .seasonal-theme--mid-autumn {
+	--seasonal-ink: rgba(119, 76, 18, 0.43);
+	--seasonal-wash: radial-gradient(circle at 90% 10%, rgba(151, 101, 39, 0.085), transparent 40%);
+}
+
+:root[data-theme='light'] .seasonal-theme--christmas {
+	--seasonal-ink: rgba(45, 86, 53, 0.4);
+	--seasonal-wash: linear-gradient(145deg, rgba(43, 83, 59, 0.065), transparent 48%, rgba(122, 38, 32, 0.05));
+}
+
+:root[data-theme='light'] .seasonal-theme--new-year {
+	--seasonal-ink: rgba(106, 78, 21, 0.43);
+	--seasonal-wash: radial-gradient(circle at 80% 12%, rgba(144, 108, 39, 0.075), transparent 42%);
+}
+
+:root[data-theme='light'] .seasonal-theme--tet {
+	--seasonal-ink: rgba(130, 79, 7, 0.44);
+	--seasonal-firework-color: rgba(130, 79, 7, 0.64);
+	--seasonal-wash: linear-gradient(135deg, rgba(137, 38, 31, 0.07), transparent 50%, rgba(158, 111, 29, 0.055));
+}
+
+:root[data-theme='light'] .seasonal-theme--children-day {
+	--seasonal-ink: rgba(32, 94, 91, 0.4);
+	--seasonal-wash: radial-gradient(circle at 88% 10%, rgba(48, 117, 111, 0.065), transparent 42%);
+}
+
+:root[data-theme='light'] .seasonal-theme--spring {
+	--seasonal-ink: rgba(132, 62, 79, 0.39);
+	--seasonal-wash: linear-gradient(135deg, rgba(157, 119, 31, 0.05), transparent 48%, rgba(145, 67, 82, 0.055));
+}
+
+:root[data-theme='light'] .seasonal-theme--summer {
+	--seasonal-ink: rgba(122, 80, 6, 0.42);
+	--seasonal-wash: radial-gradient(circle at 91% 7%, rgba(161, 111, 25, 0.07), transparent 43%);
+}
+
+:root[data-theme='light'] .seasonal-theme--autumn {
+	--seasonal-ink: rgba(122, 53, 27, 0.43);
+	--seasonal-wash: linear-gradient(145deg, rgba(119, 49, 31, 0.06), transparent 50%, rgba(149, 81, 27, 0.065));
+}
+
+:root[data-theme='light'] .seasonal-theme--winter {
+	--seasonal-ink: rgba(49, 87, 99, 0.38);
+	--seasonal-wash: radial-gradient(circle at 90% 8%, rgba(84, 129, 143, 0.065), transparent 44%);
+}
+
 @keyframes seasonal-theme-enter {
 	from { opacity: 0; }
 	to { opacity: 1; }
@@ -600,15 +836,16 @@ input {
 
 .seasonal-scene-icon {
 	position: absolute;
-	filter: saturate(0.62) contrast(0.92);
+	filter: var(--seasonal-icon-filter);
+	transition: filter 180ms ease, opacity 180ms ease;
 	will-change: transform;
 }
 
 .seasonal-scene-icon--hero {
-	right: clamp(1.5rem, 4vw, 3.5rem);
+	right: max(clamp(2rem, 5vw, 4.5rem), calc(env(safe-area-inset-right) + 1rem));
 	bottom: clamp(1.5rem, 5vw, 3.5rem);
 	font-size: clamp(3.6rem, 8vw, 6.8rem);
-	opacity: 0.32;
+	opacity: var(--seasonal-hero-opacity);
 	transform: rotate(-4deg);
 	animation: seasonal-icon-drift 16s ease-in-out infinite;
 }
@@ -623,6 +860,14 @@ input {
 	bottom: auto;
 }
 
+.seasonal-theme--national-day .seasonal-scene-icon--hero,
+.seasonal-theme--mid-autumn .seasonal-scene-icon--hero,
+.seasonal-theme--new-year .seasonal-scene-icon--hero,
+.seasonal-theme--tet .seasonal-scene-icon--hero,
+.seasonal-theme--reunification-day .seasonal-scene-icon--hero {
+	right: max(clamp(3rem, 7vw, 6rem), calc(env(safe-area-inset-right) + 1.5rem));
+}
+
 .seasonal-theme--new-year .seasonal-scene-icon--hero,
 .seasonal-theme--winter .seasonal-scene-icon--hero {
 	color: var(--seasonal-ink);
@@ -635,21 +880,22 @@ input {
 	left: clamp(1rem, 4vw, 3rem);
 	color: var(--seasonal-ink);
 	font-size: clamp(1.7rem, 4vw, 3rem);
-	opacity: 0.2;
+	opacity: var(--seasonal-accent-opacity);
 	transform: rotate(7deg);
 	animation: seasonal-accent-drift 18s ease-in-out infinite;
 }
 
 .seasonal-scene-signature {
 	position: absolute;
-	right: clamp(1.5rem, 4vw, 3.5rem);
+	right: max(clamp(2rem, 5vw, 4.5rem), calc(env(safe-area-inset-right) + 1rem));
 	bottom: clamp(7rem, 14vw, 11rem);
 	color: var(--seasonal-ink);
 	font-family: var(--font-mono);
 	font-size: clamp(0.65rem, 1.2vw, 0.85rem);
 	font-weight: 500;
 	letter-spacing: 0.16em;
-	opacity: 0.34;
+	opacity: var(--seasonal-signature-opacity);
+	transition: color 180ms ease, opacity 180ms ease;
 }
 
 .seasonal-theme--national-day .seasonal-scene-signature,
@@ -667,7 +913,8 @@ input {
 	height: 7rem;
 	border-top: 1px solid var(--seasonal-ink);
 	border-radius: 50%;
-	opacity: 0.26;
+	opacity: var(--seasonal-line-opacity);
+	transition: border-color 180ms ease, opacity 180ms ease;
 	transform: rotate(-5deg);
 }
 
@@ -677,9 +924,62 @@ input {
 	left: var(--seasonal-x);
 	color: var(--seasonal-ink);
 	font-size: var(--seasonal-size);
-	opacity: 0.13;
-	filter: saturate(0.55);
-	animation: seasonal-symbol-fall var(--seasonal-duration) var(--seasonal-delay) ease-in-out infinite;
+	opacity: var(--seasonal-particle-rest-opacity);
+	filter: var(--seasonal-icon-filter);
+	transition: color 180ms ease, filter 180ms ease;
+	animation: seasonal-symbol-drift var(--seasonal-duration) var(--seasonal-delay) ease-in-out infinite;
+}
+
+.seasonal-scene-particle--snow {
+	animation-name: seasonal-snow-fall;
+	animation-timing-function: linear;
+}
+
+.seasonal-scene-particle--firefly {
+	width: 0.22rem;
+	height: 0.22rem;
+	border-radius: 999px;
+	background: currentColor;
+	box-shadow: 0 0 0.6rem currentColor;
+	font-size: 0;
+	filter: none;
+	animation-name: seasonal-firefly-drift;
+}
+
+.seasonal-scene-particle--confetti {
+	font-family: var(--font-mono);
+	font-weight: 700;
+	animation-name: seasonal-confetti-fall;
+	animation-timing-function: linear;
+}
+
+.seasonal-fireworks {
+	position: absolute;
+	inset: 0;
+}
+
+.seasonal-firework {
+	position: absolute;
+	top: var(--firework-y);
+	left: var(--firework-x);
+	width: var(--firework-size);
+	height: var(--firework-size);
+	color: var(--seasonal-firework-color, var(--seasonal-ink));
+	transform: translate(-50%, -50%);
+}
+
+.seasonal-firework-ray {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 0.2rem;
+	height: 0.2rem;
+	border-radius: 999px;
+	background: currentColor;
+	box-shadow: 0 0 0.45rem currentColor;
+	opacity: 0;
+	transform: rotate(var(--firework-angle)) translateY(0) scale(0.2);
+	animation: seasonal-firework-burst 6.2s var(--firework-delay) ease-out infinite;
 }
 
 @keyframes seasonal-icon-drift {
@@ -692,10 +992,52 @@ input {
 	50% { transform: rotate(6deg) translateY(-0.18rem); }
 }
 
-@keyframes seasonal-symbol-fall {
-	0%, 100% { opacity: 0.08; transform: translate(0, 0) rotate(0); }
-	45% { opacity: 0.15; transform: translate(0.2rem, 0.4rem) rotate(7deg); }
-	75% { opacity: 0.1; transform: translate(-0.08rem, 0.7rem) rotate(12deg); }
+@keyframes seasonal-symbol-drift {
+	0%, 100% { opacity: var(--seasonal-particle-rest-opacity); transform: translate(0, 0) rotate(0); }
+	45% { opacity: var(--seasonal-particle-peak-opacity); transform: translate(0.2rem, 0.4rem) rotate(7deg); }
+	75% { opacity: var(--seasonal-particle-tail-opacity); transform: translate(-0.08rem, 0.7rem) rotate(12deg); }
+}
+
+@keyframes seasonal-snow-fall {
+	0% { opacity: 0; transform: translate3d(0, -12vh, 0) rotate(0); }
+	12% { opacity: var(--seasonal-effect-peak-opacity); }
+	82% { opacity: var(--seasonal-effect-tail-opacity); }
+	100% { opacity: 0; transform: translate3d(var(--seasonal-sway), 24vh, 0) rotate(120deg); }
+}
+
+@keyframes seasonal-firefly-drift {
+	0%, 100% { opacity: 0.12; transform: translate3d(0, 0, 0) scale(0.72); }
+	28% { opacity: 0.76; transform: translate3d(var(--seasonal-sway), -0.7rem, 0) scale(1); }
+	56% { opacity: 0.24; transform: translate3d(-0.35rem, 0.45rem, 0) scale(0.82); }
+	78% { opacity: 0.64; transform: translate3d(0.55rem, -0.2rem, 0) scale(0.94); }
+}
+
+@keyframes seasonal-confetti-fall {
+	0% { opacity: 0; transform: translate3d(0, -10vh, 0) rotate(0); }
+	12% { opacity: var(--seasonal-effect-peak-opacity); }
+	82% { opacity: var(--seasonal-effect-tail-opacity); }
+	100% { opacity: 0; transform: translate3d(var(--seasonal-confetti-sway), 28vh, 0) rotate(var(--seasonal-rotation)); }
+}
+
+@keyframes seasonal-firework-burst {
+	0%, 18%, 100% {
+		opacity: 0;
+		transform: rotate(var(--firework-angle)) translateY(0) scale(0.2);
+	}
+
+	28% {
+		opacity: var(--seasonal-effect-peak-opacity);
+	}
+
+	48% {
+		opacity: var(--seasonal-effect-tail-opacity);
+		transform: rotate(var(--firework-angle)) translateY(var(--firework-distance)) scale(1);
+	}
+
+	62% {
+		opacity: 0;
+		transform: rotate(var(--firework-angle)) translateY(var(--firework-fade-distance)) scale(0.72);
+	}
 }
 
 .profile-popover {
@@ -721,7 +1063,7 @@ input {
 	left: 0.35rem;
 	width: 10.9rem;
 	height: 5.9rem;
-	border: 1px dashed rgba(236, 235, 230, 0.08);
+	border: 1px dashed rgb(var(--theme-ink) / 0.08);
 	border-radius: 999px;
 	content: '';
 	opacity: 0;
@@ -755,8 +1097,8 @@ input {
 	background: var(--surface);
 	border-radius: 999px;
 	box-shadow:
-		inset 0 0 0 1px rgba(236, 235, 230, 0.035),
-		0 8px 22px rgba(0, 0, 0, 0.12);
+		inset 0 0 0 1px rgb(var(--theme-ink) / 0.035),
+		0 8px 22px rgb(var(--theme-shadow) / 0.12);
 	opacity: 0;
 	transform: translate(0, 0) scale(0.58);
 	transition:
@@ -906,6 +1248,9 @@ input {
 @media (prefers-reduced-motion: reduce) {
 	.seasonal-theme,
 	.seasonal-theme *,
+	body,
+	.theme-toggle-shell,
+	.theme-toggle,
 	.route-transition-frame,
 	.profile-popover,
 	.avatar-halo,
@@ -926,6 +1271,11 @@ input {
 		transition: none;
 	}
 
+	.seasonal-firework-ray {
+		opacity: var(--seasonal-effect-tail-opacity);
+		transform: rotate(var(--firework-angle)) translateY(var(--firework-distance)) scale(0.72);
+	}
+
 	::view-transition-old(*),
 	::view-transition-new(*),
 	::view-transition-group(*) {
@@ -936,10 +1286,18 @@ input {
 
 @media (max-width: 639px) {
 	.seasonal-scene-icon--hero {
-		right: -0.25rem;
+		right: max(0.85rem, calc(env(safe-area-inset-right) + 0.5rem));
 		bottom: 1.25rem;
 		font-size: 4.25rem;
-		opacity: 0.26;
+		opacity: var(--seasonal-mobile-hero-opacity);
+	}
+
+	.seasonal-theme--national-day .seasonal-scene-icon--hero,
+	.seasonal-theme--mid-autumn .seasonal-scene-icon--hero,
+	.seasonal-theme--new-year .seasonal-scene-icon--hero,
+	.seasonal-theme--tet .seasonal-scene-icon--hero,
+	.seasonal-theme--reunification-day .seasonal-scene-icon--hero {
+		right: max(1.25rem, calc(env(safe-area-inset-right) + 0.75rem));
 	}
 
 	.seasonal-theme--national-day .seasonal-scene-icon--hero,
@@ -956,7 +1314,7 @@ input {
 		bottom: 15%;
 		left: 0.75rem;
 		font-size: 1.75rem;
-		opacity: 0.16;
+		opacity: var(--seasonal-mobile-accent-opacity);
 	}
 
 	.seasonal-scene-signature {
@@ -976,7 +1334,7 @@ input {
 		right: -20%;
 		bottom: 4%;
 		width: 78%;
-		opacity: 0.18;
+		opacity: var(--seasonal-mobile-line-opacity);
 	}
 
 	.home-page,
@@ -1196,7 +1554,7 @@ input {
 	}
 
 	.journey-route-mobile-base {
-		stroke: rgba(236, 235, 230, 0.1);
+		stroke: rgb(var(--theme-ink) / 0.1);
 		stroke-width: 1.5;
 		stroke-dasharray: 0.008 0.014;
 	}
@@ -1253,11 +1611,11 @@ input {
 		width: 0.7rem;
 		height: 0.7rem;
 		border: 2px solid var(--background);
-		background: rgba(236, 235, 230, 0.16);
+		background: rgb(var(--theme-ink) / 0.16);
 		box-shadow:
-			0 0 0 1px rgba(236, 235, 230, 0.13),
+			0 0 0 1px rgb(var(--theme-ink) / 0.13),
 			0 0 0 5px var(--background),
-			0 0 14px rgba(236, 235, 230, 0.08);
+			0 0 14px rgb(var(--theme-ink) / 0.08);
 	}
 
 	.journey-marker > span::before {
@@ -1490,12 +1848,12 @@ input {
 }
 
 .markdown li::marker {
-	color: rgba(255, 255, 255, 0.52);
+	color: rgb(var(--theme-ink) / 0.52);
 }
 
 .markdown input[type='checkbox'] {
 	margin-right: 0.55rem;
-	accent-color: rgba(236, 235, 230, 0.72);
+	accent-color: rgb(var(--theme-ink) / 0.72);
 }
 
 .markdown blockquote {

@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import SeasonalTheme from './components/SeasonalTheme';
+import ThemeToggle from './components/ThemeToggle';
+import { COLOR_THEME_INIT_SCRIPT } from './lib/color-theme';
 import { SITE_CONFIG } from './lib/config';
 import { LocaleProvider } from './lib/LocaleContext';
 import {
@@ -8,12 +10,14 @@ import {
 	openGraphImageUrl,
 	SEO,
 } from './lib/seo';
+import 'pullcord/pullcord.css';
 import './globals.css';
 
 export const viewport: Viewport = {
 	width: 'device-width',
 	initialScale: 1,
 	viewportFit: 'cover',
+	colorScheme: 'light dark',
 };
 
 export const metadata: Metadata = {
@@ -73,10 +77,19 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang={SITE_CONFIG.locale.code}>
+		<html
+			lang={SITE_CONFIG.locale.code}
+			data-theme="system"
+			data-theme-preference="system"
+			suppressHydrationWarning
+		>
+			<head>
+				<script dangerouslySetInnerHTML={{ __html: COLOR_THEME_INIT_SCRIPT }} />
+			</head>
 			<body className="antialiased">
 				<LocaleProvider>
 					{children}
+					<ThemeToggle />
 				</LocaleProvider>
 				<SeasonalTheme />
 				{SITE_CONFIG.analytics.umami.enabled && (

@@ -13,6 +13,10 @@ tblog/
 │   │   └── page.tsx
 │   ├── components/
 │   │   ├── seasonal/
+│   │   │   ├── Fireworks.tsx
+│   │   │   ├── IconScene.tsx
+│   │   │   ├── Particles.tsx
+│   │   │   └── seasonal scene definitions
 │   │   ├── ContentShell.tsx
 │   │   ├── ErrorState.tsx
 │   │   ├── MarkdownArticle.tsx
@@ -20,9 +24,12 @@ tblog/
 │   │   ├── RouteTransition.tsx
 │   │   ├── SeasonalTheme.tsx
 │   │   ├── SideProfile.tsx
+│   │   ├── ThemeToggle.tsx
 │   │   └── TransitionLink.tsx
 │   ├── cv/
 │   ├── lib/
+│   │   ├── color-theme.ts
+│   │   └── other shared configuration and helpers
 │   ├── milestones/
 │   ├── error.tsx
 │   ├── global-error.tsx
