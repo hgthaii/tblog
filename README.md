@@ -1,170 +1,141 @@
 # tblog
 
-A minimal, atmospheric personal site and Markdown blog built with Next.js. It includes a responsive home page, writing archive, milestone timeline, CV viewer, route metadata, sitemap, custom error pages, and static deployment workflows for cPanel and GitHub Pages.
-
-The project uses the App Router and static export, so the generated `out/` directory can be hosted without a Node.js server.
-
-## Project flow
+Personal site and Markdown blog built with Next.js App Router and static export. The same repository now owns the application, Vietnamese content, posts, public assets, cPanel deployment, and releases.
 
 ![tblog project flow](docs/assets/project-flow.svg)
 
-The editable [Mermaid source](docs/project-flow.mmd) shows how feature work reaches the public template, then branches into a public GitHub Pages demo and a private-content cPanel deployment. A complete source tree is available in [project-structure.txt](project-structure.txt).
-
 ## Requirements
 
-- Node.js 22 or newer
-- pnpm 10.25.0 (declared through the `packageManager` field)
+- Node.js 22.14 or newer
+- pnpm 10.25.0
 
-## Branch model
-
-- `master` is the public template. It contains sample profile data, Lorem Ipsum milestones, example posts, and placeholder links.
-- `dev` is used for feature work before changes are merged into `master` through a pull request.
-- Personal content is stored in a separate private repository and is applied only during deployment.
-
-The included workflows deploy directly from `master`, so no long-lived production branch or cherry-pick step is required. After a squash merge, sync `master` back into `dev` before starting the next change so the branch keeps dependency and workflow updates made on `master`.
-
-## Use this template
-
-Fork the repository or select **Use this template** on GitHub, then clone your copy:
+## Local development
 
 ```bash
-git clone https://github.com/your-username/tblog.git
-cd tblog
-pnpm install
+pnpm install --frozen-lockfile
 cp .env.example .env.local
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). Content changes under `content/` and asset changes under `public/` use the normal Next.js development reload; there is no private overlay or second repository.
 
-## Personalize the site
-
-Update these files:
-
-- `app/lib/config.ts`: the single source for routes, environment-backed URLs, locale selection, asset paths, and external protocol constants.
-- `content/locales/en.json`: default English profile copy, navigation labels, milestones, and CV labels.
-- `content/locales/vi.json`: example Vietnamese translation and the expected shape for another locale.
-- `content/posts/*.md`: Markdown blog posts. The filename becomes the post slug.
-- `.env.local`: website URL, avatar, CV, email, and social links.
-- `public/avatar.svg`: sample avatar.
-- `public/og-image.png`: default Open Graph image. Keep it at `1200 x 630` for reliable social previews.
-- `public/icon.svg` and `app/favicon.ico`: site icons.
-
-A post uses this frontmatter format:
-
-```md
----
-title: "My first post"
-createdAt: "01/01/2025"
-authorName: "Your name"
-category: "notes, personal"
----
-
-Write the post here.
-```
-
-Keep user-facing copy in the locale JSON files rather than components. Both locale files must retain the same key structure.
-
-## Store personal content privately
-
-Keep real profile data, posts, and personal assets in a separate private repository. The deployment workflow overlays them onto the public template immediately before building. Follow [Private content deployment](docs/private-content.md) to configure both repositories.
-
-## Quality checks
+The production build is a static site in `out/`:
 
 ```bash
-pnpm install --frozen-lockfile
 git diff --check
 pnpm lint
 pnpm audit --prod --audit-level=moderate
 pnpm build
 ```
 
-The static output is written to `out/`.
-
-The `CI` workflow runs the same whitespace, lint, production dependency audit, and static-build checks for every pull request targeting `master`. GitHub can require the `Lint and static build` check before merge through a branch protection rule.
-
-For a subfolder deployment such as `https://example.com/blog/`, use:
+For a subfolder deployment, set a base path explicitly:
 
 ```bash
 NEXT_PUBLIC_BASE_PATH=/blog pnpm build:path
 ```
 
-## Automatic cPanel deployment
+## Content
 
-The workflow in `.github/workflows/deploy.yml` deploys the `master` template with content from a separate private repository. It runs after code reaches `master`, when the content repository sends a `content_updated` event, or when it is started manually. See [Private content deployment](docs/private-content.md) for setup.
+- `content/locales/vi.json` contains the published profile, navigation, milestones, CV, SEO, error, and accessibility copy.
+- `content/locales/en.json` remains the type-compatible English locale.
+- `content/posts/*.md` contains published posts. The filename becomes the route slug.
+- `public/` contains the avatar, CV, social image, icons, and other public assets.
 
-Add these repository secrets under **Settings -> Secrets and variables -> Actions**:
+A post uses this frontmatter:
+
+```md
+---
+title: "Tên bài viết"
+createdAt: "21/08/2026"
+authorName: "Tên tác giả"
+category: "ghi chú, cá nhân"
+quote: "Một câu ngắn đại diện cho bài viết."
+order: 1
+---
+
+Nội dung bài viết.
+```
+
+`title` and `createdAt` are required. Dates accept `DD/MM/YYYY`, `YYYY-MM-DD`, or an ISO datetime and must be real calendar dates. `authorName`, `category`, `quote`, and `order` are optional. Every build validates frontmatter and duplicate slugs before generating pages.
+
+The post `quote` is the main Open Graph text. Without a quote, the renderer falls back to the post title. Other routes use the current page title. The shared renderer lives in `app/lib/opengraph.tsx`. Home keeps `thái. - một vài âm điệu từ tôi`; other document and social titles stay concise with only the page or post title.
+
+## Configuration
+
+Copy `.env.example` to `.env.local` for local development. Public build-time values use `NEXT_PUBLIC_*` because the result is static; never put credentials in those variables.
+
+Important values:
+
+- `NEXT_PUBLIC_SITE_URL`: canonical production origin.
+- `NEXT_PUBLIC_LOCALE`: defaults to `vi`.
+- `NEXT_PUBLIC_CV_PDF`, `NEXT_PUBLIC_CONTACT_EMAIL`, and social URLs.
+- `NEXT_PUBLIC_PROFILE_AVATAR`: defaults to `/hgthaii.jpg`.
+- `NEXT_PUBLIC_PROFILE_AVATAR_FIT`, `NEXT_PUBLIC_PROFILE_AVATAR_POSITION`, and `NEXT_PUBLIC_PROFILE_AVATAR_SCALE`: adjust any avatar without changing CSS.
+- `NEXT_PUBLIC_TRACKING_SRC` and `NEXT_PUBLIC_TRACKING_WEBSITE_ID`: enable Umami only when both are set.
+- `NEXT_PUBLIC_SEASONAL_THEME`: `auto`, `none`, a supported celebration, or a season.
+
+In `auto`, celebration themes are active only during the seven calendar days ending on the event date in `Asia/Ho_Chi_Minh`. The supported celebrations are New Year, Lunar New Year, Reunification Day/Labour Day, International Children's Day, National Day, Mid-Autumn Festival, and Christmas. Outside those windows, the site uses its spring, summer, autumn, or winter scene. Decorations remain fixed outside route transitions and respect reduced-motion preferences.
+
+## Branch and merge model
+
+- `dev` is the integration branch.
+- Changes reach `master` through a pull request after CI passes.
+- Merge the PR with a **merge commit**. Disable squash merging in GitHub repository settings so commits already integrated into `master` do not reappear in the next PR.
+- After merging, merge `master` back into `dev` before starting the next batch of work.
+
+Use Conventional Commits because release automation reads commit intent:
+
+```text
+feat(scope): add user-visible capability
+fix(scope): correct user-visible behavior
+perf(scope): improve runtime performance
+content(posts): publish a post
+docs(scope): update documentation
+chore(scope): maintain tooling
+```
+
+Breaking changes use `!` or a `BREAKING CHANGE:` footer.
+
+## CI, deployment, and releases
+
+`.github/workflows/ci.yml` checks pull requests targeting `master` with whitespace validation, lint, production dependency audit, and a static build.
+
+`.github/workflows/deploy.yml` builds the content tracked in this repository and deploys `master` to cPanel when `DEPLOY_ENABLED=true`. It uploads immutable assets first, pages and metadata last, then verifies the live sitemap, canonical URL, Open Graph image, and deployed commit in `/version.json`.
+
+Required GitHub Actions secrets:
 
 - `FTP_SERVER`
 - `FTP_USERNAME`
 - `FTP_PASSWORD`
-- `TELEGRAM_BOT_TOKEN` (optional)
-- `TELEGRAM_CHAT_ID` (optional)
-- `PRIVATE_CONTENT_TOKEN`: a fine-grained token with read-only access to the private content repository
 
-Add these required repository variables:
+Optional notification secrets:
 
-- `FTP_TARGET_DIR`: for example `public_html/`
-- `NEXT_PUBLIC_SITE_URL`: the public site URL used by metadata and production verification
-- `PRIVATE_CONTENT_REPOSITORY`: for example `your-username/tblog-content`
-- `DEPLOY_ENABLED`: set to `true` only after cPanel and private content deployment are configured
+- `TELEGRAM_BOT_TOKEN`
+- `TELEGRAM_CHAT_ID`
 
-Optional repository variables:
+Required repository variables:
 
-- `FTP_PROTOCOL`: defaults to `ftps`
-- `FTP_PORT`: defaults to `21`
-- `NEXT_PUBLIC_BASE_PATH`
-- `NEXT_PUBLIC_LOCALE`: defaults to `en`; set `vi` when deploying Vietnamese private content
-- `NEXT_PUBLIC_CV_PDF`
-- `NEXT_PUBLIC_CONTACT_EMAIL`
-- `NEXT_PUBLIC_PROFILE_AVATAR`
-- `NEXT_PUBLIC_SOCIAL_IMAGE`
-- `NEXT_PUBLIC_FAVICON`
-- `NEXT_PUBLIC_GITHUB_URL`
-- `NEXT_PUBLIC_INSTAGRAM_URL`
-- `NEXT_PUBLIC_LINKEDIN_URL`
+- `DEPLOY_ENABLED=true`
+- `FTP_TARGET_DIR`, for example `public_html/`
+- `NEXT_PUBLIC_SITE_URL`
 
-Without `DEPLOY_ENABLED=true`, the deployment job is safely skipped. This keeps forks and new template repositories from failing before their deployment settings exist. After configuration, merge a pull request into `master`, push to the private content repository, or manually run the workflow on `master`.
+Optional variables mirror `.env.example`; `FTP_PROTOCOL` defaults to `ftps` and `FTP_PORT` defaults to `21`.
 
-## Public demo on GitHub Pages
+Every successful qualifying `master` deployment runs semantic-release after production verification:
 
-The workflow in `.github/workflows/pages.yml` builds and deploys only the public English example content tracked in this repository. It never checks out or overlays the private content repository.
+- `feat` creates a minor release.
+- `fix`, `perf`, and `content` create a patch release.
+- a breaking change creates a major release.
+- `docs`, `chore`, `ci`, `style`, `test`, and ordinary `refactor` commits deploy when their changed paths require it but do not create a tag.
 
-To enable it:
+When a release is required, GitHub receives a SemVer tag, generated notes, the exact static archive, and its SHA-256 checksum. If no commit requires a release, deployment completes without creating a tag. The package version in `package.json` is not manually bumped.
 
-1. Open **Settings → Pages** and set **Source** to **GitHub Actions**.
-2. Open **Settings → Secrets and variables → Actions → Variables**.
-3. Add `PAGES_DEPLOY_ENABLED` with the value `true`.
-4. Merge the workflow into `master` or run **Deploy public template to GitHub Pages** manually.
+## Repository map
 
-The workflow reads the Pages URL and base path from GitHub, so both project sites such as `https://owner.github.io/repository/` and custom domains build with the correct asset paths and canonical metadata. Forks remain safely disabled until their owner adds the variable.
-
-## Releases and production verification
-
-Each successful deployment creates a version in the format `v<major>.<minor>.<GitHub run number>`. The major and minor values come from `package.json`.
-
-After upload, the workflow verifies:
-
-- `robots.txt` points to the production sitemap;
-- the sitemap contains the blog route;
-- the blog page has the expected canonical URL;
-- the Open Graph image is reachable;
-- the live `version.json` matches the current deployment.
-
-Only after verification succeeds does it create a tag and GitHub Release containing the exact deployed archive and its SHA-256 checksum. The currently deployed version is available at `/version.json`.
-
-The release archive is public and contains the final deployed website, including overlaid content. The private repository protects source history and editing workflow, not content that is intentionally published on the website.
-
-## Documentation
-
-- [Private content deployment](docs/private-content.md): repository setup, tokens, variables, dispatch, and troubleshooting.
-- [Project flow source](docs/project-flow.mmd): editable Mermaid source for the diagram above.
-- [Project structure](project-structure.txt): tracked source tree with generated and local-only paths omitted.
-- [Contributing](CONTRIBUTING.md): development workflow and pull request checklist.
-- [Security policy](SECURITY.md): supported versions and private vulnerability reporting.
-
-## License
+- [Agent instructions](AGENTS.md): execution and completion checklist.
+- [Project flow source](docs/project-flow.mmd): editable Mermaid source for the diagram.
+- [Project structure](project-structure.txt): maintained source tree overview.
+- [Contributing](CONTRIBUTING.md): branch, commit, and pull request rules.
+- [Security policy](SECURITY.md): reporting and secret-handling rules.
 
 Released under the [MIT License](LICENSE).
-
-Security reports and contributions are covered by [SECURITY.md](SECURITY.md) and [CONTRIBUTING.md](CONTRIBUTING.md).

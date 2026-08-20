@@ -1,6 +1,6 @@
 {
 	"site": {
-		"title": "your name. — a quiet corner of the internet",
+		"title": "a quiet corner of the internet",
 		"description": "a place for notes, milestones, and things worth remembering"
 	},
 	"labels": {
@@ -60,10 +60,6 @@
 	"home": {
 		"name": "your name.",
 		"bio": "lorem ipsum dolor sit amet\nconsectetur adipiscing elit...",
-		"bioDrift": {
-			"anchor": "lorem",
-			"falling": "ipsum"
-		},
 		"location": "@yourname"
 	},
 	"blog": {

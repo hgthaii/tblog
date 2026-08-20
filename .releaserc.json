@@ -1,0 +1,58 @@
+{
+	"branches": ["master"],
+	"tagFormat": "v${version}",
+	"plugins": [
+		[
+			"@semantic-release/commit-analyzer",
+			{
+				"preset": "conventionalcommits",
+				"releaseRules": [
+					{
+						"type": "content",
+						"release": "patch"
+					}
+				]
+			}
+		],
+		[
+			"@semantic-release/release-notes-generator",
+			{
+				"preset": "conventionalcommits",
+				"presetConfig": {
+					"types": [
+						{ "type": "feat", "section": "Features", "effect": "bump" },
+						{ "type": "feature", "section": "Features", "effect": "bump" },
+						{ "type": "fix", "section": "Bug Fixes", "effect": "bump" },
+						{ "type": "perf", "section": "Performance Improvements", "effect": "bump" },
+						{ "type": "content", "section": "Content", "effect": "bump" },
+						{ "type": "revert", "section": "Reverts", "effect": "bump" },
+						{ "type": "docs", "section": "Documentation", "effect": "hidden" },
+						{ "type": "style", "section": "Styles", "effect": "hidden" },
+						{ "type": "chore", "section": "Miscellaneous Chores", "effect": "hidden" },
+						{ "type": "refactor", "section": "Code Refactoring", "effect": "hidden" },
+						{ "type": "test", "section": "Tests", "effect": "hidden" },
+						{ "type": "build", "section": "Build System", "effect": "hidden" },
+						{ "type": "ci", "section": "Continuous Integration", "effect": "hidden" }
+					]
+				}
+			}
+		],
+		[
+			"@semantic-release/github",
+			{
+				"assets": [
+					{
+						"path": "release/*.tar.gz",
+						"label": "Static site package"
+					},
+					{
+						"path": "release/*.sha256",
+						"label": "SHA-256 checksum"
+					}
+				],
+				"successComment": false,
+				"failComment": false
+			}
+		]
+	]
+}

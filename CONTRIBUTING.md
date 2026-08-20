@@ -1,15 +1,14 @@
 # Contributing
 
-Thank you for helping improve tblog.
+This is a personal site rather than a reusable template. Changes should preserve its current App Router, static export, pnpm, locale, and cPanel deployment structure unless a migration is explicitly planned.
 
-## Development workflow
+## Workflow
 
-1. Fork the repository and create a focused feature branch. Maintainers use `dev` for integration work and open pull requests from `dev` to `master`.
-2. Sync the branch with the latest `master` before making changes.
-3. Install dependencies with `pnpm install --frozen-lockfile`.
-4. Keep user-facing copy in `content/locales/*.json` and preserve the same key structure across locales.
-5. Keep personal content, credentials, generated output, and `.env.local` outside the public repository.
-6. Run the required checks:
+1. Start from the latest `dev` and create a focused branch when useful.
+2. Read the source documentation closest to the feature before implementing it.
+3. Keep published copy in `content/locales/*.json`, posts in `content/posts/`, and public assets in `public/`.
+4. Use Conventional Commits. `feat`, `fix`, `perf`, `content`, and breaking changes control automated releases.
+5. Run:
 
    ```bash
    git diff --check
@@ -18,24 +17,16 @@ Thank you for helping improve tblog.
    pnpm build
    ```
 
-7. Open a pull request targeting `master` and describe the user-visible effect of the change.
-
-After a squash merge, maintainers must merge or rebase the updated `master` back into `dev` before the next feature. This prevents old workflow or dependency versions from being reintroduced by a later pull request.
-
-## Content and documentation
-
-- Public example content must remain generic, English-first, and safe to publish.
-- Private profile data, posts, and assets belong in the separate content repository.
-- Update both locale JSON files when adding or removing a locale key.
-- Update `README.md`, `docs/project-flow.mmd`, its exported SVG, and `project-structure.txt` when a change makes those documents inaccurate.
-- Do not edit the exported SVG by hand; regenerate it from the Mermaid source.
+6. Open a pull request from `dev` to `master` and wait for CI.
+7. Use a merge commit, not squash merge. Merge `master` back into `dev` after the PR lands.
 
 ## Pull request checklist
 
-- The change is focused and does not include unrelated formatting or dependency updates.
+- The change is focused and preserves unrelated work.
+- Relevant setup, usage, configuration, and operational docs match the implementation.
+- Locale files remain type-compatible when keys change.
+- No `.env.local`, credential, draft, or material that must stay private is tracked.
 - Required checks pass locally.
-- No secret, `.env.local`, private post, or personal asset is tracked.
-- Public and private deployment behavior remains separated.
-- User-facing or operational changes are documented.
+- Deployment workflow changes have been reviewed without triggering production manually.
 
-Keep pull requests small enough to review and avoid unrelated formatting or dependency changes.
+Do not edit `docs/assets/project-flow.svg` by hand; regenerate it from `docs/project-flow.mmd`.
