@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import {
 	ArrowUpRight,
 	FileText,
@@ -13,8 +12,11 @@ import {
 } from 'lucide-react';
 
 import TransitionLink from './components/TransitionLink';
+import ProfileAvatar from './components/ProfileAvatar';
+import RouteTransition from './components/RouteTransition';
 import { SITE_CONFIG } from './lib/config';
 import { useLocale } from './lib/LocaleContext';
+import { absoluteAssetUrl, absoluteUrl } from './lib/seo';
 
 export default function Home() {
 	const { t, content } = useLocale();
@@ -46,25 +48,68 @@ export default function Home() {
 		{ label: content.social.linkedin, icon: Linkedin, href: SITE_CONFIG.profile.linkedin, external: true },
 		{ label: content.social.email, icon: Mail, href: SITE_CONFIG.site.emailHref },
 	];
+	const homeUrl = absoluteUrl('/');
+	const personId = `${homeUrl}#person`;
+	const websiteId = `${homeUrl}#website`;
+	const socialProfiles = [
+		SITE_CONFIG.profile.github,
+		SITE_CONFIG.profile.instagram,
+		SITE_CONFIG.profile.linkedin,
+	].filter((url) =>
+		/^https?:\/\//.test(url) && !/(?:example\.com|your-username)/i.test(url),
+	);
+	const jsonLd = {
+		'@context': SITE_CONFIG.external.schemaContext,
+		'@graph': [
+			{
+				'@type': 'WebSite',
+				'@id': websiteId,
+				url: homeUrl,
+				name: SITE_CONFIG.site.title,
+				description: SITE_CONFIG.site.description,
+				inLanguage: SITE_CONFIG.locale.language,
+				publisher: { '@id': personId },
+			},
+			{
+				'@type': 'ProfilePage',
+				'@id': `${homeUrl}#profile`,
+				url: homeUrl,
+				name: `${SITE_CONFIG.profile.name} - ${SITE_CONFIG.site.title}`,
+				description: SITE_CONFIG.site.description,
+				inLanguage: SITE_CONFIG.locale.language,
+				isPartOf: { '@id': websiteId },
+				mainEntity: { '@id': personId },
+			},
+			{
+				'@type': 'Person',
+				'@id': personId,
+				name: SITE_CONFIG.profile.name,
+				url: homeUrl,
+				image: absoluteAssetUrl(SITE_CONFIG.profile.avatar),
+				sameAs: socialProfiles,
+			},
+		],
+	};
 
 	return (
-		<main className="home-page min-h-screen flex flex-col p-4 sm:p-6 pb-8">
+		<>
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+			/>
+			<RouteTransition>
+				<main className="home-page min-h-screen flex flex-col p-4 sm:p-6 pb-8">
 			<div className="w-full max-w-6xl flex-1 mx-auto flex items-start md:items-center">
 				<div className="w-full flex flex-col md:flex-row gap-5 md:gap-6">
 					<section className="home-profile-card glass-card flex-1 p-5 sm:p-9 md:p-11 flex flex-col">
 						<div className="home-profile-content">
 							<div data-profile-anchor className="w-fit flex items-center gap-4 sm:gap-5 mb-7 sm:mb-8">
-							<div data-profile-avatar className="avatar-halo w-14 h-14 sm:w-18 sm:h-18 rounded-2xl overflow-hidden border border-[var(--border)] flex-shrink-0">
-								<Image
-									src={SITE_CONFIG.profile.avatar}
-									alt={SITE_CONFIG.profile.name}
-									width={72}
-									height={72}
-									className="profile-avatar-image object-cover w-full h-full"
-									priority
-									sizes="72px"
-								/>
-							</div>
+							<ProfileAvatar
+								className="w-14 h-14 sm:w-18 sm:h-18 rounded-2xl overflow-hidden border border-[var(--border)] flex-shrink-0"
+								width={72}
+								height={72}
+								sizes="72px"
+							/>
 							<div>
 								<h1 className="text-[1.9rem] leading-none sm:text-[2rem] font-bold text-heading tracking-[-0.04em]">{t('home.name')}</h1>
 								<p className="mt-1 text-[11px] text-muted tracking-wide text-left">{t('home.location')}</p>
@@ -73,14 +118,11 @@ export default function Home() {
 
 							<div className="home-bio max-w-[660px]">
 								<p className="text-[14px] sm:text-[15px] text-foreground leading-[1.75] whitespace-pre-line">
-									{content.home.bio}<span className="bio-end-anchor">
-										<span className="bio-drift" aria-label={content.home.bioDrift.anchor + content.home.bioDrift.falling}>
-											<span>{content.home.bioDrift.anchor}</span>
-											<span className="bio-drift-falling">{content.home.bioDrift.falling}</span>
-										</span>
-									</span>
+									{content.home.bio}
 								</p>
 							</div>
+
+							<br/>
 
 							<div className="home-social-links flex gap-2 flex-wrap">
 							{socialLinks.map((social) => {
@@ -145,6 +187,8 @@ export default function Home() {
 			<footer className="home-footer mt-6">
 				© {new Date().getFullYear()} {content.home.name}
 			</footer>
-		</main>
+				</main>
+			</RouteTransition>
+		</>
 	);
 }

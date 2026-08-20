@@ -3,8 +3,7 @@ import { notFound } from 'next/navigation';
 
 import MarkdownArticle from '../../components/MarkdownArticle';
 import ContentShell from '../../components/ContentShell';
-import { SITE_CONFIG } from '../../lib/config';
-import { content } from '../../lib/config';
+import { content, SITE_CONFIG } from '../../lib/config';
 import { absoluteAssetUrl, absoluteUrl } from '../../lib/seo';
 import { getPostBySlug, getPostSlugs } from '../../lib/posts';
 
@@ -26,7 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 	const ogImageUrl = absoluteUrl(`/blog/${post.slug}/opengraph-image`);
 
 	return {
-		title: { absolute: `${post.title} | ${SITE_CONFIG.site.title}` },
+		title: post.title,
 		description: post.excerpt,
 		alternates: {
 			canonical: url,
@@ -65,7 +64,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 	if (!post) return notFound();
 	const canonicalUrl = absoluteUrl(`/blog/${post.slug}/`);
 	const ogImageUrl = absoluteUrl(`/blog/${post.slug}/opengraph-image`);
+	const personId = `${absoluteUrl('/')}#person`;
 	const authorName = post.authorName || SITE_CONFIG.profile.name;
+	const isProfileOwner = authorName === SITE_CONFIG.profile.name;
 	const jsonLd = {
 		'@context': SITE_CONFIG.external.schemaContext,
 		'@type': 'BlogPosting',
@@ -79,15 +80,17 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 		image: [absoluteAssetUrl(ogImageUrl)],
 		datePublished: post.publishedAt || undefined,
 		dateModified: post.publishedAt || undefined,
-		inLanguage: 'vi-VN',
+		inLanguage: SITE_CONFIG.locale.language,
 		keywords: post.categories,
 		author: {
 			'@type': 'Person',
+			...(isProfileOwner ? { '@id': personId } : {}),
 			name: authorName,
-			url: absoluteUrl('/'),
+			...(isProfileOwner ? { url: absoluteUrl('/') } : {}),
 		},
 		publisher: {
 			'@type': 'Person',
+			'@id': personId,
 			name: SITE_CONFIG.profile.name,
 			url: absoluteUrl('/'),
 		},

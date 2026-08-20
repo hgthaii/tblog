@@ -1,7 +1,14 @@
-import type { Metadata, Viewport } from "next";
-import "./globals.css";
-import { SITE_CONFIG } from "./lib/config";
-import { absoluteUrl } from "./lib/seo";
+import type { Metadata, Viewport } from 'next';
+import Script from 'next/script';
+import SeasonalTheme from './components/SeasonalTheme';
+import { SITE_CONFIG } from './lib/config';
+import { LocaleProvider } from './lib/LocaleContext';
+import {
+	absoluteUrl,
+	openGraphImageUrl,
+	SEO,
+} from './lib/seo';
+import './globals.css';
 
 export const viewport: Viewport = {
 	width: 'device-width',
@@ -11,10 +18,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
 	metadataBase: new URL(SITE_CONFIG.site.url),
-	title: {
-		default: SITE_CONFIG.site.title,
-		template: `%s | ${SITE_CONFIG.site.title}`,
-	},
+	title: SEO.home.title,
 	description: SITE_CONFIG.site.description,
 	applicationName: SITE_CONFIG.site.title,
 	authors: [{ name: SITE_CONFIG.profile.name, url: absoluteUrl('/') }],
@@ -38,23 +42,23 @@ export const metadata: Metadata = {
 		type: 'website',
 		locale: SITE_CONFIG.locale.openGraph,
 		url: SITE_CONFIG.site.url,
-		title: SITE_CONFIG.site.title,
+		title: SEO.home.title,
 		description: SITE_CONFIG.site.description,
 		siteName: SITE_CONFIG.site.title,
 		images: [
 			{
-				url: SITE_CONFIG.site.ogImage,
+				url: openGraphImageUrl('/'),
 				width: 1200,
 				height: 630,
-				alt: SITE_CONFIG.site.title,
+				alt: SEO.home.title,
 			},
 		],
 	},
 	twitter: {
 		card: 'summary_large_image',
-		title: SITE_CONFIG.site.title,
+		title: SEO.home.title,
 		description: SITE_CONFIG.site.description,
-		images: [SITE_CONFIG.site.ogImage],
+		images: [openGraphImageUrl('/')],
 	},
 	icons: {
 		icon: [{ url: SITE_CONFIG.site.favicon, type: 'image/svg+xml' }],
@@ -62,10 +66,6 @@ export const metadata: Metadata = {
 		apple: [{ url: SITE_CONFIG.site.socialImage }],
 	},
 };
-
-import { LocaleProvider } from "./lib/LocaleContext";
-import RouteTransitionMarker from "./components/RouteTransitionMarker";
-import Script from "next/script";
 
 export default function RootLayout({
 	children,
@@ -76,15 +76,17 @@ export default function RootLayout({
 		<html lang={SITE_CONFIG.locale.code}>
 			<body className="antialiased">
 				<LocaleProvider>
-					<RouteTransitionMarker />
 					{children}
 				</LocaleProvider>
-				<Script
-          id="umami-analytics"
-          src={SITE_CONFIG.analytics.umami.src}
-          data-website-id={SITE_CONFIG.analytics.umami.websiteId}
-          strategy="afterInteractive"
-        />
+				<SeasonalTheme />
+				{SITE_CONFIG.analytics.umami.enabled && (
+					<Script
+						id="umami-analytics"
+						src={SITE_CONFIG.analytics.umami.src}
+						data-website-id={SITE_CONFIG.analytics.umami.websiteId}
+						strategy="afterInteractive"
+					/>
+				)}
 			</body>
 		</html>
 	);

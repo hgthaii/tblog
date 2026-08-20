@@ -4,7 +4,7 @@ import { content, SITE_CONFIG } from './config';
 
 export const SEO = {
 	home: {
-		title: SITE_CONFIG.site.title,
+		title: `${SITE_CONFIG.profile.name} - ${SITE_CONFIG.site.title}`,
 		description: SITE_CONFIG.site.description,
 	},
 	blog: {
@@ -24,6 +24,11 @@ export const SEO = {
 export const absoluteUrl = (pathname = '/') => {
 	const base = `${SITE_CONFIG.site.url.replace(/\/+$/, '')}/`;
 	return new URL(pathname.replace(/^\/+/, ''), base).toString();
+};
+
+export const openGraphImageUrl = (pathname = '/') => {
+	const normalizedPath = pathname.replace(/^\/+|\/+$/g, '');
+	return absoluteUrl(`${normalizedPath}/opengraph-image`);
 };
 
 export const absoluteAssetUrl = (assetPath: string) => {
@@ -50,10 +55,10 @@ export const createPageMetadata = (
 		siteName: SITE_CONFIG.site.title,
 		images: [
 			{
-				url: SITE_CONFIG.site.ogImage,
+				url: openGraphImageUrl(pathname),
 				width: 1200,
 				height: 630,
-				alt: SITE_CONFIG.site.title,
+				alt: title,
 			},
 		],
 	},
@@ -61,6 +66,6 @@ export const createPageMetadata = (
 		card: 'summary_large_image',
 		title,
 		description,
-		images: [SITE_CONFIG.site.ogImage],
+		images: [openGraphImageUrl(pathname)],
 	},
 });

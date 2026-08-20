@@ -1,12 +1,12 @@
 'use client';
 
-import Image from 'next/image';
 import { FileText, House, Milestone, NotebookPen } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 import { useLocale } from '../lib/LocaleContext';
 import { SITE_CONFIG } from '../lib/config';
 import TransitionLink from './TransitionLink';
+import ProfileAvatar from './ProfileAvatar';
 
 type SidebarSection = 'blog' | 'milestones' | 'cv';
 
@@ -61,17 +61,12 @@ export default function SideProfile({ active }: { active: SidebarSection }) {
 				className="profile-chip group flex items-center gap-3 p-1.5 pr-3 focus:outline-none cursor-pointer"
 				data-profile-anchor
 			>
-				<span data-profile-avatar className="avatar-halo w-9 h-9 rounded-xl overflow-hidden border border-[var(--border)] flex-shrink-0">
-					<Image
-						src={SITE_CONFIG.profile.avatar}
-						alt={SITE_CONFIG.profile.name}
-						width={36}
-						height={36}
-						className="profile-avatar-image object-cover w-full h-full"
-						priority
-						sizes="36px"
-					/>
-				</span>
+				<ProfileAvatar
+					className="w-9 h-9 rounded-xl overflow-hidden border border-[var(--border)] flex-shrink-0"
+					width={36}
+					height={36}
+					sizes="36px"
+				/>
 				<span className="min-w-0 text-left">
 					<span className="block text-[14px] leading-none font-semibold text-heading tracking-[-0.025em]">{t('home.name')}</span>
 					<span className="block mt-1.5 text-[10px] leading-none text-muted truncate">{t('home.location')}</span>

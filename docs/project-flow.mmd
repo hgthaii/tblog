@@ -1,55 +1,45 @@
 %%{init: {"theme": "base", "themeVariables": {"background": "#141414", "primaryColor": "#242321", "primaryTextColor": "#e7e2d9", "primaryBorderColor": "#69645c", "lineColor": "#8d877d", "secondaryColor": "#1d2926", "tertiaryColor": "#28222d", "clusterBkg": "#1a1918", "clusterBorder": "#4c4842", "fontFamily": "ui-monospace, SFMono-Regular, Menlo, monospace"}}}%%
 flowchart TB
-    feature[/Feature work/]
-    devBranch[dev branch]
-    pullRequest[PR to master]
-    ciCheck{CI passes?}
-    masterBranch[master public template]
+    work[/Code or content change/]
+    dev[dev branch]
+    pr[PR to master]
+    ci{CI passes?}
+    merge[Merge commit]
+    master[master]
+    build[Static build]
+    upload[Upload assets, then pages]
+    production[cPanel site]
+    verify{Production checks pass?}
+    stop[Stop workflow]
+    releaseCheck{Release-worthy commits?}
+    noRelease[Deployment only]
+    semanticRelease[Semantic version + GitHub Release]
+    telegram[/Telegram notification/]
+    sync[Merge master back into dev]
 
-    feature --> devBranch
-    devBranch --> pullRequest
-    pullRequest --> ciCheck
-    ciCheck -->|"No"| devBranch
-    ciCheck -->|"Yes"| masterBranch
+    work --> dev
+    dev --> pr
+    pr --> ci
+    ci -->|No| dev
+    ci -->|Yes| merge
+    merge --> master
+    master --> build
+    build --> upload
+    upload --> production
+    production --> verify
+    verify -->|No| stop
+    verify -->|Yes| releaseCheck
+    releaseCheck -->|No| noRelease
+    releaseCheck -->|Yes| semanticRelease
+    noRelease --> telegram
+    semanticRelease --> telegram
+    master --> sync
+    sync --> dev
 
-    subgraph publicFlow ["Public demo"]
-        direction TB
-        pagesAction[Pages workflow]
-        publicBuild[Build English content]
-        pagesArtifact[(Pages artifact)]
-        githubPages[GitHub Pages]
-
-        pagesAction --> publicBuild
-        publicBuild --> pagesArtifact
-        pagesArtifact --> githubPages
-    end
-
-    subgraph privateFlow ["Production site"]
-        direction TB
-        contentRepo[(Private content repo)]
-        dispatchEvent[content_updated event]
-        cpanelAction[cPanel workflow]
-        contentOverlay[Overlay private content]
-        privateBuild[Static build]
-        cpanelHost[cPanel hosting]
-        githubRelease[GitHub Release]
-        telegramNotify[/Telegram notification/]
-
-        contentRepo --> dispatchEvent
-        dispatchEvent --> cpanelAction
-        cpanelAction --> contentOverlay
-        contentOverlay --> privateBuild
-        privateBuild --> cpanelHost
-        privateBuild --> githubRelease
-        cpanelHost -.-> telegramNotify
-    end
-
-    masterBranch --> pagesAction
-    masterBranch --> cpanelAction
-
-    style publicFlow fill:#192420,stroke:#477469
-    style privateFlow fill:#211d27,stroke:#6f5b7d
-    style ciCheck fill:#332d20,stroke:#a28a4d
-    style masterBranch fill:#203026,stroke:#5f8f6d
-    style githubPages fill:#203026,stroke:#5f8f6d
-    style cpanelHost fill:#203026,stroke:#5f8f6d
+    style ci fill:#332d20,stroke:#a28a4d
+    style verify fill:#332d20,stroke:#a28a4d
+    style releaseCheck fill:#332d20,stroke:#a28a4d
+    style stop fill:#321f1f,stroke:#925c5c
+    style master fill:#203026,stroke:#5f8f6d
+    style production fill:#203026,stroke:#5f8f6d
+    style semanticRelease fill:#203026,stroke:#5f8f6d
