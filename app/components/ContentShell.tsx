@@ -1,6 +1,7 @@
 'use client';
 
 import SideProfile from './SideProfile';
+import RouteTransition from './RouteTransition';
 
 type ShellSection = 'blog' | 'milestones' | 'cv';
 
@@ -20,13 +21,15 @@ export default function ContentShell({
 					<SideProfile active={active} />
 				</aside>
 
-				<section
-					className={`content-canvas w-full min-w-0 mt-10 lg:mt-0 ${
-						width === 'wide' ? 'content-canvas-wide max-w-none mx-auto' : 'max-w-none mx-auto'
-					}`}
-				>
-					<div className="w-full">{children}</div>
-				</section>
+				<RouteTransition>
+					<section
+						className={`content-canvas w-full min-w-0 mt-10 lg:mt-0 ${
+							width === 'wide' ? 'content-canvas-wide max-w-none mx-auto' : 'max-w-none mx-auto'
+						}`}
+					>
+						<div className="w-full">{children}</div>
+					</section>
+				</RouteTransition>
 			</div>
 		</main>
 	);

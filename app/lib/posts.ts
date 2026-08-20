@@ -24,6 +24,7 @@ export type PostDetail = PostMeta & {
 
 const POSTS_DIR = path.join(process.cwd(), 'content', 'posts');
 const DATE_PREFIX_REGEX = /^\d{4}-\d{2}-\d{2}-(.+)$/;
+let postsValidated = false;
 
 function stripMarkdown(source: string) {
 	return source
@@ -90,14 +91,34 @@ function normalizeFileSlug(filename: string) {
 }
 
 function normalizePostDate(value: string) {
-	const vietnameseDate = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value.trim());
+	const trimmedValue = value.trim();
+	const vietnameseDate = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(trimmedValue);
 	if (vietnameseDate) {
 		const [, day, month, year] = vietnameseDate;
-		return `${year}-${month}-${day}`;
+		const isoDate = `${year}-${month}-${day}`;
+		return isValidCalendarDate(isoDate) ? isoDate : '';
 	}
 
-	const isoDate = /^(\d{4}-\d{2}-\d{2})/.exec(value.trim());
-	return isoDate?.[1] ?? '';
+	const isoDate = /^(\d{4}-\d{2}-\d{2})(?:$|T)/.exec(trimmedValue)?.[1] ?? '';
+	if (!isValidCalendarDate(isoDate)) return '';
+	if (trimmedValue === isoDate) return isoDate;
+
+	return Number.isNaN(Date.parse(trimmedValue)) ? '' : isoDate;
+}
+
+function isValidCalendarDate(value: string) {
+	const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+	if (!match) return false;
+
+	const [, rawYear, rawMonth, rawDay] = match;
+	const year = Number(rawYear);
+	const month = Number(rawMonth);
+	const day = Number(rawDay);
+	const date = new Date(Date.UTC(year, month - 1, day));
+
+	return date.getUTCFullYear() === year
+		&& date.getUTCMonth() === month - 1
+		&& date.getUTCDate() === day;
 }
 
 function toRouteSlug(fileSlug: string) {
@@ -113,6 +134,84 @@ function listPostFiles() {
 		.sort();
 }
 
+function validatePostFiles() {
+	if (postsValidated) return;
+
+	const files = listPostFiles();
+	const errors: string[] = [];
+	const filesByRouteSlug = new Map<string, string[]>();
+
+	for (const filename of files) {
+		const sourceSlug = normalizeFileSlug(filename);
+		const routeSlug = toRouteSlug(sourceSlug);
+		const matchingFiles = filesByRouteSlug.get(routeSlug) ?? [];
+		matchingFiles.push(filename);
+		filesByRouteSlug.set(routeSlug, matchingFiles);
+
+		const filePath = path.join(POSTS_DIR, filename);
+		let data: Record<string, unknown>;
+
+		try {
+			data = matter(fs.readFileSync(filePath, 'utf8')).data as Record<string, unknown>;
+		} catch (error) {
+			const message = error instanceof Error ? error.message : String(error);
+			errors.push(`${filename}: frontmatter could not be parsed (${message})`);
+			continue;
+		}
+
+		if (typeof data.title !== 'string' || !data.title.trim()) {
+			errors.push(`${filename}: "title" must be a non-empty string`);
+		}
+
+		if (typeof data.createdAt !== 'string' || !normalizePostDate(data.createdAt)) {
+			errors.push(`${filename}: "createdAt" must be a real date in DD/MM/YYYY or ISO format`);
+		}
+
+		if (
+			data.authorName !== undefined
+			&& typeof data.authorName !== 'string'
+		) {
+			errors.push(`${filename}: "authorName" must be a string when provided`);
+		}
+
+		if (data.category !== undefined && !(
+			typeof data.category === 'string'
+			|| (
+				Array.isArray(data.category)
+				&& data.category.every((item) => typeof item === 'string')
+			)
+		)) {
+			errors.push(`${filename}: "category" must be a string or an array of strings`);
+		}
+
+		if (data.quote !== undefined && typeof data.quote !== 'string') {
+			errors.push(`${filename}: "quote" must be a string when provided`);
+		}
+
+		if (data.order !== undefined) {
+			const numericOrder = typeof data.order === 'string' && /^-?\d+$/.test(data.order.trim())
+				? Number(data.order)
+				: data.order;
+
+			if (typeof numericOrder !== 'number' || !Number.isSafeInteger(numericOrder)) {
+				errors.push(`${filename}: "order" must be an integer when provided`);
+			}
+		}
+	}
+
+	for (const [routeSlug, matchingFiles] of filesByRouteSlug) {
+		if (matchingFiles.length > 1) {
+			errors.push(`route slug "${routeSlug}" is produced by multiple files: ${matchingFiles.join(', ')}`);
+		}
+	}
+
+	if (errors.length > 0) {
+		throw new Error(`Invalid blog content:\n${errors.map((error) => `- ${error}`).join('\n')}`);
+	}
+
+	postsValidated = true;
+}
+
 function findPostFileBySlug(slug: string) {
 	const files = listPostFiles();
 
@@ -126,7 +225,7 @@ function parseFrontmatter(slug: string, raw: string): PostDetail {
 	const parsed = matter(raw);
 	const data = parsed.data as Record<string, unknown>;
 
-	const title = typeof data.title === 'string' ? data.title : slug;
+	const title = typeof data.title === 'string' ? data.title.trim() : slug;
 	const excerpt = extractExcerpt(parsed.content);
 	const createdAt = typeof data.createdAt === 'string' ? data.createdAt : '';
 	const publishedAt = normalizePostDate(createdAt);
@@ -153,6 +252,7 @@ function parseFrontmatter(slug: string, raw: string): PostDetail {
 }
 
 export function getPostSlugs(): string[] {
+	validatePostFiles();
 	const routeSlugs = listPostFiles().map((filename) =>
 		toRouteSlug(normalizeFileSlug(filename)),
 	);
@@ -161,6 +261,7 @@ export function getPostSlugs(): string[] {
 }
 
 export function getPostBySlug(slug: string): PostDetail | null {
+	validatePostFiles();
 	const filename = findPostFileBySlug(slug);
 	if (!filename) return null;
 
