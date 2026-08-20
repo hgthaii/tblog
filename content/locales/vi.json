@@ -46,6 +46,12 @@
 		"scrollableTable": "Bảng nội dung có thể cuộn ngang",
 		"pagination": "Phân trang"
 	},
+	"theme": {
+		"label": "Giao diện",
+		"switchTo": "Chuyển sang",
+		"light": "sáng",
+		"dark": "tối"
+	},
 	"menu": {
 		"writing": {
 			"description": "Ít hơn đôi khi lại nhiều hơn"
