@@ -8,6 +8,7 @@ on:
       - 'app/**'
       - 'content/**'
       - 'public/**'
+      - 'scripts/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - '.releaserc.json'
@@ -42,7 +43,6 @@ jobs:
       NEXT_PUBLIC_PROFILE_AVATAR_POSITION: ${{ vars.NEXT_PUBLIC_PROFILE_AVATAR_POSITION }}
       NEXT_PUBLIC_PROFILE_AVATAR_SCALE: ${{ vars.NEXT_PUBLIC_PROFILE_AVATAR_SCALE }}
       NEXT_PUBLIC_SOCIAL_IMAGE: ${{ vars.NEXT_PUBLIC_SOCIAL_IMAGE }}
-      NEXT_PUBLIC_FAVICON: ${{ vars.NEXT_PUBLIC_FAVICON }}
       NEXT_PUBLIC_GITHUB_URL: ${{ vars.NEXT_PUBLIC_GITHUB_URL }}
       NEXT_PUBLIC_INSTAGRAM_URL: ${{ vars.NEXT_PUBLIC_INSTAGRAM_URL }}
       NEXT_PUBLIC_LINKEDIN_URL: ${{ vars.NEXT_PUBLIC_LINKEDIN_URL }}
@@ -85,7 +85,6 @@ jobs:
             echo "NEXT_PUBLIC_PROFILE_AVATAR_POSITION=$NEXT_PUBLIC_PROFILE_AVATAR_POSITION"
             echo "NEXT_PUBLIC_PROFILE_AVATAR_SCALE=$NEXT_PUBLIC_PROFILE_AVATAR_SCALE"
             echo "NEXT_PUBLIC_SOCIAL_IMAGE=$NEXT_PUBLIC_SOCIAL_IMAGE"
-            echo "NEXT_PUBLIC_FAVICON=$NEXT_PUBLIC_FAVICON"
             echo "NEXT_PUBLIC_GITHUB_URL=$NEXT_PUBLIC_GITHUB_URL"
             echo "NEXT_PUBLIC_INSTAGRAM_URL=$NEXT_PUBLIC_INSTAGRAM_URL"
             echo "NEXT_PUBLIC_LINKEDIN_URL=$NEXT_PUBLIC_LINKEDIN_URL"
@@ -94,6 +93,9 @@ jobs:
             echo "NEXT_PUBLIC_SEASONAL_THEME=$NEXT_PUBLIC_SEASONAL_THEME"
           } > .env.local
 
+      - name: Unit tests
+        run: pnpm test
+
       - name: Build static site
         run: |
           if [ -n "$NEXT_PUBLIC_BASE_PATH" ]; then
@@ -101,6 +103,9 @@ jobs:
           else
             pnpm build
           fi
+
+      - name: Verify static output before deployment
+        run: pnpm verify:output
 
       - name: Version and package static output
         run: |
@@ -188,7 +193,7 @@ jobs:
 
       - name: Detect release created by this deployment
         run: |
-          TBL_RELEASE_VERSION="$(git tag --points-at "$GITHUB_SHA" --list 'v*' | sort -V | tail -n 1)"
+          TBL_RELEASE_VERSION="$(git tag --points-at HEAD --list 'v*' | sort -V | tail -n 1)"
           if [ -n "$TBL_RELEASE_VERSION" ]; then
             echo "TBL_RELEASED=true" >> "$GITHUB_ENV"
             echo "TBL_RELEASE_VERSION=$TBL_RELEASE_VERSION" >> "$GITHUB_ENV"

@@ -7,6 +7,7 @@ tblog/
 ├── app/
 │   ├── blog/
 │   │   ├── [slug]/
+│   │   ├── category/[category]/
 │   │   ├── BlogClient.tsx
 │   │   ├── layout.tsx
 │   │   ├── opengraph-image.tsx
@@ -27,8 +28,16 @@ tblog/
 │   │   ├── ThemeToggle.tsx
 │   │   └── TransitionLink.tsx
 │   ├── cv/
+│   ├── feed.xml/route.ts
 │   ├── lib/
 │   │   ├── color-theme.ts
+│   │   ├── post-content.ts
+│   │   ├── post-content.test.ts
+│   │   ├── posts.ts
+│   │   ├── seasonal-theme.ts
+│   │   ├── seasonal-theme.test.ts
+│   │   ├── search.ts
+│   │   ├── search.test.ts
 │   │   └── other shared configuration and helpers
 │   ├── milestones/
 │   ├── error.tsx
@@ -53,8 +62,13 @@ tblog/
 │   └── project-flow.mmd
 ├── public/
 │   ├── .htaccess
+│   ├── favicon_io/
 │   ├── hgthaii.jpg
 │   └── other public assets
+├── scripts/
+│   ├── serve-static.mjs
+│   └── verify-static-output.mjs
+├── tests/e2e/smoke.spec.ts
 ├── .editorconfig
 ├── .env.example
 ├── .gitignore
@@ -68,9 +82,11 @@ tblog/
 ├── eslint.config.mjs
 ├── next.config.ts
 ├── package.json
+├── playwright.config.ts
 ├── pnpm-lock.yaml
 ├── postcss.config.mjs
-└── tsconfig.json
+├── tsconfig.json
+└── vitest.config.mts
 
 Generated and local-only paths such as .git/, .next/, node_modules/, out/,
 .env.local, private drafts, and .DS_Store are intentionally omitted.

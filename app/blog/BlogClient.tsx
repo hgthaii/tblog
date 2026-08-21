@@ -1,12 +1,13 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ArrowUpRight, Search } from 'lucide-react';
 import { useLocale } from '../lib/LocaleContext';
 import ContentShell from '../components/ContentShell';
 import TransitionLink from '../components/TransitionLink';
 import { SITE_CONFIG } from '../lib/config';
 import { content } from '../lib/config';
+import { normalizeSearchText } from '../lib/search';
 
 const POSTS_PER_PAGE = 5;
 
@@ -20,23 +21,90 @@ type Post = {
 	readingMinutes: number;
 };
 
-export default function BlogClient({ posts }: { posts: Post[] }) {
+type Category = {
+	name: string;
+	slug: string;
+	count: number;
+};
+
+type PagefindResult = {
+	data: () => Promise<{ url: string }>;
+};
+
+type Pagefind = {
+	search: (query: string) => Promise<{ results: PagefindResult[] }>;
+};
+
+export default function BlogClient({
+	posts,
+	categories,
+	heading,
+	activeCategory,
+}: {
+	posts: Post[];
+	categories: Category[];
+	heading?: string;
+	activeCategory?: string;
+}) {
 	const { t } = useLocale();
 
 	const [query, setQuery] = useState('');
 	const [page, setPage] = useState(1);
+	const [indexedSlugs, setIndexedSlugs] = useState<string[] | null>(null);
+
+	useEffect(() => {
+		const normalizedQuery = query.trim();
+		if (!normalizedQuery) return;
+
+		let cancelled = false;
+		const timer = window.setTimeout(async () => {
+			try {
+				const pagefindUrl = `${SITE_CONFIG.basePath}/pagefind/pagefind.js`;
+				const pagefind = await import(/* webpackIgnore: true */ pagefindUrl) as Pagefind;
+				const response = await pagefind.search(normalizedQuery);
+				const knownSlugs = new Set(posts.map((post) => post.slug));
+				const slugs = (await Promise.all(response.results.map(async (result) => {
+					const data = await result.data();
+					const pathname = new URL(data.url, window.location.origin).pathname;
+					const withoutBasePath = SITE_CONFIG.basePath && pathname.startsWith(SITE_CONFIG.basePath)
+						? pathname.slice(SITE_CONFIG.basePath.length)
+						: pathname;
+					const slug = /^\/blog\/([^/]+)\/?$/.exec(withoutBasePath)?.[1];
+					return slug && knownSlugs.has(slug) ? decodeURIComponent(slug) : null;
+				}))).filter((slug): slug is string => Boolean(slug));
+
+				if (!cancelled) setIndexedSlugs([...new Set(slugs)]);
+			} catch {
+				// During `next dev`, the build-time Pagefind bundle does not exist yet.
+				// The local title/excerpt/category filter below remains available.
+			}
+		}, 120);
+
+		return () => {
+			cancelled = true;
+			window.clearTimeout(timer);
+		};
+	}, [posts, query]);
 
 	const filteredPosts = useMemo(() => {
 		if (!query.trim()) return posts;
+		if (indexedSlugs !== null) {
+			const postsBySlug = new Map(posts.map((post) => [post.slug, post]));
+			return indexedSlugs.flatMap((slug) => {
+				const post = postsBySlug.get(slug);
+				return post ? [post] : [];
+			});
+		}
 
-		const q = query.toLowerCase();
+		const q = normalizeSearchText(query);
 
 		return posts.filter(
 			(p) =>
-				p.title.toLowerCase().includes(q) ||
-				p.excerpt.toLowerCase().includes(q),
+				normalizeSearchText(p.title).includes(q) ||
+				normalizeSearchText(p.excerpt).includes(q) ||
+				p.categories.some((category) => normalizeSearchText(category).includes(q)),
 		);
-	}, [posts, query]);
+	}, [indexedSlugs, posts, query]);
 	const pageCount = Math.max(1, Math.ceil(filteredPosts.length / POSTS_PER_PAGE));
 	const currentPage = Math.min(page, pageCount);
 	const visiblePosts = filteredPosts.slice((currentPage - 1) * POSTS_PER_PAGE, currentPage * POSTS_PER_PAGE);
@@ -44,6 +112,7 @@ export default function BlogClient({ posts }: { posts: Post[] }) {
 
 	const updateQuery = (value: string) => {
 		setQuery(value);
+		setIndexedSlugs(null);
 		setPage(1);
 	};
 
@@ -57,7 +126,26 @@ export default function BlogClient({ posts }: { posts: Post[] }) {
 	return (
 		<ContentShell active="blog">
 			<div className="w-full max-w-[720px] mx-auto flex flex-col gap-7 sm:gap-9">
-				<h1 className="sr-only">{t('labels.writing')}</h1>
+				<h1 className="sr-only">{heading ?? t('labels.writing')}</h1>
+				<nav className="blog-categories" aria-label={t('blog.category.label')}>
+					<TransitionLink
+						href={SITE_CONFIG.routes.blog}
+						direction="backward"
+						className={`blog-category-link ${activeCategory ? '' : 'is-active'}`}
+					>
+						{t('blog.category.all')}
+					</TransitionLink>
+					{categories.map((category) => (
+						<TransitionLink
+							key={category.slug}
+							href={`${SITE_CONFIG.routes.blog}/category/${category.slug}`}
+							direction={activeCategory ? 'backward' : 'forward'}
+							className={`blog-category-link ${activeCategory === category.slug ? 'is-active' : ''}`}
+						>
+							{category.name} <span aria-hidden="true">{category.count}</span>
+						</TransitionLink>
+					))}
+				</nav>
 				<label className="blog-search w-full md:w-auto md:ml-auto flex items-center gap-2.5">
 						<Search size={15} className="text-muted shrink-0" />
 						<input

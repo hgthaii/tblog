@@ -75,6 +75,11 @@
 	"blog": {
 		"search": "Tìm bài viết...",
 		"noEntries": "Không tìm thấy bài viết nào.",
+		"category": {
+			"label": "Lọc bài viết theo chủ đề",
+			"all": "tất cả",
+			"description": "Những bài viết thuộc chủ đề {category}."
+		},
 		"pagination": {
 			"previous": "trước",
 			"next": "sau",

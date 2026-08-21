@@ -15,7 +15,6 @@ const DEFAULTS = {
 	profileAvatarPosition: 'center',
 	profileAvatarScale: 1,
 	socialImage: '/og-image.png',
-	favicon: '/icon.svg',
 	githubUrl: 'https://github.com/your-username',
 	instagramUrl: 'https://instagram.com/your-username',
 	linkedinUrl: 'https://linkedin.com/in/your-username',
@@ -84,7 +83,6 @@ const env = {
 	contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL || DEFAULTS.contactEmail,
 	profileAvatar: process.env.NEXT_PUBLIC_PROFILE_AVATAR || DEFAULTS.profileAvatar,
 	socialImage: process.env.NEXT_PUBLIC_SOCIAL_IMAGE || DEFAULTS.socialImage,
-	favicon: process.env.NEXT_PUBLIC_FAVICON || DEFAULTS.favicon,
 	githubUrl: process.env.NEXT_PUBLIC_GITHUB_URL || DEFAULTS.githubUrl,
 	instagramUrl: process.env.NEXT_PUBLIC_INSTAGRAM_URL || DEFAULTS.instagramUrl,
 	linkedinUrl: process.env.NEXT_PUBLIC_LINKEDIN_URL || DEFAULTS.linkedinUrl,
@@ -99,6 +97,7 @@ const withOptionalBasePath = (value: string) =>
 		: withBasePath(value);
 
 export const SITE_CONFIG = {
+	basePath,
 	locale: {
 		code: locale,
 		language: locale === 'vi' ? 'vi-VN' : 'en-US',
@@ -118,7 +117,11 @@ export const SITE_CONFIG = {
 		email: env.contactEmail,
 		emailHref: `mailto:${env.contactEmail}`,
 		socialImage: withOptionalBasePath(env.socialImage),
-		favicon: withOptionalBasePath(env.favicon),
+		favicon: withBasePath('/favicon_io/favicon.ico'),
+		favicon16: withBasePath('/favicon_io/favicon-16x16.png'),
+		favicon32: withBasePath('/favicon_io/favicon-32x32.png'),
+		appleTouchIcon: withBasePath('/favicon_io/apple-touch-icon.png'),
+		manifest: withBasePath('/favicon_io/site.webmanifest'),
 	},
 	profile: {
 		name: profileName,

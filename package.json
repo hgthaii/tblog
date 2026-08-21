@@ -8,10 +8,15 @@
 	},
 	"scripts": {
 		"dev": "next dev",
-		"build": "next build --webpack",
-		"build:path": "sh -c 'test -n \"$NEXT_PUBLIC_BASE_PATH\" || { echo \"NEXT_PUBLIC_BASE_PATH is required. Example: NEXT_PUBLIC_BASE_PATH=/ok pnpm build:path\"; exit 1; }; next build --webpack'",
+		"build": "next build --webpack && pnpm search:index",
+		"build:path": "sh -c 'test -n \"$NEXT_PUBLIC_BASE_PATH\" || { echo \"NEXT_PUBLIC_BASE_PATH is required. Example: NEXT_PUBLIC_BASE_PATH=/ok pnpm build:path\"; exit 1; }; next build --webpack' && pnpm search:index",
 		"start": "next start",
-		"lint": "eslint"
+		"lint": "eslint",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"search:index": "pagefind --site out",
+		"verify:output": "node scripts/verify-static-output.mjs",
+		"test:e2e": "playwright test"
 	},
 	"dependencies": {
 		"gray-matter": "^4.0.3",
@@ -24,6 +29,9 @@
 		"remark-gfm": "^4.0.1"
 	},
 	"devDependencies": {
+		"@playwright/test": "^1.62.1",
+		"@semantic-release/git": "11.0.1",
+		"@semantic-release/npm": "13.1.5",
 		"@tailwindcss/postcss": "^4",
 		"@types/node": "^20",
 		"@types/react": "^19",
@@ -31,9 +39,11 @@
 		"conventional-changelog-conventionalcommits": "9.3.1",
 		"eslint": "^9",
 		"eslint-config-next": "16.3.0",
+		"pagefind": "^1.5.2",
 		"semantic-release": "25.0.8",
 		"tailwindcss": "^4",
-		"typescript": "^5"
+		"typescript": "^5",
+		"vitest": "^4.1.11"
 	},
 	"pnpm": {
 		"overrides": {
