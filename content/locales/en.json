@@ -71,6 +71,11 @@
 	"blog": {
 		"search": "Search posts...",
 		"noEntries": "No posts found.",
+		"category": {
+			"label": "Filter posts by category",
+			"all": "all",
+			"description": "Posts filed under {category}."
+		},
 		"pagination": {
 			"previous": "previous",
 			"next": "next",

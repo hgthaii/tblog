@@ -3,7 +3,9 @@ import { notFound } from 'next/navigation';
 
 import MarkdownArticle from '../../components/MarkdownArticle';
 import ContentShell from '../../components/ContentShell';
+import TransitionLink from '../../components/TransitionLink';
 import { content, SITE_CONFIG } from '../../lib/config';
+import { categoryToSlug } from '../../lib/post-content';
 import { absoluteAssetUrl, absoluteUrl } from '../../lib/seo';
 import { getPostBySlug, getPostSlugs } from '../../lib/posts';
 
@@ -122,14 +124,19 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 						))}
 						{post.categories.length > 0 && metaItems.length > 0 && <span className="opacity-45">·</span>}
 						{post.categories.map((category) => (
-							<span key={category} className="tag px-2.5 py-1 text-[10px] tracking-[0.08em]">
+							<TransitionLink
+								key={category}
+								href={`${SITE_CONFIG.routes.blog}/category/${categoryToSlug(category)}`}
+								direction="backward"
+								className="tag tag-link px-2.5 py-1 text-[10px] tracking-[0.08em]"
+							>
 								{category}
-							</span>
+							</TransitionLink>
 						))}
 					</div>
 				</header>
 
-				<article className="article-body markdown text-[14px] sm:text-[15px] leading-[1.82] text-foreground w-full">
+				<article data-pagefind-body className="article-body markdown text-[14px] sm:text-[15px] leading-[1.82] text-foreground w-full">
 					<MarkdownArticle content={post.content} />
 				</article>
 			</div>

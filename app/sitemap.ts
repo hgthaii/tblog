@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-import { getAllPosts } from './lib/posts';
+import { getAllCategories, getAllPosts } from './lib/posts';
 import { absoluteUrl } from './lib/seo';
 
 export const dynamic = 'force-static';
@@ -19,6 +19,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		changeFrequency: 'monthly',
 		priority: 0.8,
 	}));
+	const categories: MetadataRoute.Sitemap = getAllCategories().map((category) => ({
+		url: absoluteUrl(`/blog/category/${category.slug}/`),
+		changeFrequency: 'weekly',
+		priority: 0.6,
+	}));
 
-	return [...pages, ...posts];
+	return [...pages, ...categories, ...posts];
 }

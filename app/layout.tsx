@@ -28,8 +28,12 @@ export const metadata: Metadata = {
 	authors: [{ name: SITE_CONFIG.profile.name, url: absoluteUrl('/') }],
 	creator: SITE_CONFIG.profile.name,
 	publisher: SITE_CONFIG.profile.name,
+	manifest: SITE_CONFIG.site.manifest,
 	alternates: {
 		canonical: absoluteUrl('/'),
+		types: {
+			'application/rss+xml': absoluteUrl('/feed.xml'),
+		},
 	},
 	robots: {
 		index: true,
@@ -65,9 +69,15 @@ export const metadata: Metadata = {
 		images: [openGraphImageUrl('/')],
 	},
 	icons: {
-		icon: [{ url: SITE_CONFIG.site.favicon, type: 'image/svg+xml' }],
-		shortcut: [SITE_CONFIG.site.favicon],
-		apple: [{ url: SITE_CONFIG.site.socialImage }],
+		icon: [
+			{ url: SITE_CONFIG.site.favicon, type: 'image/x-icon' },
+			{ url: SITE_CONFIG.site.favicon16, type: 'image/png', sizes: '16x16' },
+			{ url: SITE_CONFIG.site.favicon32, type: 'image/png', sizes: '32x32' },
+		],
+		shortcut: [{ url: SITE_CONFIG.site.favicon, type: 'image/x-icon' }],
+		apple: [
+			{ url: SITE_CONFIG.site.appleTouchIcon, type: 'image/png', sizes: '180x180' },
+		],
 	},
 };
 

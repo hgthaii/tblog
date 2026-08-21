@@ -13,7 +13,7 @@ export type SeasonalThemeMode = 'auto' | 'none' | SeasonalThemeName;
 
 export const SEASONAL_THEME_WINDOW = {
 	daysBefore: 7,
-	daysAfter: 1,
+	daysAfter: 0,
 } as const;
 
 const DAY_IN_MS = 24 * 60 * 60 * 1000;

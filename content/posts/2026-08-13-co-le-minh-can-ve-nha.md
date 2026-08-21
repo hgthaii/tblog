@@ -2,7 +2,7 @@
 title: "Có lẽ mình cần về nhà"
 createdAt: "13/08/2026"
 authorName: ""
-category: "trải lòng"
+category: "lặt vặt"
 quote: "Liệu đây là một bước lùi cần thiết để lấy đà hay chỉ đơn thuần là một cuộc trốn chạy?"
 order: 1
 ---

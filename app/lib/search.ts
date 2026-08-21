@@ -1,0 +1,9 @@
+export function normalizeSearchText(value: string) {
+	return value
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.replace(/đ/gi, (letter) => letter === 'Đ' ? 'D' : 'd')
+		.toLowerCase()
+		.replace(/\s+/g, ' ')
+		.trim();
+}

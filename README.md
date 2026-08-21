@@ -26,9 +26,15 @@ The production build is a static site in `out/`:
 ```bash
 git diff --check
 pnpm lint
+pnpm test
 pnpm audit --prod --audit-level=moderate
 pnpm build
+pnpm verify:output
+pnpm exec playwright install chromium # first time only
+pnpm test:e2e
 ```
+
+`pnpm build` creates the static export and then builds its Pagefind search index. `pnpm verify:output` checks the exported pages, RSS, search bundle, sitemap, Open Graph image, categories, posts, and 404 before anything is deployed.
 
 For a subfolder deployment, set a base path explicitly:
 
@@ -41,7 +47,7 @@ NEXT_PUBLIC_BASE_PATH=/blog pnpm build:path
 - `content/locales/vi.json` contains the published profile, navigation, milestones, CV, SEO, error, and accessibility copy.
 - `content/locales/en.json` remains the type-compatible English locale.
 - `content/posts/*.md` contains published posts. The filename becomes the route slug.
-- `public/` contains the avatar, CV, social image, icons, and other public assets.
+- `public/` contains the avatar, CV, social image, icons, and other public assets. The browser, Apple touch, and installable-app icons are served from `public/favicon_io/` and linked automatically in page metadata.
 
 A post uses this frontmatter:
 
@@ -60,6 +66,10 @@ Nội dung bài viết.
 
 `title` and `createdAt` are required. Dates accept `DD/MM/YYYY`, `YYYY-MM-DD`, or an ISO datetime and must be real calendar dates. `authorName`, `category`, `quote`, and `order` are optional. Every build validates frontmatter and duplicate slugs before generating pages.
 
+Reading time is calculated from Markdown during the build, and categories generate static routes under `/blog/category/<category>/`. The blog search accepts Vietnamese queries with or without diacritics. It uses a Pagefind index generated from complete article bodies, while development falls back to the already-loaded title, excerpt, and category data until a production build exists.
+
+The RSS 2.0 feed is generated at `/feed.xml` and advertised in page metadata. It includes the title, permalink, publication date, excerpt, and categories for every post.
+
 The post `quote` is the main Open Graph text. Without a quote, the renderer falls back to the post title. Other routes use the current page title. The shared renderer lives in `app/lib/opengraph.tsx`. Home keeps `thái. - một vài âm điệu từ tôi`; other document and social titles stay concise with only the page or post title.
 
 ## Configuration
@@ -73,6 +83,7 @@ Important values:
 - `NEXT_PUBLIC_CV_PDF`, `NEXT_PUBLIC_CONTACT_EMAIL`, and social URLs.
 - `NEXT_PUBLIC_PROFILE_AVATAR`: defaults to `/hgthaii.jpg`.
 - `NEXT_PUBLIC_PROFILE_AVATAR_FIT`, `NEXT_PUBLIC_PROFILE_AVATAR_POSITION`, and `NEXT_PUBLIC_PROFILE_AVATAR_SCALE`: adjust any avatar without changing CSS.
+- Replace the generated files in `public/favicon_io/` together when updating the site favicon; no environment variable is required.
 - `NEXT_PUBLIC_TRACKING_SRC` and `NEXT_PUBLIC_TRACKING_WEBSITE_ID`: enable Umami only when both are set.
 - `NEXT_PUBLIC_SEASONAL_THEME`: `auto`, `none`, a supported celebration, or a season.
 
@@ -100,9 +111,9 @@ Breaking changes use `!` or a `BREAKING CHANGE:` footer.
 
 ## CI, deployment, and releases
 
-`.github/workflows/ci.yml` checks pull requests targeting `master` with whitespace validation, lint, production dependency audit, and a static build.
+`.github/workflows/ci.yml` checks pull requests targeting `master` with whitespace validation, lint, unit tests, production dependency audit, a static build, output verification, and Playwright smoke tests for home, article search/navigation, category pages, and 404.
 
-`.github/workflows/deploy.yml` builds the content tracked in this repository and deploys `master` to cPanel when `DEPLOY_ENABLED=true`. It uploads immutable assets first, pages and metadata last, then verifies the live sitemap, canonical URL, Open Graph image, and deployed commit in `/version.json`.
+`.github/workflows/deploy.yml` runs unit tests, builds the content tracked in this repository, and verifies the complete local static output before deploying `master` to cPanel when `DEPLOY_ENABLED=true`. It uploads immutable assets first, pages and metadata last, then verifies the live sitemap, canonical URL, Open Graph image, and deployed commit in `/version.json`.
 
 Required GitHub Actions secrets:
 
@@ -130,7 +141,9 @@ Every successful qualifying `master` deployment runs semantic-release after prod
 - a breaking change creates a major release.
 - `docs`, `chore`, `ci`, `style`, `test`, and ordinary `refactor` commits deploy when their changed paths require it but do not create a tag.
 
-When a release is required, GitHub receives a SemVer tag, generated notes, the exact static archive, and its SHA-256 checksum. If no commit requires a release, deployment completes without creating a tag. The package version in `package.json` is not manually bumped.
+When a release is required, semantic-release updates `package.json`, creates a `chore(release)` commit with `[skip ci]`, and places the SemVer tag on that commit. GitHub then receives generated notes, the exact static archive, and its SHA-256 checksum. If no commit requires a release, deployment completes without changing `package.json` or creating a tag. The package version is never bumped manually.
+
+Because the version commit is pushed directly by the release job, the `master` branch rules must allow the repository's GitHub Actions token (or semantic-release bot) to push that release commit. Normal feature changes still go through pull requests and merge commits.
 
 ## Repository map
 

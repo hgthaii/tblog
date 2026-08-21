@@ -1,7 +1,7 @@
 import BlogClient from './BlogClient';
-import { getAllPosts } from '../lib/posts';
+import { getAllCategories, getAllPosts } from '../lib/posts';
 
 export default function BlogPage() {
 	const posts = getAllPosts();
-	return <BlogClient posts={posts} />;
+	return <BlogClient posts={posts} categories={getAllCategories()} />;
 }

@@ -3,28 +3,37 @@ flowchart TB
     work[/Code or content change/]
     dev[dev branch]
     pr[PR to master]
+    unit[Frontmatter + seasonal unit tests]
+    ciBuild[Static build + Pagefind index]
+    outputCheck[Output verification + smoke tests]
     ci{CI passes?}
     merge[Merge commit]
     master[master]
-    build[Static build]
+    build[Unit tests + static build]
+    predeploy{Local output valid?}
     upload[Upload assets, then pages]
     production[cPanel site]
     verify{Production checks pass?}
     stop[Stop workflow]
     releaseCheck{Release-worthy commits?}
     noRelease[Deployment only]
-    semanticRelease[Semantic version + GitHub Release]
+    semanticRelease[Update package version + tag + GitHub Release]
     telegram[/Telegram notification/]
     sync[Merge master back into dev]
 
     work --> dev
     dev --> pr
-    pr --> ci
+    pr --> unit
+    unit --> ciBuild
+    ciBuild --> outputCheck
+    outputCheck --> ci
     ci -->|No| dev
     ci -->|Yes| merge
     merge --> master
     master --> build
-    build --> upload
+    build --> predeploy
+    predeploy -->|No| stop
+    predeploy -->|Yes| upload
     upload --> production
     production --> verify
     verify -->|No| stop
@@ -37,6 +46,7 @@ flowchart TB
     sync --> dev
 
     style ci fill:#332d20,stroke:#a28a4d
+    style predeploy fill:#332d20,stroke:#a28a4d
     style verify fill:#332d20,stroke:#a28a4d
     style releaseCheck fill:#332d20,stroke:#a28a4d
     style stop fill:#321f1f,stroke:#925c5c
