@@ -55,8 +55,8 @@ jobs:
         id: release-app-token
         uses: actions/create-github-app-token@v3
         with:
-        client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
-        private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
 
       - name: Checkout site source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
